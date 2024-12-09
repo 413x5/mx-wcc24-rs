@@ -1,7 +1,6 @@
 # MultiversX Winter Coding Challenge 2024 
 ### Rust implementation
 
-A token manager contract that allows users to issue and burn tokens on the MultiversX blockchain.
 
 ## Environment Installation
 
@@ -16,6 +15,5 @@ sc-meta all build
 
 ### [Token Manager Contract](token-manager-contract/README.md)
 
-A MultiversX smart contract that allows users to issue and manage SNOW tokens.
-Contract source: 
+A MultiversX smart contract that allows users to issue and manage ESDT Fungible tokens (SNOW).
 
