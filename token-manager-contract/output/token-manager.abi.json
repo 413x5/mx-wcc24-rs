@@ -50,7 +50,7 @@
             "outputs": []
         },
         {
-            "name": "getIssuedAmount",
+            "name": "getIssuedTokensInfo",
             "mutability": "readonly",
             "inputs": [
                 {
@@ -60,37 +60,7 @@
             ],
             "outputs": [
                 {
-                    "type": "BigUint"
-                }
-            ]
-        },
-        {
-            "name": "getTokenBalance",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "token_id",
-                    "type": "TokenIdentifier"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "BigUint"
-                }
-            ]
-        },
-        {
-            "name": "getTokenIssuer",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "token_id",
-                    "type": "TokenIdentifier"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "optional<Address>",
+                    "type": "variadic<multi<TokenIdentifier,BigUint>>",
                     "multi_result": true
                 }
             ]

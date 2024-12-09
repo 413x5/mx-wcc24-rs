@@ -64,10 +64,6 @@ pub trait TokenManager {
         match result {
             // If the issue was successful
             ManagedAsyncCallResult::Ok(()) => {
-                // Update the caller's total issued amount for all issued tokens
-                let mut current_amount = self.get_issued_amount(caller);
-                current_amount += initial_supply;
-                self.issued_amount().insert(caller.clone(), current_amount);
 
                 // Store token balance and issuer
                 if let Some(token_id) = token_identifier.into_esdt_option() {
@@ -117,25 +113,26 @@ pub trait TokenManager {
         self.send().esdt_local_burn(&token_id, 0, &amount);
     }
 
-    // Get the total amount of tokens issued by a specific address
-    #[view(getIssuedAmount)]
-    fn get_issued_amount(&self, address: &ManagedAddress) -> BigUint {
-        self.issued_amount().get(address).unwrap_or_default()
+    // Get all tokens issued by a specific address and their balances
+    #[view(getIssuedTokensInfo)]
+    fn get_issued_tokens(&self, address: ManagedAddress) -> MultiValueEncoded<MultiValue2<TokenIdentifier, BigUint>> {
+        let mut result = MultiValueEncoded::new();
+        
+        // Iterate through all tokens
+        for token_id in self.token_issuers().keys() {
+            // Check if the token was issued by the specified address
+            if let Some(issuer) = self.token_issuers().get(&token_id) {
+                if issuer.eq(&address) {
+                    let balance = self.get_token_balance(token_id.clone());
+                    result.push((token_id, balance).into());
+                }
+            }
+        }
+        
+        result
     }
 
-    // Get the balance of a specific token
-    #[view(getTokenBalance)]
-    fn get_token_balance(&self, token_id: TokenIdentifier) -> BigUint {
-        self.token_balances().get(&token_id).unwrap_or_default()
-    }
-
-    // Get the address that issued a specific token
-    #[view(getTokenIssuer)]
-    fn get_token_issuer(&self, token_id: TokenIdentifier) -> OptionalValue<ManagedAddress> {
-        self.token_issuers().get(&token_id).into()
-    }
-
-    // Get all issued tokens, their balances and their issuers
+    // Get all issued tokens, their balances and their issuers 
     #[view(getAllIssuedTokensInfo)]
     fn get_all_issued_tokens(&self) -> MultiValueEncoded<MultiValue3<TokenIdentifier, BigUint, ManagedAddress>> {
         let mut result = MultiValueEncoded::new();
@@ -150,9 +147,11 @@ pub trait TokenManager {
         result
     }
 
-    // Store the total amount of tokens issued by a specific address
-    #[storage_mapper("issue_amount")]
-    fn issued_amount(&self) -> MapMapper<ManagedAddress, BigUint>;
+    
+    // Get the balance of a specific token
+    fn get_token_balance(&self, token_id: TokenIdentifier) -> BigUint {
+        self.token_balances().get(&token_id).unwrap_or_default()
+    }
 
     // Store the balance of a specific token
     #[storage_mapper("token_balances")]

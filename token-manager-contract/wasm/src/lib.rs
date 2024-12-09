@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            6
+// Endpoints:                            4
 // Async Callback:                       1
-// Total number of exported functions:   9
+// Total number of exported functions:   7
 
 #![no_std]
 
@@ -22,9 +22,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         upgrade => upgrade
         issue_token_snow => issue_token_snow
         burn_tokens => burn_tokens
-        getIssuedAmount => get_issued_amount
-        getTokenBalance => get_token_balance
-        getTokenIssuer => get_token_issuer
+        getIssuedTokensInfo => get_issued_tokens
         getAllIssuedTokensInfo => get_all_issued_tokens
     )
 }
