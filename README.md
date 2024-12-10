@@ -23,7 +23,7 @@ Use the MultiversX Utility App [available here](https://utils.multiversx.com/).
 - Deploy the contracts by selecting the `Deploy Contract` tab and use the contract .wasm file from the `/output` folder. 
 - Note the deployed contract's address after the deployment transaction is confirmed. 
 - You can also look at the transactions list in your wallet to find the contract's address.
-- After deployment, select the `Load ABI` tab and select the contract .abi file from the `/output` folder
+- After deployment, select the `Load ABI` tab and select the contract .abi.json file from the `/output` folder
 - Make sure your contract's address is entered in the `Contract Address` field
 - You are now ready to interact with the contract!
 

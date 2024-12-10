@@ -32,6 +32,7 @@ fn issue_token_snow(&self, token_amount: BigUint)
 ```
 - Requires minimum 0.05 EGLD payment
 - `token_amount`: The amount of tokens to issue (will be multiplied by 10^8 for decimals)
+- Specify 100000000 in the `Contract Transaction Gas Limit` field to have enough gas for the contract's issue transaction
 
 ### Burn Token
 ```rust
