@@ -8,7 +8,7 @@ A MultiversX smart contract that allows users to issue and manage SNOW tokens.
 - Users can issue SNOW tokens by paying 0.05 EGLD
 - Each issued token will have:
   - Name: "JohnSnow"
-  - Ticker: "SNOW"
+  - Ticker: "SNOW-xxxxxx"
   - Decimals: 8
 - The newly issued tokens are automatically sent to the issuer
 - Any excess EGLD payment is returned to the caller
@@ -47,18 +47,21 @@ fn burn_tokens(&self)
 - `token_issuers`: Maps token identifiers to their issuer addresses
 
 ## How to Use
+
+Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints` and `Write endpoints` tabs to interact with the contract.
+
 1. To issue tokens:
    - Call `issue_token_snow` with desired amount
    - Send at least 0.05 EGLD
-   - Receive newly issued tokens automatically
+   - Receive newly issued tokens automatically in your wallet
 
 2. To burn tokens:
    - Call `burn_tokens`
-   - Send the SNOW tokens you want to burn
+   - Send an amount of the SNOW tokens you want to burn
 
 3. To query information:
-   - Use `getAllIssuedTokensInfo` to see all tokens
-   - Use `getIssuedTokensInfo` with an address to see their issued tokens
+   - Use `getAllIssuedTokensInfo` to see all issued tokens
+   - Use `getIssuedTokensInfo` with your address to see your issued tokens
 
 ## Implementation
 See: [src/token-manager.rs](src/token-manager.rs)
