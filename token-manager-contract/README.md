@@ -32,7 +32,6 @@ fn issue_token_snow(&self, token_amount: BigUint)
 ```
 - Requires minimum 0.05 EGLD payment
 - `token_amount`: The amount of tokens to issue (will be multiplied by 10^8 for decimals)
-- Specify 100000000 in the `Contract Transaction Gas Limit` field to have enough gas for the contract's issue transaction
 
 ### Burn Token
 ```rust
@@ -54,6 +53,7 @@ Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints`
 1. To issue tokens:
    - Call `issue_token_snow` with desired amount
    - Send at least 0.05 EGLD
+   - Specify 100000000 in the `Contract Transaction Gas Limit` field to have enough gas for the contract's issue transaction
    - Receive newly issued tokens automatically in your wallet
 
 2. To burn tokens:
