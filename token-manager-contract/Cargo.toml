@@ -12,7 +12,7 @@ path = "src/token-manager.rs"
 version = "0.54.2"
 
 [dev-dependencies]
-num-bigint = "0.4"
+num-bigint = "0.4.2"
 
 [dev-dependencies.multiversx-sc-scenario]
 version = "0.54.2"

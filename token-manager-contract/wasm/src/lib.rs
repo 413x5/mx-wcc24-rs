@@ -22,8 +22,8 @@ multiversx_sc_wasm_adapter::endpoints! {
         upgrade => upgrade
         issue_token_snow => issue_token_snow
         burn_tokens => burn_tokens
-        getIssuedTokensInfo => get_issued_tokens
-        getAllIssuedTokensInfo => get_all_issued_tokens
+        claim_tokens => claim_tokens
+        getIssuedTokensInfo => get_issued_tokens_info
     )
 }
 

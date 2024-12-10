@@ -27,6 +27,9 @@
     },
     "endpoints": [
         {
+            "docs": [
+                "Issue a new SNOW token with the specified amount"
+            ],
             "name": "issue_token_snow",
             "mutability": "mutable",
             "payableInTokens": [
@@ -36,20 +39,51 @@
                 {
                     "name": "token_amount",
                     "type": "BigUint"
+                },
+                {
+                    "name": "token_name",
+                    "type": "optional<bytes>",
+                    "multi_arg": true
                 }
             ],
             "outputs": []
         },
         {
+            "docs": [
+                "Burn a specific amount of tokens specified by the token id, if the token was issued by the caller"
+            ],
             "name": "burn_tokens",
             "mutability": "mutable",
-            "payableInTokens": [
-                "*"
+            "inputs": [
+                {
+                    "name": "token_id",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
             ],
-            "inputs": [],
             "outputs": []
         },
         {
+            "docs": [
+                "Claim all tokens in the contract with the specified token id, if the token was issued by the caller"
+            ],
+            "name": "claim_tokens",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "token_id",
+                    "type": "TokenIdentifier"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Get all tokens issued by a specific address and their balances"
+            ],
             "name": "getIssuedTokensInfo",
             "mutability": "readonly",
             "inputs": [
@@ -61,17 +95,6 @@
             "outputs": [
                 {
                     "type": "variadic<multi<TokenIdentifier,BigUint>>",
-                    "multi_result": true
-                }
-            ]
-        },
-        {
-            "name": "getAllIssuedTokensInfo",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "variadic<multi<TokenIdentifier,BigUint,Address>>",
                     "multi_result": true
                 }
             ]

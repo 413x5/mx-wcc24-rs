@@ -1,5 +1,0 @@
-- the contract should have only one endpoint “issue_token_snow”.
-- this should be payable in EGLD.
-- anyone paying the fee should be able to issue a token with ticker “SNOW”.
-- the token should have 8 decimals.
-- there is no restriction related to the properties of the token.
