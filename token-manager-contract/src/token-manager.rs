@@ -4,7 +4,7 @@
 use multiversx_sc::imports::*;
 
 // Constants
-const ISSUE_FEE: u64 = 50000000000000000; // 0.05 EGLD
+const ISSUE_FEE: u64 = 50_000_000_000_000_000; // 0.05 EGLD (0.05 * 10^18 decimals)
 const DEFAULT_TOKEN_NAME: &str = "JohnSnow";
 const TOKEN_TICKER: &str = "SNOW";
 const TOKEN_DECIMALS: usize = 8;
@@ -51,7 +51,7 @@ pub trait TokenManager {
                 initial_supply.clone(),
                 properties
             )
-            .with_callback(self.callbacks().issue_callback(&caller, &payment, &initial_supply))
+            .with_callback(self.callbacks().issue_callback(&caller, &payment))
             .async_call_and_exit()
     }
 
@@ -63,7 +63,6 @@ pub trait TokenManager {
         &self,
         caller: &ManagedAddress,
         payment: &BigUint,
-        initial_supply: &BigUint,
         #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
         // get the returned tokens
@@ -76,7 +75,7 @@ pub trait TokenManager {
 
                 // Store token balance and issuer
                 if let Some(token_id) = token_identifier.into_esdt_option() {
-                    self.token_balances().insert(token_id.clone(), initial_supply.clone());
+                    self.token_balances().insert(token_id.clone(), returned_tokens.clone());
                     self.token_issuers().insert(token_id.clone(), caller.clone());
                 }
 

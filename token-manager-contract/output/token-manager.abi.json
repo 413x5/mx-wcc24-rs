@@ -28,7 +28,7 @@
     "endpoints": [
         {
             "docs": [
-                "Issue a new SNOW token with the specified amount"
+                "Issue a new SNOW token with the specified amount and optional token name."
             ],
             "name": "issue_token_snow",
             "mutability": "mutable",
