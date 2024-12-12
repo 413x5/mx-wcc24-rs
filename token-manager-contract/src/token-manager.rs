@@ -107,7 +107,7 @@ pub trait TokenManager {
         if let Some(token_issuer) = self.token_issuers().get(&token_id) {
             require!(
                 token_issuer.eq(&caller),
-                "Can only burn tokens issued by the calling address."
+                "Only the token issuer can burn tokens."
             );
         } else {
             sc_panic!("The token id specified was not issued by this contract.");
@@ -118,39 +118,33 @@ pub trait TokenManager {
         if current_supply == 0 { sc_panic!("No tokens in the contract available to burn."); }
         require!(current_supply >= amount, "Amount to burn is greater than the current supply.");
         
+        // Burn the specified amount of tokens
+        self.send().esdt_local_burn(&token_id, 0, &amount);
+
         // Update total remaining supply
         current_supply -= &amount;
         self.token_balances().insert(token_id.clone(), current_supply);
-
-        // Burn the specified amount of tokens
-        self.send().esdt_local_burn(&token_id, 0, &amount);
     }
 
 
-    /// Claim all tokens in the contract with the specified token id, if the token was issued by the caller
+    /// Claim a specific amount of tokens in the contract with the specified token id
     #[endpoint(claim_tokens)]
-    fn claim_tokens(&self, token_id: TokenIdentifier) {
+    fn claim_tokens(&self, token_id: TokenIdentifier, amount: BigUint) {
         let caller = self.blockchain().get_caller();
-        
-        // Check if the token was issued by the caller
-        if let Some(token_issuer) = self.token_issuers().get(&token_id) {
-            require!(
-                token_issuer.eq(&caller),
-                "Can only claim tokens issued by the calling address."
-            );
-        } else {
-            sc_panic!("Token was not issued by this contract.");
-        }
 
+        let token_issuer = self.token_issuers().get(&token_id);
+        require!(token_issuer.is_some(), "Token was not issued by this contract.");
+        
         // Get current token supply
         let current_supply = self.get_token_balance(token_id.clone());
-        require!(current_supply > 0, "No tokens available to claim.");
+        require!(current_supply >= amount, "Insufficient tokens available to claim.");
 
-        // Send all tokens to the caller
-        self.send().direct_esdt(&caller, &token_id, 0, &current_supply);
+        // Send the specified amount of tokens to the caller
+        self.send().direct_esdt(&caller, &token_id, 0, &amount);
 
-        // Update token balance to 0
-        self.token_balances().insert(token_id, BigUint::zero());
+        // Update token balance
+        let new_balance = current_supply - amount;
+        self.token_balances().insert(token_id, new_balance);
     }
 
 

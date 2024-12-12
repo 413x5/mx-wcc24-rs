@@ -68,7 +68,7 @@
         },
         {
             "docs": [
-                "Claim all tokens in the contract with the specified token id, if the token was issued by the caller"
+                "Claim a specific amount of tokens in the contract with the specified token id"
             ],
             "name": "claim_tokens",
             "mutability": "mutable",
@@ -76,6 +76,10 @@
                 {
                     "name": "token_id",
                     "type": "TokenIdentifier"
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
                 }
             ],
             "outputs": []
