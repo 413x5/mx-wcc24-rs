@@ -6,7 +6,7 @@ edition = "2021"
 authors = ["you"]
 
 [lib]
-path = "src/token-manager.rs"
+path = "src/token_manager.rs"
 
 [dependencies.multiversx-sc]
 version = "0.54.2"
