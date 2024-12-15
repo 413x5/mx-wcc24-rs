@@ -8,7 +8,7 @@ A series of smart contracts written in [Rust](https://www.rust-lang.org/) for th
 
 Install the [MultiversX Smart Contract Rust SDK](https://docs.multiversx.com/developers/meta/sc-meta)
 
-## Building the contract(s)
+## Building the contracts
 
 Use sc-meta in the terminal to build all contracts:
 

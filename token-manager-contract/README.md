@@ -68,7 +68,7 @@ fn claim_tokens(&self, token_id: TokenIdentifier, amount: BigUint)
 
 ## How to Use
 
-Deploy the contract following the instructions in the main [Readme](../README.md#deploying-and-testing-contracts)
+Build and Deploy the contract following the [instructions](../README.md#building-the-contracts)
 
 Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints` and `Write endpoints` tabs to interact with the contract.
 
