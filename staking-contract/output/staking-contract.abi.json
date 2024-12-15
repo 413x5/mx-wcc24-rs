@@ -1,0 +1,83 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.83.0-nightly",
+            "commitHash": "bd53aa3bf7a24a70d763182303bd75e5fc51a9af",
+            "commitDate": "2024-09-02",
+            "channel": "Nightly",
+            "short": "rustc 1.83.0-nightly (bd53aa3bf 2024-09-02)"
+        },
+        "contractCrate": {
+            "name": "staking-contract",
+            "version": "0.0.0"
+        },
+        "framework": {
+            "name": "multiversx-sc",
+            "version": "0.54.6"
+        }
+    },
+    "docs": [
+        "Staking contract"
+    ],
+    "name": "StakingContract",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "upgradeConstructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "docs": [
+                "Stores user stakes"
+            ],
+            "name": "getStakeInfo",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<multi<Address,List<StakeInfo>>>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Stakes configured tokens in the contract"
+            ],
+            "name": "stake_token_winter",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        }
+    ],
+    "esdtAttributes": [],
+    "hasCallback": false,
+    "types": {
+        "StakeInfo": {
+            "type": "struct",
+            "docs": [
+                "Stake info structure for each token and staked amount"
+            ],
+            "fields": [
+                {
+                    "name": "token_id",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "unlock_epoch",
+                    "type": "u64"
+                }
+            ]
+        }
+    }
+}
