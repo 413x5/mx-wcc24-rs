@@ -53,12 +53,13 @@ fn burn_tokens(&self, token_id: TokenIdentifier, amount: BigUint)
 
 ```rust
 #[endpoint(claim_tokens)]
-fn claim_tokens(&self, token_id: TokenIdentifier)
+fn claim_tokens(&self, token_id: TokenIdentifier, amount: BigUint)
 ```
 
 - Only the token issuer can claim their issued tokens
-- Claims all available tokens of the specified token ID
+- Claims the specified amount of tokens with the token ID
 - `token_id`: The identifier of the SNOW token to claim
+- `amount`: The amount of tokens to claim
 
 ## Storage
 
