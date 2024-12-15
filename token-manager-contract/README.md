@@ -89,4 +89,4 @@ Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints`
 
 ## Implementation
 
-See: [src/token-manager.rs](src/token-manager.rs)
+See: [src/token_manager.rs](src/token_manager.rs)
