@@ -1,18 +1,22 @@
-# MultiversX Winter Coding Challenge 2024 
-### Rust implementation
+# MultiversX Winter Coding Challenge 2024
 
+## Rust implementation
+
+A series of smart contracts written in [Rust](https://www.rust-lang.org/) for the [MultiversX](https://multiversx.com/) blockchain.
 
 ## Environment Installation
 
-1. Install the [MultiversX Smart Contract Rust SDK](https://docs.multiversx.com/developers/meta/sc-meta)
+Install the [MultiversX Smart Contract Rust SDK](https://docs.multiversx.com/developers/meta/sc-meta)
 
 ## Building the contract(s)
 
-2. Use sc-meta in the terminal to build all contracts:
+Use sc-meta in the terminal to build all contracts:
+
 ```bash
 cd mx-wcc24-rs
 sc-meta all build
 ```
+
 ## Deploying and Testing Contracts
 
 Use the [MultiversX Utility App](https://utils.multiversx.com/)
@@ -27,10 +31,12 @@ Use the [MultiversX Utility App](https://utils.multiversx.com/)
 - Make sure your contract's address is entered in the `Contract Address` field
 - You are now ready to interact with the contract!
 
-
 ## Contracts
 
 ### [Token Manager Contract](token-manager-contract/README.md)
 
 A MultiversX smart contract that allows users to issue and manage ESDT Fungible tokens (SNOW).
 
+### [Staking Contract](staking-contract/README.md)
+
+A MultiversX smart contract that allows users to stake ESDT Fungible tokens (WINTER).
