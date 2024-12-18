@@ -37,7 +37,7 @@ pub trait StakingContract {
     #[upgrade]
     fn upgrade(&self) {}
 
-    /// Stake tokens
+    /// Stake winter tokens
     #[payable("*")]
     #[endpoint(stake_token_winter)]
     fn stake_token_winter(&self) {
@@ -57,7 +57,6 @@ pub trait StakingContract {
             );
         }
 
-        // Stake tokens
         let caller = self.blockchain().get_caller();
         let current_epoch = self.blockchain().get_block_epoch();
 
