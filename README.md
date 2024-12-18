@@ -35,8 +35,8 @@ Use the [MultiversX Utility App](https://utils.multiversx.com/)
 
 ### [Token Manager Contract](token-manager-contract/README.md)
 
-A MultiversX smart contract that allows users to issue and manage ESDT Fungible tokens (SNOW).
+A smart contract that allows users to issue and manage ESDT Fungible tokens (SNOW).
 
 ### [Staking Contract](staking-contract/README.md)
 
-A MultiversX smart contract that allows users to stake ESDT Fungible tokens (WINTER).
+A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and earn SNOW rewards.

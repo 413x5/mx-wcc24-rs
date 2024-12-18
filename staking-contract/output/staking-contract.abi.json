@@ -31,9 +31,59 @@
     "endpoints": [
         {
             "docs": [
+                "Stake tokens"
+            ],
+            "name": "stake_token_winter",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Issue the reward token"
+            ],
+            "name": "issue_reward_token",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [
+                {
+                    "name": "initial_supply",
+                    "type": "optional<BigUint>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Sets the local mint role for the reward token"
+            ],
+            "name": "set_reward_token_local_mint_role",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Distribute rewards to all stakers"
+            ],
+            "name": "distribute_rewards",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
                 "Stores user stakes"
             ],
-            "name": "getStakeInfo",
+            "name": "get_stake_info",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -45,24 +95,63 @@
         },
         {
             "docs": [
-                "Stakes configured tokens in the contract"
+                "Stores the last reward epoch"
             ],
-            "name": "stake_token_winter",
-            "mutability": "mutable",
-            "payableInTokens": [
-                "*"
-            ],
+            "name": "get_last_reward_epoch",
+            "mutability": "readonly",
             "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Stores the reward token id"
+            ],
+            "name": "get_reward_token_id",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Clears the reward token for re-issuing"
+            ],
+            "name": "clear_reward_token",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Sets the last reward epoch"
+            ],
+            "name": "set_last_reward_epoch",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "epoch",
+                    "type": "u64"
+                }
+            ],
             "outputs": []
         }
     ],
     "esdtAttributes": [],
-    "hasCallback": false,
+    "hasCallback": true,
     "types": {
         "StakeInfo": {
             "type": "struct",
             "docs": [
-                "Stake info structure for each token and staked amount"
+                "Stake info structure for each token and stake"
             ],
             "fields": [
                 {
