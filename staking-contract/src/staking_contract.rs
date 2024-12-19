@@ -194,7 +194,7 @@ pub trait StakingContract {
     fn distribute_rewards(&self) {      
         require!(!self.reward_token_id().is_empty(), "Reward token not set. Call issue_reward_token first.");
         require!(self.reward_token_has_local_mint_role().get(), 
-        "Reward token does not have local mint role. Call setRewardTokenMintRole first.");
+        "Reward token does not have local mint role. Call set_reward_token_local_mint_role first.");
 
         let current_epoch = self.blockchain().get_block_epoch();
         let last_reward_epoch = self.get_last_reward_epoch(current_epoch);
