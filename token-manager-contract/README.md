@@ -17,7 +17,7 @@ A MultiversX smart contract that allows users to issue and manage SNOW tokens.
 
 - Token holders can burn any amount of their SNOW tokens
 - Only token issuers can burn their issued tokens
-- Token issuers can claim all available tokens of their issued tokens
+- Token issuers can claim any available tokens of their issued tokens
 - The total supply held by the contract is automatically updated after burning or claiming
 
 ### View Functions
@@ -75,7 +75,7 @@ Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints`
 1. To issue tokens:
    - Call `issue_token_snow` with desired amount and optional token name
    - Send at least 0.05 EGLD. Extra EGLD will be returned.
-   - Specify 100000000 in the `Contract Transaction Gas Limit` field
+   - Specify 100000000 in the `Contract Transaction Gas Limit` field to have enouogh gas for the issue transaction
 
 2. To burn tokens:
    - Call `burn_tokens` with the token ID and amount to burn

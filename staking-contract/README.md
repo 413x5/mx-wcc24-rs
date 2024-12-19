@@ -130,6 +130,7 @@ Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints`
 
 1. Contract Setup (Owner Only):
    - Call `IssueRewardToken` with 0.05 EGLD to issue the SNOW reward token
+   - Specify 100000000 in the `Contract Transaction Gas Limit` field to have enouogh gas for the issue transaction
    - Call `SetRewardTokenLocalMintRole` to set up minting permissions
 
 2. To stake tokens:
