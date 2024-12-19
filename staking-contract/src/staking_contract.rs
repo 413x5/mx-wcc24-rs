@@ -39,7 +39,7 @@ pub trait StakingContract {
 
     /// Stake winter tokens
     #[payable("*")]
-    #[endpoint(stake_token_winter)]
+    #[endpoint(StakeTokenWinter)]
     fn stake_token_winter(&self) {
         let payments = self.call_value().all_esdt_transfers();
         require!(!payments.is_empty(), "No ESDT tokens received.");
@@ -83,7 +83,7 @@ pub trait StakingContract {
     /// Issue the reward token
     #[only_owner]
     #[payable("EGLD")]
-    #[endpoint(issue_reward_token)]
+    #[endpoint(IssueRewardToken)]
     fn issue_reward_token(&self, initial_supply: OptionalValue<BigUint>) {
         // Check if reward token has already been issued
         require!(self.reward_token_id().is_empty(), "Reward token has already been issued.");
@@ -161,7 +161,7 @@ pub trait StakingContract {
 
     /// Sets the local mint role for the reward token
     #[only_owner]
-    #[endpoint(set_reward_token_local_mint_role)]
+    #[endpoint(SetRewardTokenLocalMintRole)]
     fn set_reward_token_local_mint_role(&self) {
         require!(!self.reward_token_id().is_empty(), "Reward token not set. Call issue_reward_token first.");
 
@@ -190,7 +190,7 @@ pub trait StakingContract {
     }
 
     /// Distribute rewards to all stakers
-    #[endpoint(distribute_rewards)]
+    #[endpoint(DistributeRewards)]
     fn distribute_rewards(&self) {      
         require!(!self.reward_token_id().is_empty(), "Reward token not set. Call issue_reward_token first.");
         require!(self.reward_token_has_local_mint_role().get(), 
@@ -204,8 +204,6 @@ pub trait StakingContract {
             current_epoch > last_reward_epoch,
             "Rewards can only be distributed once every epoch (24h). Last distribution was at epoch {}.", last_reward_epoch
         );
-        
-       
         
         // Calculate rewards for all stakers based on the epoch of their stakes and last reward epoch
         let mut rewards = ManagedVec::<Self::Api, RewardDistribution<Self::Api>>::new();
@@ -236,8 +234,10 @@ pub trait StakingContract {
             
             if address_total_reward > 0u64 {
                 total_rewards += &address_total_reward;
+                // Use reward address if set, otherwise use staker address
+                let reward_address = self.get_reward_address(&address);
                 rewards.push(RewardDistribution {
-                    address,
+                    address: reward_address,
                     amount: address_total_reward,
                 });
             }
@@ -282,19 +282,35 @@ pub trait StakingContract {
         last_reward_epoch
     }
 
+    /// Gets the reward address for a user, returns user address if not set
+    #[view(GetRewardAddress)]
+    fn get_reward_address(&self, address: &ManagedAddress) -> ManagedAddress {
+        if !self.reward_address(address).is_empty() {
+            self.reward_address(address).get()
+        } else {
+            address.clone()
+        }
+    }
+
+    /// Sets the reward address for a user
+    #[endpoint(SetRewardAddress)]
+    fn set_reward_address(&self, address: ManagedAddress) {
+        let caller = self.blockchain().get_caller();
+        self.reward_address(&caller).set(address);
+    }    
 
     /// Stores user stakes
-    #[view(get_stake_info)]
+    #[view(GetStakeInfo)]
     #[storage_mapper("stake_info")]
     fn stake_info(&self) -> MapMapper<ManagedAddress, ManagedVec<StakeInfo<Self::Api>>>;
     
     /// Stores the last reward epoch
-    #[view(get_last_reward_epoch)]
+    #[view(GetLastRewardEpoch)]
     #[storage_mapper("last_reward_epoch")]
     fn last_reward_epoch(&self) -> SingleValueMapper<u64>;
 
     /// Stores the reward token id
-    #[view(get_reward_token_id)]
+    #[view(GetRewardTokenId)]
     #[storage_mapper("reward_token_id")]
     fn reward_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
 
@@ -302,21 +318,7 @@ pub trait StakingContract {
     #[storage_mapper("reward_token_has_local_mint_role")]
     fn reward_token_has_local_mint_role(&self) -> SingleValueMapper<bool>;
 
-    // For testing purposes
-
-    /// Clears the reward token for re-issuing
-    #[only_owner]
-    #[endpoint(clear_reward_token)]
-    fn clear_reward_token(&self) {
-        self.reward_token_id().clear();
-        self.reward_token_has_local_mint_role().clear();
-    }
-
-    /// Sets the last reward epoch
-    #[only_owner]
-    #[endpoint(set_last_reward_epoch)]
-    fn set_last_reward_epoch(&self, epoch: u64) {
-        self.last_reward_epoch().set(epoch);
-    }    
-
+    /// Stores the reward address for each user
+    #[storage_mapper("reward_address")]
+    fn reward_address(&self, address: &ManagedAddress) -> SingleValueMapper<ManagedAddress>;
 }

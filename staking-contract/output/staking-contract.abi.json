@@ -31,9 +31,9 @@
     "endpoints": [
         {
             "docs": [
-                "Stake tokens"
+                "Stake winter tokens"
             ],
-            "name": "stake_token_winter",
+            "name": "StakeTokenWinter",
             "mutability": "mutable",
             "payableInTokens": [
                 "*"
@@ -45,7 +45,7 @@
             "docs": [
                 "Issue the reward token"
             ],
-            "name": "issue_reward_token",
+            "name": "IssueRewardToken",
             "onlyOwner": true,
             "mutability": "mutable",
             "payableInTokens": [
@@ -64,7 +64,7 @@
             "docs": [
                 "Sets the local mint role for the reward token"
             ],
-            "name": "set_reward_token_local_mint_role",
+            "name": "SetRewardTokenLocalMintRole",
             "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [],
@@ -74,16 +74,48 @@
             "docs": [
                 "Distribute rewards to all stakers"
             ],
-            "name": "distribute_rewards",
+            "name": "DistributeRewards",
             "mutability": "mutable",
             "inputs": [],
             "outputs": []
         },
         {
             "docs": [
+                "Gets the reward address for a user, returns user address if not set"
+            ],
+            "name": "GetRewardAddress",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Sets the reward address for a user"
+            ],
+            "name": "SetRewardAddress",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
                 "Stores user stakes"
             ],
-            "name": "get_stake_info",
+            "name": "GetStakeInfo",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -97,7 +129,7 @@
             "docs": [
                 "Stores the last reward epoch"
             ],
-            "name": "get_last_reward_epoch",
+            "name": "GetLastRewardEpoch",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -110,7 +142,7 @@
             "docs": [
                 "Stores the reward token id"
             ],
-            "name": "get_reward_token_id",
+            "name": "GetRewardTokenId",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -118,31 +150,6 @@
                     "type": "TokenIdentifier"
                 }
             ]
-        },
-        {
-            "docs": [
-                "Clears the reward token for re-issuing"
-            ],
-            "name": "clear_reward_token",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "docs": [
-                "Sets the last reward epoch"
-            ],
-            "name": "set_last_reward_epoch",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "epoch",
-                    "type": "u64"
-                }
-            ],
-            "outputs": []
         }
     ],
     "esdtAttributes": [],

@@ -20,15 +20,15 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
-        stake_token_winter => stake_token_winter
-        issue_reward_token => issue_reward_token
-        set_reward_token_local_mint_role => set_reward_token_local_mint_role
-        distribute_rewards => distribute_rewards
-        get_stake_info => stake_info
-        get_last_reward_epoch => last_reward_epoch
-        get_reward_token_id => reward_token_id
-        clear_reward_token => clear_reward_token
-        set_last_reward_epoch => set_last_reward_epoch
+        StakeTokenWinter => stake_token_winter
+        IssueRewardToken => issue_reward_token
+        SetRewardTokenLocalMintRole => set_reward_token_local_mint_role
+        DistributeRewards => distribute_rewards
+        GetRewardAddress => get_reward_address
+        SetRewardAddress => set_reward_address
+        GetStakeInfo => stake_info
+        GetLastRewardEpoch => last_reward_epoch
+        GetRewardTokenId => reward_token_id
     )
 }
 
