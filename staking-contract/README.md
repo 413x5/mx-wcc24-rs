@@ -16,8 +16,8 @@ A MultiversX smart contract that allows users to stake WINTER tokens and earn SN
 - Rewards are distributed in SNOW tokens
 - Stakers earn 1% of their staked amount per epoch
 - Rewards are distributed once per epoch (24h)
-- Automatic distribution can be implemented in a cron job by calling the `DistributeRewards` endpoint every 24h
-- Users can set a custom address to receive their rewards using `SetRewardAddress`
+- Automatic distribution can be implemented in a cron job by calling the `distributeRewards` endpoint every 24h
+- Users can set a custom address to receive their rewards using `setRewardAddress`
 
 ### Stake Management
 
@@ -29,10 +29,10 @@ A MultiversX smart contract that allows users to stake WINTER tokens and earn SN
 
 ### View Functions
 
-- `GetStakeInfo`: Get all stakes with user's addresses, their amounts and unlock epochs
-- `GetRewardTokenId`: Get the ID of the reward token (SNOW)
-- `GetLastRewardEpoch`: Get the last epoch when rewards were distributed
-- `GetRewardAddress`: Get the address where a user's rewards are sent (returns user's address if no custom address is set)
+- `getStakeInfo`: Get all stakes with user's addresses, their amounts and unlock epochs
+- `getRewardTokenId`: Get the ID of the reward token (SNOW)
+- `getLastRewardEpoch`: Get the last epoch when rewards were distributed
+- `getRewardAddress`: Get the address where a user's rewards are sent (returns user's address if no custom address is set)
 
 ## Contract Endpoints
 
@@ -40,7 +40,7 @@ A MultiversX smart contract that allows users to stake WINTER tokens and earn SN
 
 ```rust
 #[payable("*")]
-#[endpoint(StakeTokenWinter)]
+#[endpoint(stakeTokenWinter)]
 fn stake_token_winter(&self)
 ```
 
@@ -52,7 +52,7 @@ fn stake_token_winter(&self)
 ### Reward Management
 
 ```rust
-#[endpoint(DistributeRewards)]
+#[endpoint(distributeRewards)]
 fn distribute_rewards(&self)
 ```
 
@@ -63,7 +63,7 @@ fn distribute_rewards(&self)
 - Sends rewards to each staker's configured reward address or their staking address
 
 ```rust
-#[endpoint(SetRewardAddress)]
+#[endpoint(setRewardAddress)]
 fn set_reward_address(&self, address: ManagedAddress)
 ```
 
@@ -74,7 +74,7 @@ fn set_reward_address(&self, address: ManagedAddress)
 ### Get Stake Info
 
 ```rust
-#[view(GetStakeInfo)]
+#[view(getStakeInfo)]
 fn stake_info(&self) -> MapMapper<ManagedAddress, ManagedVec<StakeInfo<Self::Api>>>
 ```
 
@@ -129,23 +129,23 @@ Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints`
 ### Steps
 
 1. Contract Setup (Owner Only):
-   - Call `IssueRewardToken` with 0.05 EGLD to issue the SNOW reward token
-   - Specify 100000000 in the `Contract Transaction Gas Limit` field to have enouogh gas for the issue transaction
-   - Call `SetRewardTokenLocalMintRole` to set up minting permissions
+   - Call `issueRewardToken` with 0.05 EGLD to issue the SNOW reward token
+   - Specify 100000000 in the `Contract Transaction Gas Limit` field to have enough gas for the issue transaction
+   - Call `setRewardTokenLocalMintRole` to set up minting permissions
 
 2. To stake tokens:
-   - Call `StakeTokenWinter` by sending an amount of WINTER tokens
+   - Call `stakeTokenWinter` by sending an amount of WINTER tokens
 
 3. To manage reward distribution:
-   - Call `DistributeRewards` once per epoch to distribute SNOW rewards
+   - Call `distributeRewards` once per epoch to distribute SNOW rewards
    - Automatic distribution can be implemented in a cron job
-   - Call `SetRewardAddress` with a custom address to receive rewards at a different address
+   - Call `setRewardAddress` with a custom address to receive rewards at a different address
 
 4. To query information:
-   - Use `GetStakeInfo` to view all the staked tokens info
-   - Use `GetRewardTokenId` to get the SNOW token identifier
-   - Use `GetLastRewardEpoch` to check when rewards were last distributed
-   - Use `GetRewardAddress` to get the address where a user's rewards are sent
+   - Use `getStakeInfo` to view all the staked tokens info
+   - Use `getRewardTokenId` to get the SNOW token identifier
+   - Use `getLastRewardEpoch` to check when rewards were last distributed
+   - Use `getRewardAddress` to get the address where a user's rewards are sent
 
 ## Implementation
 

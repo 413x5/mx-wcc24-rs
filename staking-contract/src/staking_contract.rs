@@ -39,7 +39,7 @@ pub trait StakingContract {
 
     /// Stake winter tokens
     #[payable("*")]
-    #[endpoint(StakeTokenWinter)]
+    #[endpoint(stakeTokenWinter)]
     fn stake_token_winter(&self) {
         let payments = self.call_value().all_esdt_transfers();
         require!(!payments.is_empty(), "No ESDT tokens received.");
@@ -83,7 +83,7 @@ pub trait StakingContract {
     /// Issue the reward token
     #[only_owner]
     #[payable("EGLD")]
-    #[endpoint(IssueRewardToken)]
+    #[endpoint(issueRewardToken)]
     fn issue_reward_token(&self, initial_supply: OptionalValue<BigUint>) {
         // Check if reward token has already been issued
         require!(self.reward_token_id().is_empty(), "Reward token has already been issued.");
@@ -161,7 +161,7 @@ pub trait StakingContract {
 
     /// Sets the local mint role for the reward token
     #[only_owner]
-    #[endpoint(SetRewardTokenLocalMintRole)]
+    #[endpoint(setRewardTokenLocalMintRole)]
     fn set_reward_token_local_mint_role(&self) {
         require!(!self.reward_token_id().is_empty(), "Reward token not set. Call issue_reward_token first.");
 
@@ -190,7 +190,7 @@ pub trait StakingContract {
     }
 
     /// Distribute rewards to all stakers
-    #[endpoint(DistributeRewards)]
+    #[endpoint(distributeRewards)]
     fn distribute_rewards(&self) {      
         require!(!self.reward_token_id().is_empty(), "Reward token not set. Call issue_reward_token first.");
         require!(self.reward_token_has_local_mint_role().get(), 
@@ -283,7 +283,7 @@ pub trait StakingContract {
     }
 
     /// Gets the reward address for a user, returns user address if not set
-    #[view(GetRewardAddress)]
+    #[view(getRewardAddress)]
     fn get_reward_address(&self, address: &ManagedAddress) -> ManagedAddress {
         if !self.reward_address(address).is_empty() {
             self.reward_address(address).get()
@@ -293,24 +293,24 @@ pub trait StakingContract {
     }
 
     /// Sets the reward address for a user
-    #[endpoint(SetRewardAddress)]
+    #[endpoint(setRewardAddress)]
     fn set_reward_address(&self, address: ManagedAddress) {
         let caller = self.blockchain().get_caller();
         self.reward_address(&caller).set(address);
     }    
 
     /// Stores user stakes
-    #[view(GetStakeInfo)]
+    #[view(getStakeInfo)]
     #[storage_mapper("stake_info")]
     fn stake_info(&self) -> MapMapper<ManagedAddress, ManagedVec<StakeInfo<Self::Api>>>;
     
     /// Stores the last reward epoch
-    #[view(GetLastRewardEpoch)]
+    #[view(getLastRewardEpoch)]
     #[storage_mapper("last_reward_epoch")]
     fn last_reward_epoch(&self) -> SingleValueMapper<u64>;
 
     /// Stores the reward token id
-    #[view(GetRewardTokenId)]
+    #[view(getRewardTokenId)]
     #[storage_mapper("reward_token_id")]
     fn reward_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
 

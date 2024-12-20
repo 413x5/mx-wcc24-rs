@@ -30,7 +30,7 @@
             "docs": [
                 "Issue a new SNOW token with the specified amount and optional token name."
             ],
-            "name": "issue_token_snow",
+            "name": "issueTokenSnow",
             "mutability": "mutable",
             "payableInTokens": [
                 "EGLD"
@@ -52,7 +52,7 @@
             "docs": [
                 "Burn a specific amount of tokens specified by the token id, if the token was issued by the caller"
             ],
-            "name": "burn_tokens",
+            "name": "burnTokens",
             "mutability": "mutable",
             "inputs": [
                 {
@@ -70,7 +70,7 @@
             "docs": [
                 "Claim a specific amount of tokens in the contract with the specified token id"
             ],
-            "name": "claim_tokens",
+            "name": "claimTokens",
             "mutability": "mutable",
             "inputs": [
                 {

@@ -33,7 +33,7 @@
             "docs": [
                 "Stake winter tokens"
             ],
-            "name": "StakeTokenWinter",
+            "name": "stakeTokenWinter",
             "mutability": "mutable",
             "payableInTokens": [
                 "*"
@@ -45,7 +45,7 @@
             "docs": [
                 "Issue the reward token"
             ],
-            "name": "IssueRewardToken",
+            "name": "issueRewardToken",
             "onlyOwner": true,
             "mutability": "mutable",
             "payableInTokens": [
@@ -64,7 +64,7 @@
             "docs": [
                 "Sets the local mint role for the reward token"
             ],
-            "name": "SetRewardTokenLocalMintRole",
+            "name": "setRewardTokenLocalMintRole",
             "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [],
@@ -74,7 +74,7 @@
             "docs": [
                 "Distribute rewards to all stakers"
             ],
-            "name": "DistributeRewards",
+            "name": "distributeRewards",
             "mutability": "mutable",
             "inputs": [],
             "outputs": []
@@ -83,7 +83,7 @@
             "docs": [
                 "Gets the reward address for a user, returns user address if not set"
             ],
-            "name": "GetRewardAddress",
+            "name": "getRewardAddress",
             "mutability": "readonly",
             "inputs": [
                 {
@@ -101,7 +101,7 @@
             "docs": [
                 "Sets the reward address for a user"
             ],
-            "name": "SetRewardAddress",
+            "name": "setRewardAddress",
             "mutability": "mutable",
             "inputs": [
                 {
@@ -115,7 +115,7 @@
             "docs": [
                 "Stores user stakes"
             ],
-            "name": "GetStakeInfo",
+            "name": "getStakeInfo",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -129,7 +129,7 @@
             "docs": [
                 "Stores the last reward epoch"
             ],
-            "name": "GetLastRewardEpoch",
+            "name": "getLastRewardEpoch",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -142,7 +142,7 @@
             "docs": [
                 "Stores the reward token id"
             ],
-            "name": "GetRewardTokenId",
+            "name": "getRewardTokenId",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [

@@ -16,7 +16,7 @@ pub trait TokenManager {
 
     /// Issue a new SNOW token with the specified amount and optional token name.
     #[payable("EGLD")]
-    #[endpoint(issue_token_snow)]
+    #[endpoint(issueTokenSnow)]
     fn issue_token_snow(&self, token_amount: BigUint, token_name: OptionalValue<ManagedBuffer>) {
         // Check the EGLD payment is enough for issuing the token and token amount is greater than 0.
         // If more EGLD are sent, the difference will be returned to the caller in the callback
@@ -98,7 +98,7 @@ pub trait TokenManager {
 
 
     /// Burn a specific amount of tokens specified by the token id, if the token was issued by the caller
-    #[endpoint(burn_tokens)]
+    #[endpoint(burnTokens)]
     fn burn_tokens(&self, token_id: TokenIdentifier, amount: BigUint) {
         let caller = self.blockchain().get_caller();
         require!(amount > 0, "Burn amount must be greater than 0.");
@@ -128,7 +128,7 @@ pub trait TokenManager {
 
 
     /// Claim a specific amount of tokens in the contract with the specified token id
-    #[endpoint(claim_tokens)]
+    #[endpoint(claimTokens)]
     fn claim_tokens(&self, token_id: TokenIdentifier, amount: BigUint) {
         let caller = self.blockchain().get_caller();
 

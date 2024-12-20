@@ -30,8 +30,8 @@ A MultiversX smart contract that allows users to issue and manage SNOW tokens.
 
 ```rust
 #[payable("EGLD")]
-#[endpoint(issue_token_snow)]
-fn issue_token_snow(&self, token_amount: BigUint, token_name: OptionalValue<ManagedBuffer>)
+#[endpoint(issueTokenSnow)]
+fn issueTokenSnow(&self, token_amount: BigUint, token_name: OptionalValue<ManagedBuffer>)
 ```
 
 - Requires minimum 0.05 EGLD payment
@@ -41,8 +41,8 @@ fn issue_token_snow(&self, token_amount: BigUint, token_name: OptionalValue<Mana
 ### Burn Token
 
 ```rust
-#[endpoint(burn_tokens)]
-fn burn_tokens(&self, token_id: TokenIdentifier, amount: BigUint)
+#[endpoint(burnTokens)]
+fn burnTokens(&self, token_id: TokenIdentifier, amount: BigUint)
 ```
 
 - Only the token issuer can burn their issued tokens
@@ -52,8 +52,8 @@ fn burn_tokens(&self, token_id: TokenIdentifier, amount: BigUint)
 ### Claim Tokens
 
 ```rust
-#[endpoint(claim_tokens)]
-fn claim_tokens(&self, token_id: TokenIdentifier, amount: BigUint)
+#[endpoint(claimTokens)]
+fn claimTokens(&self, token_id: TokenIdentifier, amount: BigUint)
 ```
 
 - Only the token issuer can claim their issued tokens
@@ -73,16 +73,16 @@ Build and Deploy the contract following the [instructions](../README.md#building
 Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints` and `Write endpoints` tabs to interact with the contract.
 
 1. To issue tokens:
-   - Call `issue_token_snow` with desired amount and optional token name
+   - Call `issueTokenSnow` with desired amount and optional token name
    - Send at least 0.05 EGLD. Extra EGLD will be returned.
-   - Specify 100000000 in the `Contract Transaction Gas Limit` field to have enouogh gas for the issue transaction
+   - Specify 100000000 in the `Contract Transaction Gas Limit` field to have enough gas for the issue transaction
 
 2. To burn tokens:
-   - Call `burn_tokens` with the token ID and amount to burn
+   - Call `burnTokens` with the token ID and amount to burn
    - Only the token issuer can burn their tokens
 
 3. To claim tokens:
-   - Call `claim_tokens` with the token ID
+   - Call `claimTokens` with the token ID
    - Only the token issuer can claim their tokens
 
 4. To query information:
