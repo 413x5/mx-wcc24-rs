@@ -1,11 +1,11 @@
 {
     "buildInfo": {
         "rustc": {
-            "version": "1.83.0-nightly",
-            "commitHash": "bd53aa3bf7a24a70d763182303bd75e5fc51a9af",
-            "commitDate": "2024-09-02",
+            "version": "1.85.0-nightly",
+            "commitHash": "5f23ef7d3f7a8c3e0ca5c4e1978829c0448a3686",
+            "commitDate": "2024-12-20",
             "channel": "Nightly",
-            "short": "rustc 1.83.0-nightly (bd53aa3bf 2024-09-02)"
+            "short": "rustc 1.85.0-nightly (5f23ef7d3 2024-12-20)"
         },
         "contractCrate": {
             "name": "token-manager",
