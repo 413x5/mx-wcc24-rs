@@ -173,13 +173,13 @@ The contract maintains several [storage mappers](src/storage.rs):
    mintResources() 
    ```
 
-6. To see available rewards, use the view function getUserUnclaimedResources and provide the user address as a parameter:
+6. To see available resources to claim, use the view function getUserUnclaimedResources and provide the user address as a parameter:
 
    ```rust
    getUserUnclaimedResources(address: ManagedAddress)
    ```
 
-7. Users can claim any available rewards by calling the claimResources endpoint:
+7. Users can claim any available resources by calling the claimResources endpoint:
 
    ```rust
    claimResources()
