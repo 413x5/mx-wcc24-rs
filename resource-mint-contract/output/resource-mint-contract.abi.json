@@ -18,15 +18,259 @@
     },
     "name": "ResourceMintContract",
     "constructor": {
-        "inputs": [],
+        "docs": [
+            "Set up initial contract state",
+            "",
+            "# Arguments",
+            "* `stake_token_ticker` - Stake token ticker",
+            "* `mint_stake_threshold` - Stake amount required to mint one resource",
+            "* `mint_rounds_interval` - Number of rounds between resource mints"
+        ],
+        "inputs": [
+            {
+                "name": "stake_token_ticker",
+                "type": "bytes"
+            },
+            {
+                "name": "mint_stake_threshold",
+                "type": "BigUint"
+            },
+            {
+                "name": "mint_rounds_interval",
+                "type": "u64"
+            }
+        ],
         "outputs": []
     },
     "upgradeConstructor": {
+        "docs": [
+            "Contract upgrade logic if necessary"
+        ],
         "inputs": [],
         "outputs": []
     },
     "endpoints": [
         {
+            "docs": [
+                "Endpoint for staking tokens"
+            ],
+            "name": "stakeTokens",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint for minting resources"
+            ],
+            "name": "mintResources",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint for claiming resources"
+            ],
+            "name": "claimResources",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Token ticker for stake tokens. E.g. WINTER"
+            ],
+            "name": "getStakeTokenTicker",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Stake threshold for minting resources   "
+            ],
+            "name": "getMintStakeThreshold",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "BigUint"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Interval between mint rounds in number of rounds    "
+            ],
+            "name": "getMintRoundsInterval",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Option to mint if user has claimed all previously minted resources"
+            ],
+            "name": "getOptionMintIfClaimed",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "User stake info"
+            ],
+            "name": "getStakeInfo",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<multi<Address,List<StakeInfo>>>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "User minted resources"
+            ],
+            "name": "getUserMintedResources",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<multi<Address,BigUint>>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "User claimed resources"
+            ],
+            "name": "getUserClaimedResources",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<multi<Address,BigUint>>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "User has unclaimed resources"
+            ],
+            "name": "getUserHasUnclaimedResources",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Resource token ID"
+            ],
+            "name": "getResourceTokenId",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Resource token has local mint role"
+            ],
+            "name": "getResourceTokenHasLocalMintRole",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Last resource mint round"
+            ],
+            "name": "getLastResourceMintRound",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "name": "setMintRoundsInterval",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "mint_rounds",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "setStakeThreshold",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "stake_amount",
+                    "type": "BigUint"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "setOptionMintIfClaimed",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "mint_if_claimed",
+                    "type": "bool"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Issue token to be used for minting resources"
+            ],
             "name": "issueResourceToken",
             "onlyOwner": true,
             "mutability": "mutable",
@@ -61,85 +305,9 @@
             "outputs": []
         },
         {
-            "name": "setMintRoundsInterval",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "mint_rounds",
-                    "type": "u64"
-                }
+            "docs": [
+                "Returns number of user unclaimed resources"
             ],
-            "outputs": []
-        },
-        {
-            "name": "setOptionMintIfClaimed",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "mint_if_claimed",
-                    "type": "bool"
-                }
-            ],
-            "outputs": []
-        },
-        {
-            "name": "setStakeTokenTicker",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "stake_token_ticker",
-                    "type": "bytes"
-                }
-            ],
-            "outputs": []
-        },
-        {
-            "name": "setStakeThreshold",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "stake_amount",
-                    "type": "BigUint"
-                }
-            ],
-            "outputs": []
-        },
-        {
-            "name": "stakeTokens",
-            "mutability": "mutable",
-            "payableInTokens": [
-                "*"
-            ],
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "name": "mintResources",
-            "mutability": "mutable",
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "name": "claimResources",
-            "mutability": "mutable",
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "name": "getRound",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "u64"
-                }
-            ]
-        },
-        {
             "name": "getUserUnclaimedResources",
             "mutability": "readonly",
             "inputs": [
@@ -153,124 +321,6 @@
                     "type": "BigUint"
                 }
             ]
-        },
-        {
-            "name": "getMintRoundsInterval",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "u64"
-                }
-            ]
-        },
-        {
-            "name": "getMintStakeThreshold",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "BigUint"
-                }
-            ]
-        },
-        {
-            "name": "getStakeTokenTicker",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "bytes"
-                }
-            ]
-        },
-        {
-            "name": "getOptionMintIfClaimed",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "bool"
-                }
-            ]
-        },
-        {
-            "name": "getStakeInfo",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "variadic<multi<Address,List<StakeInfo>>>",
-                    "multi_result": true
-                }
-            ]
-        },
-        {
-            "name": "getUserMintedResources",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "variadic<multi<Address,BigUint>>",
-                    "multi_result": true
-                }
-            ]
-        },
-        {
-            "name": "getUserClaimedResources",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "variadic<multi<Address,BigUint>>",
-                    "multi_result": true
-                }
-            ]
-        },
-        {
-            "name": "getUserHasUnclaimedResources",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "address",
-                    "type": "Address"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "bool"
-                }
-            ]
-        },
-        {
-            "name": "getResourcesToMint",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "BigUint"
-                }
-            ]
-        },
-        {
-            "name": "getLastResourceUpdateRound",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "u64"
-                }
-            ]
-        },
-        {
-            "name": "getResourceTokenId",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "TokenIdentifier"
-                }
-            ]
         }
     ],
     "esdtAttributes": [],
@@ -278,6 +328,9 @@
     "types": {
         "StakeInfo": {
             "type": "struct",
+            "docs": [
+                "Stake info structure for each stake"
+            ],
             "fields": [
                 {
                     "name": "token",

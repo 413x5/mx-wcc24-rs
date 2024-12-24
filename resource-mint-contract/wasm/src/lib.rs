@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           22
+// Endpoints:                           20
 // Async Callback:                       1
-// Total number of exported functions:  25
+// Total number of exported functions:  23
 
 #![no_std]
 
@@ -20,28 +20,26 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
-        issueResourceToken => issue_resource_token
-        setResourceTokenLocalMintRole => set_resource_token_local_mint_role
-        setMintRoundsInterval => set_mint_rounds_interval
-        setOptionMintIfClaimed => set_option_mint_if_claimed
-        setStakeTokenTicker => set_stake_token_ticker
-        setStakeThreshold => set_stake_threshold
         stakeTokens => stake_tokens
         mintResources => mint_resources
         claimResources => claim_resources
-        getRound => get_round
-        getUserUnclaimedResources => user_unclaimed_resources
-        getMintRoundsInterval => mint_rounds_interval
-        getMintStakeThreshold => mint_stake_threshold
         getStakeTokenTicker => stake_token_ticker
+        getMintStakeThreshold => mint_stake_threshold
+        getMintRoundsInterval => mint_rounds_interval
         getOptionMintIfClaimed => option_mint_if_claimed
         getStakeInfo => stakes_info
         getUserMintedResources => user_minted_resources
         getUserClaimedResources => user_claimed_resources
         getUserHasUnclaimedResources => user_has_unclaimed_resources
-        getResourcesToMint => resources_to_mint
-        getLastResourceUpdateRound => last_resource_update_round
         getResourceTokenId => resource_token_id
+        getResourceTokenHasLocalMintRole => resource_token_has_local_mint_role
+        getLastResourceMintRound => last_resource_mint_round
+        setMintRoundsInterval => set_mint_rounds_interval
+        setStakeThreshold => set_stake_threshold
+        setOptionMintIfClaimed => set_option_mint_if_claimed
+        issueResourceToken => issue_resource_token
+        setResourceTokenLocalMintRole => set_resource_token_local_mint_role
+        getUserUnclaimedResources => user_unclaimed_resources
     )
 }
 
