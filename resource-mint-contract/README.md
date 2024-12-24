@@ -16,7 +16,7 @@ The Resource Mint Contract enables a staking and resource minting mechanism wher
 The contract is organized into several modules:
 
 - [`lib.rs`](src/lib.rs): Main contract implementation with public endpoints
-- [`types.rs`](src/types.rs): Contract data structures
+- [`data.rs`](src/data.rs): Contract data structures
 - [`storage.rs`](src/storage.rs): Storage mappers and state management
 - [`admin.rs`](src/admin.rs): Admin-only functions
 - [`views.rs`](src/views.rs): View functions
