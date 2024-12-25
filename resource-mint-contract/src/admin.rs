@@ -5,18 +5,20 @@ use crate::constants::*;
 /// Admin module to update contract parameters if needed
 #[multiversx_sc::module]
 pub trait AdminModule: crate::storage::StorageModule {
+    /// Set mint rounds interval
     #[only_owner]
     #[endpoint(setMintRoundsInterval)]
     fn set_mint_rounds_interval(&self, mint_rounds: u64) {
         self.mint_rounds_interval().set(mint_rounds);
     }
-
+    /// Set stake threshold for minting one resource token
     #[only_owner]
     #[endpoint(setStakeThreshold)]
     fn set_stake_threshold(&self, stake_amount: BigUint) {
         self.mint_stake_threshold().set(stake_amount);
     }
 
+    /// Set option to mint resource tokens if user has claimed all previously minted resources
     #[only_owner]
     #[endpoint(setOptionMintIfClaimed)]
     fn set_option_mint_if_claimed(&self, mint_if_claimed: bool) {

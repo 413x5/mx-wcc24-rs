@@ -232,6 +232,9 @@
             ]
         },
         {
+            "docs": [
+                "Set mint rounds interval"
+            ],
             "name": "setMintRoundsInterval",
             "onlyOwner": true,
             "mutability": "mutable",
@@ -244,6 +247,9 @@
             "outputs": []
         },
         {
+            "docs": [
+                "Set stake threshold for minting one resource token"
+            ],
             "name": "setStakeThreshold",
             "onlyOwner": true,
             "mutability": "mutable",
@@ -256,6 +262,9 @@
             "outputs": []
         },
         {
+            "docs": [
+                "Set option to mint resource tokens if user has claimed all previously minted resources"
+            ],
             "name": "setOptionMintIfClaimed",
             "onlyOwner": true,
             "mutability": "mutable",
