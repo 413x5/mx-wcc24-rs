@@ -43,4 +43,4 @@ A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and ea
 
 ### [Resource Mint Contract](resource-mint-contract/README.md)
 
-A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and mint resource tokens. A different contract deployment is required for each resource (WOOD, FOOD, STONE, GOLD).
+A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and mint any number of other ESDT Fungible tokens (WOOD, FOOD, STONE, GOLD) based on their stake amount and time intervals.

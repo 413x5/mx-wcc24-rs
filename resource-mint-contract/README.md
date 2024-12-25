@@ -1,35 +1,30 @@
 # Resource Mint Contract
 
-A MultiversX smart contract that allows users to stake tokens and mint resources based on their stake amount and time intervals.
+A MultiversX smart contract that allows users to stake configurable ESDT Fungible tokens (e.g., WINTER) and mint any number of other ESDT Fungible tokens (e.g., WOOD, FOOD, STONE, GOLD) based on their stake amount and time intervals.
+A different contract deployment is required for minting each resource token as each contract instance is configured with different parameters.
 
-## Overview
+The contract is designed to work automatically once deployed and configured by an owner. Users can stake tokens and claim their minted resources. Anyone can call the mint resources endpoint at any time, triggering the minting logic acording to the configured parameters, although this is intended to be called automatically at regular intervals by a scheduled task. If necessary, it could be changed to an only_owner endpoint.
 
-The Resource Mint Contract enables a staking and resource minting mechanism where:
+## Configuration
 
-- Users can stake specific tokens (e.g., WINTER tokens)
-- Resources are minted based on stake amount and time intervals
-- Users can claim their minted resources
-- Contract owner can configure various parameters
+Key parameters that can be configured:
+
+- **Stake token**: Identifier (ticker) for stakeable tokens
+- **Resource token**: Name and Identifier (ticker) for minting resource tokens
+- **Mint stake threshold**: Amount of stake needed for minting one unit of resource tokens
+- **Mint rounds interval**: Number of rounds between resource mints (currenty one round equals 6 seconds)
+- **Mint if claimed option**: Only mint new resources if the user has claimed all previously minted resources
 
 ## Contract Structure
 
 The contract is organized into several modules:
 
 - [`lib.rs`](src/lib.rs): Main contract implementation with public endpoints
+- [`admin.rs`](src/admin.rs): Only-owner Admin endpoints
+- [`views.rs`](src/views.rs): View endpoints
+- [`storage.rs`](src/storage.rs): Storage mappers for state management
 - [`data.rs`](src/data.rs): Contract data structures
-- [`storage.rs`](src/storage.rs): Storage mappers and state management
-- [`admin.rs`](src/admin.rs): Admin-only functions
-- [`views.rs`](src/views.rs): View functions
 - [`constants.rs`](src/constants.rs): Contract constants and error messages
-
-## Configuration
-
-Key parameters that can be configured:
-
-- Stake token ticker: Identifier for stakeable tokens
-- Mint stake threshold: Amount of stake needed per resource
-- Mint rounds interval: Number of rounds between resource mints
-- Mint if claimed option: Only mint new resources after claiming
 
 ## Public Endpoints
 
@@ -38,7 +33,7 @@ Key parameters that can be configured:
 ```rust
 #[payable("*")]
 #[endpoint(stakeTokens)]
-fn stake_tokens(&self)
+fn stake_tokens()
 ```
 
 - Allows users to stake tokens
@@ -49,7 +44,7 @@ fn stake_tokens(&self)
 
 ```rust
 #[endpoint(mintResources)]
-fn mint_resources(&self)
+fn mint_resources()
 ```
 
 - Calculates and mints new resources based on stakes
@@ -60,7 +55,7 @@ fn mint_resources(&self)
 
 ```rust
 #[endpoint(claimResources)]
-fn claim_resources(&self)
+fn claim_resources()
 ```
 
 - Allows users to claim their minted resources
@@ -72,8 +67,9 @@ fn claim_resources(&self)
 
 ```rust
 #[only_owner]
+#[payable("EGLD")]
 #[endpoint(issueResourceToken)]
-fn issue_resource_token(&self)
+fn issue_resource_token(token_name: ManagedBuffer, token_ticker: ManagedBuffer, initial_supply: OptionalValue<BigUint>)
 ```
 
 - Issues the resource token
@@ -85,7 +81,7 @@ fn issue_resource_token(&self)
 ```rust
 #[only_owner]
 #[endpoint(setResourceTokenLocalMintRole)]
-fn set_resource_token_local_mint_role(&self)
+fn set_resource_token_local_mint_role()
 ```
 
 - Sets local mint role for the resource token
@@ -93,28 +89,28 @@ fn set_resource_token_local_mint_role(&self)
 
 ### Configuration Endpoints
 
-- [`setMintRoundsInterval`](src/admin.rs): Set rounds between mints
+- [`setMintRoundsInterval`](src/admin.rs): Change rounds between mints
 
 ```rust
 #[only_owner]
 #[endpoint(setMintRoundsInterval)]
-fn set_mint_rounds_interval(&self, mint_rounds: u64)
+fn set_mint_rounds_interval(mint_rounds: u64)
 ```
 
-- [`setStakeThreshold`](src/admin.rs): Set stake amount required per resource. Specify as BigUint, including decimals
+- [`setStakeThreshold`](src/admin.rs): Change stake amount required per resource. Specify as BigUint, including decimals
 
 ```rust
 #[only_owner]
 #[endpoint(setStakeThreshold)]
-fn set_stake_threshold(&self, stake_amount: BigUint)
+fn set_stake_threshold(stake_amount: BigUint)
 ```
 
-- [`setOptionMintIfClaimed`](src/admin.rs): Toggle minting only after claiming
+- [`setOptionMintIfClaimed`](src/admin.rs): Toggle minting only after claiming true/false. Default false.
 
 ```rust
 #[only_owner]
 #[endpoint(setOptionMintIfClaimed)]
-fn set_option_mint_if_claimed(&self, mint_if_claimed: bool)
+fn set_option_mint_if_claimed(mint_if_claimed: bool)
 ```
 
 ## Storage
@@ -183,4 +179,66 @@ The contract maintains several [storage mappers](src/storage.rs):
 
    ```rust
    claimResources()
+   ```
+
+## *Specific Contract Deployment Parameters*
+
+### WOOD Contract
+
+ ```rust
+   init(
+     stake_token_ticker: string, "WINTER-",
+     mint_stake_threshold: BigUint, "100000000000" // 1000 * 10^8 DECIMALS
+     mint_rounds_interval: u64 "600"
+   )
+
+   issueResourceToken(
+     token_name: string, "WOOD Resources",
+     token_ticker: string, "WOOD"
+   )
+   ```
+
+### FOOD Contract
+
+ ```rust
+   init(
+     stake_token_ticker: string, "WINTER-",
+     mint_stake_threshold: BigUint, "100000000000" // 1000 * 10^8 DECIMALS
+     mint_rounds_interval: u64 "1200"
+   )
+
+   issueResourceToken(
+     token_name: string, "FOOD Resources",
+     token_ticker: string, "FOOD"
+   )
+   ```
+
+### STONE Contract
+
+ ```rust
+   init(
+     stake_token_ticker: string, "WINTER-",
+     mint_stake_threshold: BigUint, "100000000000" // 1000 * 10^8 DECIMALS
+     mint_rounds_interval: u64 "1800"
+   )
+
+   issueResourceToken(
+     token_name: string, "STONE Resources",
+     token_ticker: string, "STONE"
+   )
+   ```
+
+### GOLD Contract
+
+ ```rust
+   init(
+     stake_token_ticker: string, "WINTER-",
+     mint_stake_threshold: BigUint, "100000000000" // 1000 * 10^8 DECIMALS
+     mint_rounds_interval: u64 "2400"
+   )
+
+   issueResourceToken(
+     token_name: string, "GOLD Resources",
+     token_ticker: string, "GOLD"
+   )
    ```
