@@ -31,18 +31,6 @@
     "endpoints": [
         {
             "docs": [
-                "Stake winter tokens"
-            ],
-            "name": "stakeTokenWinter",
-            "mutability": "mutable",
-            "payableInTokens": [
-                "*"
-            ],
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "docs": [
                 "Issue the reward token"
             ],
             "name": "issueRewardToken",
@@ -72,11 +60,37 @@
         },
         {
             "docs": [
+                "Stake tokens"
+            ],
+            "name": "stakeTokenWinter",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
                 "Distribute rewards to all stakers"
             ],
             "name": "distributeRewards",
             "mutability": "mutable",
             "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Sets the reward address for a user"
+            ],
+            "name": "setRewardAddress",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
             "outputs": []
         },
         {
@@ -96,20 +110,6 @@
                     "type": "Address"
                 }
             ]
-        },
-        {
-            "docs": [
-                "Sets the reward address for a user"
-            ],
-            "name": "setRewardAddress",
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "address",
-                    "type": "Address"
-                }
-            ],
-            "outputs": []
         },
         {
             "docs": [

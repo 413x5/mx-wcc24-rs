@@ -20,12 +20,12 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
-        stakeTokenWinter => stake_token_winter
         issueRewardToken => issue_reward_token
         setRewardTokenLocalMintRole => set_reward_token_local_mint_role
+        stakeTokenWinter => stake_token_winter
         distributeRewards => distribute_rewards
-        getRewardAddress => get_reward_address
         setRewardAddress => set_reward_address
+        getRewardAddress => get_reward_address
         getStakeInfo => stake_info
         getLastRewardEpoch => last_reward_epoch
         getRewardTokenId => reward_token_id

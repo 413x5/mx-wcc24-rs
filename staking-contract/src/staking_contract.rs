@@ -5,9 +5,11 @@ use multiversx_sc::imports::*;
 use multiversx_sc::derive::*;
 use multiversx_sc::proxy_imports::*;
 
-const STAKE_UNLOCK_EPOCHS: u64 = 5;    // 5 epochs
-const STAKE_TOKENID_PREFIX: &str = "WINTER";
 const ISSUE_FEE: u64 = 50_000_000_000_000_000; // 0.05 EGLD (0.05 * 10^18 decimals)
+
+const STAKE_UNLOCK_EPOCHS: u64 = 5; // 5 epochs
+const STAKE_TOKENID_PREFIX: &str = "WINTER-";
+
 const REWARD_TOKEN_NAME: &str = "SnowMan";
 const REWARD_TOKEN_TICKER: &str = "SNOW";
 const REWARD_TOKEN_DECIMALS: usize = 8;
@@ -36,49 +38,9 @@ pub trait StakingContract {
 
     #[upgrade]
     fn upgrade(&self) {}
+    
 
-    /// Stake winter tokens
-    #[payable("*")]
-    #[endpoint(stakeTokenWinter)]
-    fn stake_token_winter(&self) {
-        let payments = self.call_value().all_esdt_transfers();
-        require!(!payments.is_empty(), "No ESDT tokens received.");
-
-        let stake_token_prefix = ManagedBuffer::from(STAKE_TOKENID_PREFIX.as_bytes());
-
-        // Check that all received tokens are stakeable
-        for payment in payments.iter() {
-            let token_id = payment.token_identifier;
-            let token_id_buffer = token_id.as_managed_buffer();
-
-            require!(
-                token_id_buffer.copy_slice(0, stake_token_prefix.len()).unwrap_or_default() == stake_token_prefix,
-                "{} tokens are not allowed to be staked. Only send {} tokens to be staked.",token_id, stake_token_prefix
-            );
-        }
-
-        let caller = self.blockchain().get_caller();
-        let current_epoch = self.blockchain().get_block_epoch();
-
-        // Get or create user's stakes list
-        let mut user_stakes = self.stake_info().get(&caller).unwrap_or_default();
-
-        // Store each payment as an individual stake
-        for payment in payments.iter() {
-            // Create stake info
-            let stake_info = StakeInfo {
-                token_id: payment.token_identifier.clone(),
-                amount: payment.amount.clone(),
-                unlock_epoch: current_epoch + STAKE_UNLOCK_EPOCHS,
-            };
-
-            // Add stake to user's stakes
-            user_stakes.push(stake_info);
-        }
-
-        // Store updated stakes
-        self.stake_info().insert(caller, user_stakes);
-    }
+    // Admin endpoints
 
     /// Issue the reward token
     #[only_owner]
@@ -189,6 +151,48 @@ pub trait StakingContract {
         }
     }
 
+
+    // Public endpoints
+
+    /// Stake tokens
+    #[payable("*")]
+    #[endpoint(stakeTokenWinter)]
+    fn stake_token_winter(&self) {
+        let payments = self.call_value().all_esdt_transfers();
+        require!(!payments.is_empty(), "No ESDT tokens received.");
+
+        // Check that all received tokens are stakeable
+        for payment in payments.iter() {
+            let token_id = payment.token_identifier;
+
+            self.require_expected_token(&token_id, STAKE_TOKENID_PREFIX);
+        }
+
+        let caller = self.blockchain().get_caller();
+        let current_epoch = self.blockchain().get_block_epoch();
+
+        // Get or create user's stakes list
+        let mut user_stakes = self.stake_info().get(&caller).unwrap_or_default();
+
+        // Store each payment as an individual stake
+        for payment in payments.iter() {
+            // Create stake info
+            let stake_info = StakeInfo {
+                token_id: payment.token_identifier.clone(),
+                amount: payment.amount.clone(),
+                unlock_epoch: current_epoch + STAKE_UNLOCK_EPOCHS,
+            };
+
+            // Add stake to user's stakes
+            user_stakes.push(stake_info);
+        }
+
+        // Store updated stakes
+        self.stake_info().insert(caller, user_stakes);
+    }
+
+
+
     /// Distribute rewards to all stakers
     #[endpoint(distributeRewards)]
     fn distribute_rewards(&self) {      
@@ -260,6 +264,29 @@ pub trait StakingContract {
         self.last_reward_epoch().set(current_epoch);
     }
 
+
+    /// Sets the reward address for a user
+    #[endpoint(setRewardAddress)]
+    fn set_reward_address(&self, address: ManagedAddress) {
+        let caller = self.blockchain().get_caller();
+        self.reward_address(&caller).set(address);
+    }  
+
+    
+    // Private functions
+
+    /// Check if a token is a required token
+    fn is_required_token(&self, check_token_id: &TokenIdentifier, required_token_ticker: &str) -> bool {
+        check_token_id.as_managed_buffer().copy_slice(0, required_token_ticker.len()).unwrap_or_default()
+         == ManagedBuffer::from(required_token_ticker.as_bytes())
+    }
+
+    /// Check if a token is a required token and terminates if not
+    fn require_expected_token(&self, check_token_id: &TokenIdentifier, required_token_ticker: &str) {
+        let expected_token = ManagedBuffer::from(required_token_ticker.as_bytes());
+        require!(self.is_required_token(check_token_id, required_token_ticker), "Invalid token {}. Expected {}.", check_token_id, expected_token);
+    }
+
     /// Returns the last epoch in which rewards were distributed
     /// If no rewards have been distributed, returns the epoch of the first stake
     /// If there are no stakes, returns the current epoch
@@ -292,12 +319,10 @@ pub trait StakingContract {
         }
     }
 
-    /// Sets the reward address for a user
-    #[endpoint(setRewardAddress)]
-    fn set_reward_address(&self, address: ManagedAddress) {
-        let caller = self.blockchain().get_caller();
-        self.reward_address(&caller).set(address);
-    }    
+  
+
+
+    // Storage
 
     /// Stores user stakes
     #[view(getStakeInfo)]
