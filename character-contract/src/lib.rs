@@ -25,6 +25,7 @@ pub trait CharacterContract:
     #[endpoint(mintCitizen)]
     fn mint_citizen(&self, receiver_address: OptionalValue<ManagedAddress>) {
         let payments = self.call_value().all_esdt_transfers();
+        require!(payments.len() == 2, "Endpoint requires 2 payment tokens, Wood and Food.");
 
         let mut wood_amount = BigUint::zero();
         let mut food_amount = BigUint::zero();
@@ -36,8 +37,8 @@ pub trait CharacterContract:
             if self.is_required_token(&token_id, FOOD_TICKER) { food_amount = payment.amount.clone(); }         
         }
 
-        require!(wood_amount == MINT_CITIZEN_WOOD_QUANTITY, "Wood amount must be {}.", MINT_CITIZEN_WOOD_QUANTITY);
-        require!(food_amount == MINT_CITIZEN_FOOD_QUANTITY, "Food amount must be {}.", MINT_CITIZEN_FOOD_QUANTITY);
+        require!(wood_amount == MINT_CITIZEN_WOOD_QUANTITY, "Wood amount sent must be {}.", MINT_CITIZEN_WOOD_QUANTITY);
+        require!(food_amount == MINT_CITIZEN_FOOD_QUANTITY, "Food amount sent must be {}.", MINT_CITIZEN_FOOD_QUANTITY);
 
         // Determine the receiver address if one is specified
         let user = match receiver_address {
@@ -123,6 +124,8 @@ pub trait CharacterContract:
         self.require_character_collection();
 
         let payments = self.call_value().all_esdt_transfers();
+        require!(payments.len() == 2, "Endpoint requires 2 payment tokens, Gold and Ore.");
+
         let mut gold_amount = BigUint::zero();
         let mut ore_amount = BigUint::zero();
 
@@ -165,7 +168,7 @@ pub trait CharacterContract:
         // Get the collection ID
         let collection_id = self.nft_token_id().get_token_id();
 
-        // Get the amount of NFTs to mint
+        // Set the amount to mint to 1 NFT
         let amount = BigUint::from(1u64);
 
         // Set the NFT name
@@ -243,8 +246,8 @@ pub trait CharacterContract:
             .argument(&new_attributes_hash)
             .argument(&new_attributes);
             // Add the new URIs
-            for i in 0..new_uris.len() {
-                tx = tx.argument(&new_uris.get(i));
+            for uri in new_uris.iter() {
+                tx = tx.argument(&uri);
             }
         // Send the transaction and wait for completion (sync call)
         tx.sync_call();
@@ -258,17 +261,17 @@ pub trait CharacterContract:
     /// Check if a token is a required token
     fn is_required_token(&self, check_token_id: &TokenIdentifier, required_token_ticker: &str) -> bool {
         check_token_id.as_managed_buffer().copy_slice(0, required_token_ticker.len()).unwrap_or_default()
-         == ManagedBuffer::from(required_token_ticker.as_bytes())
+            == ManagedBuffer::from(required_token_ticker.as_bytes())
     }
 
-    /// Encode nft attributes in the format: metadata:IPFS_CID/{character}.json;tags:{tag(s)};c:{rank}:{attack}:{defence}
-    /// Ex: metadata:IPFS_CID/citizen.json;tags:citizen;c:0:0:0
-    /// Ex: metadata:IPFS_CID/soldier21.json;tags:soldier;c:1:2:1
+    /// Encode nft attributes in the format: metadata:IPFS_CID/{filename}.json;tags:{tag(s)}{PREFIX}{rank}:{attack}:{defence}
+    /// Ex: metadata:IPFS_CID/citizen.json;tags:character,citizen;c:0:0:0
+    /// Ex: metadata:IPFS_CID/soldier21.json;tags:character,soldier;c:1:2:1
     fn get_nft_attributes(&self, character: &Character) -> ManagedBuffer {
         let nft_attributes = ManagedBuffer::from(
-            sc_format!("metadata:{}/{}{};tags:{}{}{}:{}:{}",
+            sc_format!("metadata:{}/{}.{};tags:{}{}{}:{}:{}",
             ManagedBuffer::from(IPFS_CID),
-            if character.is_citizen() { ManagedBuffer::from(CITIZEN_FILES_NAME) } else { ManagedBuffer::from(SOLDIER_FILES_NAME) },
+            self.get_asset_filename(character),
             ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION), 
             if character.is_citizen() { ManagedBuffer::from(CITIZEN_NFT_TAGS) } else { ManagedBuffer::from(SOLDIER_NFT_TAGS) },
             ManagedBuffer::from(NFT_CHARACTER_ATTRIBUTES_PREFIX), 
@@ -282,38 +285,43 @@ pub trait CharacterContract:
     fn get_nft_asset_uris(&self, character: &Character) -> ManagedVec<ManagedBuffer> {
         // Get the base filename
         let asset_base_filename = 
-            //sc_format!("https://ipfs.io/ipfs/{}/{}", // Old gateway timeouts
+            //sc_format!("https://ipfs.io/ipfs/{}/{}", // Old IPFS gateway timeouts
             sc_format!("https://{}.ipfs.w3s.link/{}",  // New IPFS gateway
             ManagedBuffer::from(IPFS_CID), // IPFS CID
-
-            // Determine file name
-            if character.is_citizen() { ManagedBuffer::from(CITIZEN_FILES_NAME) }
-            else {
-                // Different soldier images and metadata available for attack and defence from 0 to 2
-                if character.attack <= 2 && character.defence <= 2 {
-                    sc_format!("{}{}{}", ManagedBuffer::from(SOLDIER_FILES_NAME), character.attack, character.defence)
-
-                // If attack or defence is greater than 2, the assets remain the same, only the NFT attributes are different
-                } else {
-                    sc_format!("{}XX", ManagedBuffer::from(SOLDIER_FILES_NAME))
-                }
-            }
+            self.get_asset_filename(character)
         );
         // Get the image and metadata URIs by adding the file extension
-        let asset_image = asset_base_filename.clone().concat(ManagedBuffer::from(NFT_IMAGE_FILE_EXTENSION));
-        let asset_metadata = asset_base_filename.clone().concat(ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION));
+        let asset_image = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_IMAGE_FILE_EXTENSION));
+        let asset_metadata = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION));
         
         // Return the URIs
-        let mut assets = ManagedVec::from_single_item(asset_image);
-        assets.push(asset_metadata);
+        let mut assets = 
+            ManagedVec::from_single_item(asset_image);
+            assets.push(asset_metadata);
 
         assets
     }
 
-    /// Decode the NFT attributes and return a Character struct
+    /// Get the asset filename based on the character
+    fn get_asset_filename(&self, character: &Character) -> ManagedBuffer {
+        // One image and metadata for citizen
+        if character.is_citizen() { ManagedBuffer::from(CITIZEN_FILES_NAME) }
+        else {
+            // Different soldier images and metadata available for attack and defence from 0 to 2
+            if character.attack <= 2 && character.defence <= 2 {
+                sc_format!("{}{}{}", ManagedBuffer::from(SOLDIER_FILES_NAME), character.attack, character.defence)
+
+            // If attack or defence is greater than 2, the assets remain the same, only the NFT attributes are different
+            } else {
+                sc_format!("{}XX", ManagedBuffer::from(SOLDIER_FILES_NAME))
+            }
+        }
+    }
+
+    /// Decode the NFT attributes and return a Character object
     fn get_character(&self, attributes: ManagedBuffer) -> Character {
         
-        // Process attributes string
+        // Process attributes buffer
         const BATCH_SIZE: usize = 256; // should be enough for one pass
         let mut rank = 0u8;
         let mut attack = 0u8;
@@ -367,7 +375,5 @@ pub trait CharacterContract:
         // Return the character
         Character { rank, attack, defence }
     }
-
-    
 
 }

@@ -1,17 +1,17 @@
 # Game Interface Contract
 
-A MultiversX smart contract that serves as a unified interface for interacting with the other game contracts. It manages resource deposits and provides simplified access to character and resource transformation operations. The purpose of this contract is to provide a single interface for players to interact with the game.
+A MultiversX smart contract that serves as a unified interface for interacting with the other game contracts. It manages user resource token deposits (WOOD, FOOD, STONE, GOLD, ORE) and provides simplified access to character and resource operations. The purpose of this contract is to provide a single interface to interact with all the game contracts.
 
-It handles MultiESDT token transfers and BackTransfers from the other contracts.
+It handles [MultiESDTPayment](https://docs.multiversx.com/developers/transactions/tx-payment/#multi-esdt-payment) token transfers and tokens transfered back (BackTransfers) from the game contracts.
 
 ## Overview
 
-The contract implements a game interface system where players can:
+The contract implements a game interface where players can:
 
 - Deposit game resources (WOOD, FOOD, STONE, GOLD, ORE)
 - Use deposited resources to mint Citizens
 - Transform deposited STONE into ORE tokens
-- Manage character upgrades and transformations
+- Manage character upgrades and resources
 
 ## Contract Structure
 
@@ -36,8 +36,8 @@ Key parameters:
   - Supports all game tokens (WOOD, FOOD, STONE, GOLD, ORE)
 
 - **Contract Dependencies**:
-  - Character Contract
-  - Resource Transform Contract
+  - [Character Contract](../character-contract/README.md)
+  - [Resource Transform Contract](../resource-transform-contract/README.md)
 
 ## Public Endpoints
 

@@ -26,5 +26,7 @@ pub const CITIZEN_NFT_TAGS : &str = "character,citizen";
 pub const SOLDIER_FILES_NAME : &str = "soldier";
 pub const SOLDIER_NFT_TAGS : &str = "character,soldier";
 pub const NFT_CHARACTER_ATTRIBUTES_PREFIX: &str = ";c:";
-pub const NFT_IMAGE_FILE_EXTENSION: &str = ".png";
-pub const NFT_METADATA_FILE_EXTENSION: &str = ".json";
+
+// No dot for extensions
+pub const NFT_IMAGE_FILE_EXTENSION: &str = "png";
+pub const NFT_METADATA_FILE_EXTENSION: &str = "json";

@@ -2,7 +2,7 @@
 use multiversx_sc::imports::*;
 
 
-/// Character struct to hold character attributes
+/// Character object to hold character attributes
 pub struct Character {
     pub rank: u8,
     pub attack: u8,
