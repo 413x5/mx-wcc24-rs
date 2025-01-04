@@ -1,0 +1,17 @@
+{
+    "description": "A basic soldier with a basic shield",
+    "attributes": [
+      {
+        "trait_type": "Rank",
+        "value": "Soldier"
+      },
+      {
+        "trait_type": "Attack",
+        "value": "0"
+      },
+      {
+        "trait_type": "Defense",
+        "value": "1"
+      }
+    ]
+  }

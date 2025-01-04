@@ -1,0 +1,17 @@
+{
+    "description": "A victorious soldier",
+    "attributes": [
+      {
+        "trait_type": "Rank",
+        "value": "Soldier"
+      },
+      {
+        "trait_type": "Attack",
+        "value": "2+"
+      },
+      {
+        "trait_type": "Defense",
+        "value": "2+"
+      }
+    ]
+  }

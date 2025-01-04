@@ -1,0 +1,17 @@
+{
+    "description": "A common citizen",
+    "attributes": [
+      {
+        "trait_type": "Rank",
+        "value": "Citizen"
+      },
+      {
+        "trait_type": "Attack",
+        "value": "0"
+      },
+      {
+        "trait_type": "Defense",
+        "value": "0"
+      }
+    ]
+  }

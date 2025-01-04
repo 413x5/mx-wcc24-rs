@@ -1,0 +1,137 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.85.0-nightly",
+            "commitHash": "5f23ef7d3f7a8c3e0ca5c4e1978829c0448a3686",
+            "commitDate": "2024-12-20",
+            "channel": "Nightly",
+            "short": "rustc 1.85.0-nightly (5f23ef7d3 2024-12-20)"
+        },
+        "contractCrate": {
+            "name": "character-contract",
+            "version": "0.0.0"
+        },
+        "framework": {
+            "name": "multiversx-sc",
+            "version": "0.54.6"
+        }
+    },
+    "name": "CharacterContract",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "upgradeConstructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "docs": [
+                "Mints a Citizen NFT"
+            ],
+            "name": "mintCitizen",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "receiver_address",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Claims a Citizen NFT if the minting period is over"
+            ],
+            "name": "claimCitizen",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "receiver_address",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "upgradeCitizenToSoldier",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "citizen_nft_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "owner_address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Register character collection as dynamic NFT and set all roles"
+            ],
+            "name": "registerCharactersCollection",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "NFT token id (collection)"
+            ],
+            "name": "getNftTokenId",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Citizens to mint for each user"
+            ],
+            "name": "getCitizensToMint",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<multi<Address,List<u64>>>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Last minted NFT nonce"
+            ],
+            "name": "getLastMintedNftNonce",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        }
+    ],
+    "esdtAttributes": [],
+    "hasCallback": true,
+    "types": {}
+}

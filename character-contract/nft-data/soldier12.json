@@ -1,0 +1,17 @@
+{
+    "description": "An upgraded soldier with a basic sword and an upgraded shield",
+    "attributes": [
+      {
+        "trait_type": "Rank",
+        "value": "Soldier"
+      },
+      {
+        "trait_type": "Attack",
+        "value": "1"
+      },
+      {
+        "trait_type": "Defense",
+        "value": "2"
+      }
+    ]
+  }
