@@ -44,3 +44,15 @@ A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and ea
 ### [Resource Mint Contract](resource-mint-contract/README.md)
 
 A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and mint any number of other ESDT Fungible tokens (WOOD, FOOD, STONE, GOLD) based on their stake amount and time intervals.
+
+### [Character Contract](character-contract/README.md)
+
+A smart contract that manages character NFTs for a MultiversX blockchain game. The contract handles two types of characters: Citizens and Soldiers, with the ability to upgrade Citizens to Soldiers using specific resources.
+
+### [Resource Transform Contract](resource-transform-contract/README.md)
+
+A smart contract that allows users to transform resources (STONE tokens into ORE tokens), where a specific amount of STONE can be burned to mint ORE tokens.
+
+### [Game Interface Contract](game-interface-contract/README.md)
+
+A smart contract that serves as a unified interface for interacting with the other game contracts. It handles MultiESDT token transfers and BackTransfers from the other contracts.
