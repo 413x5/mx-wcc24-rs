@@ -1,0 +1,77 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.85.0-nightly",
+            "commitHash": "5f23ef7d3f7a8c3e0ca5c4e1978829c0448a3686",
+            "commitDate": "2024-12-20",
+            "channel": "Nightly",
+            "short": "rustc 1.85.0-nightly (5f23ef7d3 2024-12-20)"
+        },
+        "contractCrate": {
+            "name": "resource-transform-contract",
+            "version": "0.0.0"
+        },
+        "framework": {
+            "name": "multiversx-sc",
+            "version": "0.54.6"
+        }
+    },
+    "name": "ResourceTransformContract",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "upgradeConstructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "docs": [
+                "Issue and set all roles for the ore token"
+            ],
+            "name": "issueAndSetRolesOreToken",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Create ore by burning the stone tokens"
+            ],
+            "name": "createOre",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "receiver_address",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Ore token identifier"
+            ],
+            "name": "getOreTokenId",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
+                }
+            ]
+        }
+    ],
+    "esdtAttributes": [],
+    "hasCallback": true,
+    "types": {}
+}
