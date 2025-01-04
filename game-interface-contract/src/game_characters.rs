@@ -50,7 +50,7 @@ pub trait CharactersModule:
                     .to(self.character_contract_address().get())
                     .with_multi_token_transfer(payments)
                     .raw_call(CHARACTER_CONTRACT_MINT_CITIZEN_ENDPOINT_NAME)
-                    // Register the NFT mint to the user, not the this contract
+                    // Set the receiver address for the NFT to the user address
                     .argument(&user)
                     // Set the callback for updating deposit amounts if successful
                     .with_callback(self.callbacks().mint_citizen_callback(&user, wood_deposit.token, food_deposit.token))
@@ -101,7 +101,7 @@ pub trait CharactersModule:
         self.tx()
             .to(self.character_contract_address().get())
             .raw_call(CHARACTER_CONTRACT_CLAIM_CITIZEN_ENDPOINT_NAME)
-            // Claim the NFT to the user address, not this contract
+            // Claim the NFT to the user address
             .argument(&user)
             .async_call_and_exit();
     }
