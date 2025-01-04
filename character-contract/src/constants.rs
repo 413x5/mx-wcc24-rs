@@ -1,5 +1,7 @@
 pub const REGISTER_FEE: u64 = 50_000_000_000_000_000; // 0.05 EGLD
 
+pub const IPFS_CID: &str = "bafybeih3vwnfq7qyvyb5s2ojjk4cs6gcwxzpatujtahpeiap5xu5k4r3pm";
+
 pub const REGISTER_AND_SET_ALL_ROLES_DYNAMIC_ENDPOINT_NAME: &str = "registerAndSetAllRolesDynamic";
 pub const ESDT_METADATA_RECREATE_ENDPOINT_NAME: &str = "ESDTMetaDataRecreate";
 
@@ -26,4 +28,3 @@ pub const SOLDIER_NFT_TAGS : &str = "character,soldier";
 pub const NFT_CHARACTER_ATTRIBUTES_PREFIX: &str = ";c:";
 pub const NFT_IMAGE_FILE_EXTENSION: &str = ".png";
 pub const NFT_METADATA_FILE_EXTENSION: &str = ".json";
-pub const IPFS_CID: &str = "bafybeih3vwnfq7qyvyb5s2ojjk4cs6gcwxzpatujtahpeiap5xu5k4r3pm";
