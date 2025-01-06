@@ -70,6 +70,36 @@
         },
         {
             "docs": [
+                "Set tools contract address"
+            ],
+            "name": "setToolsContractAddress",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set resource mint contract address"
+            ],
+            "name": "setResourceMintContractAddress",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
                 "Users deposits in the contract"
             ],
             "name": "getDeposits",
@@ -107,10 +137,124 @@
                     "type": "Address"
                 }
             ]
+        },
+        {
+            "docs": [
+                "Address of the tools contract"
+            ],
+            "name": "toolsContractAddress",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Address of the resource mint contract"
+            ],
+            "name": "resourceMintContractAddress",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Calls the character contract to mint a citizen using resources from user's deposits"
+            ],
+            "name": "mintCitizen",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the character contract to claim a citizen after the minting period"
+            ],
+            "name": "claimCitizen",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the character contract to upgrade a citizen to a soldier",
+                "by specifying the NFT nonce and the NFT owner address if different than the caller"
+            ],
+            "name": "upgradeCitizenToSoldier",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "citizen_nft_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "nft_owner_address",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the resource transform contract to create ORE tokens"
+            ],
+            "name": "createOre",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "ore_units",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the tools contract to mint a shield using resources from user's deposits"
+            ],
+            "name": "mintShield",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the tools contract to claim a shield after the minting period"
+            ],
+            "name": "claimShield",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the tools contract to mint a sword using resources from user's deposits"
+            ],
+            "name": "mintSword",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the tools contract to claim a sword after the minting period"
+            ],
+            "name": "claimSword",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
         }
     ],
     "esdtAttributes": [],
-    "hasCallback": false,
+    "hasCallback": true,
     "types": {
         "DepositInfo": {
             "type": "struct",

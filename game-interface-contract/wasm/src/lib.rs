@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            6
-// Async Callback (empty):               1
-// Total number of exported functions:   9
+// Endpoints:                           18
+// Async Callback:                       1
+// Total number of exported functions:  21
 
 #![no_std]
 
@@ -23,10 +23,22 @@ multiversx_sc_wasm_adapter::endpoints! {
         depositResources => deposit_resources
         setCharacterContractAddress => set_character_contract_address
         setResourceTransformContractAddress => set_resource_transform_contract_address
+        setToolsContractAddress => set_tools_contract_address
+        setResourceMintContractAddress => set_resource_mint_contract_address
         getDeposits => get_deposits
         characterContractAddress => character_contract_address
         resourceTransformContractAddress => resource_transform_contract_address
+        toolsContractAddress => tools_contract_address
+        resourceMintContractAddress => resource_mint_contract_address
+        mintCitizen => mint_citizen
+        claimCitizen => claim_citizen
+        upgradeCitizenToSoldier => upgrade_citizen_to_soldier
+        createOre => create_ore
+        mintShield => mint_shield
+        claimShield => claim_shield
+        mintSword => mint_sword
+        claimSword => claim_sword
     )
 }
 
-multiversx_sc_wasm_adapter::async_callback_empty! {}
+multiversx_sc_wasm_adapter::async_callback! { game_interface_contract }

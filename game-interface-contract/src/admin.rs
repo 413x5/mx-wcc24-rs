@@ -26,7 +26,20 @@ pub trait AdminModule: crate::storage::StorageModule
     fn set_resource_transform_contract_address(&self, address: ManagedAddress) {
         self.resource_transform_contract_address().set(address);
     }
-    
+
+    /// Set tools contract address
+    #[only_owner]
+    #[endpoint(setToolsContractAddress)]
+    fn set_tools_contract_address(&self, address: ManagedAddress) {
+        self.tools_contract_address().set(address);
+    }
+
+    /// Set resource mint contract address
+    #[only_owner]
+    #[endpoint(setResourceMintContractAddress)]
+    fn set_resource_mint_contract_address(&self, address: ManagedAddress) {
+        self.resource_mint_contract_address().set(address);
+    }
 
     // #[only_owner]
     // #[endpoint(setDepositBalance)]

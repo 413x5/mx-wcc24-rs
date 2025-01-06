@@ -10,6 +10,7 @@ pub mod storage;
 pub mod common;
 pub mod game_characters;
 pub mod game_resources;
+pub mod game_tools;
 
 use constants::*;
 use data::*;
@@ -20,6 +21,9 @@ pub trait GameInterfaceContract:
     admin::AdminModule + 
     storage::StorageModule + 
     common::CommonModule +
+    game_characters::CharactersModule +
+    game_resources::ResourcesModule +
+    game_tools::ToolsModule
 {
     /// Endpoint to deposit resources in the game contract
     #[payable("*")]

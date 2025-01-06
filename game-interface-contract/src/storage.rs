@@ -20,4 +20,14 @@ pub trait StorageModule {
     #[storage_mapper("resource_transform_contract_address")]
     fn resource_transform_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
 
+    /// Address of the tools contract
+    #[view(toolsContractAddress)]
+    #[storage_mapper("tools_contract_address")]
+    fn tools_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
+
+    /// Address of the resource mint contract
+    #[view(resourceMintContractAddress)]
+    #[storage_mapper("resource_mint_contract_address")]
+    fn resource_mint_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
+
 }

@@ -1,0 +1,9 @@
+{
+    "description": "A shield",
+    "attributes": [
+      {
+        "trait_type": "Defense",
+        "value": "+1"
+      }
+    ]
+}

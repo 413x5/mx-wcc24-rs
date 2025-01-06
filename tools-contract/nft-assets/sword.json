@@ -1,0 +1,9 @@
+{
+    "description": "A sword",
+    "attributes": [
+        {
+            "trait_type": "Attack",
+            "value": "+1"
+        }
+    ]
+}
