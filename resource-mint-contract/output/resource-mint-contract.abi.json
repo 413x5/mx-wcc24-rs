@@ -52,14 +52,23 @@
     "endpoints": [
         {
             "docs": [
-                "Endpoint for staking tokens"
+                "Endpoint for staking tokens",
+                "",
+                "# Arguments",
+                "* `for_user` - User address optional, if not specified the caller address will be used"
             ],
             "name": "stakeTokens",
             "mutability": "mutable",
             "payableInTokens": [
                 "*"
             ],
-            "inputs": [],
+            "inputs": [
+                {
+                    "name": "for_user",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
             "outputs": []
         },
         {
@@ -73,11 +82,20 @@
         },
         {
             "docs": [
-                "Endpoint for claiming resources"
+                "Endpoint for claiming resources",
+                "",
+                "# Arguments",
+                "* `for_user` - User address optional, if not specified the caller address will be used"
             ],
             "name": "claimResources",
             "mutability": "mutable",
-            "inputs": [],
+            "inputs": [
+                {
+                    "name": "for_user",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
             "outputs": []
         },
         {
@@ -209,7 +227,7 @@
             "docs": [
                 "Resource token has local mint role"
             ],
-            "name": "getResourceTokenHasLocalMintRole",
+            "name": "getContractHasLocalMintRole",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -307,7 +325,7 @@
             "docs": [
                 "Sets the local mint role for the resource token"
             ],
-            "name": "setResourceTokenLocalMintRole",
+            "name": "setContractLocalMintRole",
             "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [],

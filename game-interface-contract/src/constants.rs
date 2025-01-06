@@ -11,6 +11,8 @@ pub const STONE_TOKEN_TICKER: &str = "STONE-";
 pub const GOLD_TOKEN_TICKER: &str = "GOLD-";
 pub const ORE_TOKEN_TICKER: &str = "ORE-";
 /// Game contracts endpoints
+pub const RESOURCE_CONTRACT_MINT_RESOURCES_ENDPOINT_NAME: &str = "mintResources";
+pub const RESOURCE_CONTRACT_CLAIM_RESOURCES_ENDPOINT_NAME: &str = "claimResources";
 pub const RESOURCE_TRANSFORM_CONTRACT_CREATE_ORE_ENDPOINT_NAME: &str = "createOre";
 pub const CHARACTER_CONTRACT_MINT_CITIZEN_ENDPOINT_NAME: &str = "mintCitizen";
 pub const CHARACTER_CONTRACT_CLAIM_CITIZEN_ENDPOINT_NAME: &str = "claimCitizen";

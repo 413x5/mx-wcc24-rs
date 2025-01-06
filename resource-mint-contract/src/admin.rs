@@ -98,8 +98,8 @@ pub trait AdminModule: crate::storage::StorageModule {
 
     /// Sets the local mint role for the resource token
     #[only_owner]
-    #[endpoint(setResourceTokenLocalMintRole)]
-    fn set_resource_token_local_mint_role(&self) {
+    #[endpoint(setContractLocalMintRole)]
+    fn set_contract_local_mint_role(&self) {
         require!(!self.resource_token_id().is_empty(), ERR_RESOURCE_TOKEN_NOT_ISSUED);
 
         // Send the set resource token local mint role transaction with callback
@@ -119,11 +119,11 @@ pub trait AdminModule: crate::storage::StorageModule {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 // Resource token has local mint role
-                self.resource_token_has_local_mint_role().set(true);
+                self.contract_has_local_mint_role().set(true);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // Resource token has no local mint role
-                self.resource_token_has_local_mint_role().set(false);
+                self.contract_has_local_mint_role().set(false);
             },
         }
     }

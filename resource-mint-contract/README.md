@@ -33,10 +33,12 @@ The contract is organized into several modules:
 ```rust
 #[payable("*")]
 #[endpoint(stakeTokens)]
-fn stake_tokens()
+fn stake_tokens(&self, for_user: OptionalValue<ManagedAddress>)
 ```
 
 - Allows users to stake tokens
+- Parameters:
+  - `for_user`: Optional address to stake for a different address than the caller, used in the [Game Interface contract](../game-interface-contract/README.md)
 - Tokens must match the configured stake token ticker
 - Each stake is recorded with the current round number
 
@@ -55,11 +57,14 @@ fn mint_resources()
 
 ```rust
 #[endpoint(claimResources)]
-fn claim_resources()
+fn claim_resources(&self, for_user: OptionalValue<ManagedAddress>)
 ```
 
 - Allows users to claim their minted resources
+- Parameters:
+  - `for_user`: Optional address to claim for a different address than the caller, used in the [Game Interface contract](../game-interface-contract/README.md)
 - Updates user's claimed resources state
+- Transfers the resources directly to the user's address
 
 ## Admin Endpoints
 
@@ -76,15 +81,15 @@ fn issue_resource_token(token_name: ManagedBuffer, token_ticker: ManagedBuffer, 
 - Requires 0.05 EGLD payment
 - Sets up token properties
 
-### [`setResourceTokenLocalMintRole`](src/admin.rs)
+### [`setContractLocalMintRole`](src/admin.rs)
 
 ```rust
 #[only_owner]
-#[endpoint(setResourceTokenLocalMintRole)]
-fn set_resource_token_local_mint_role()
+#[endpoint(setContractLocalMintRole)]
+fn set_contract_local_mint_role()
 ```
 
-- Sets local mint role for the resource token
+- Sets local mint role for the contract's resource token
 - Required for minting new resources
 
 ### Configuration Endpoints
@@ -160,7 +165,7 @@ The contract maintains several [storage mappers](src/storage.rs):
 4. Users can stake tokens by calling the stakeTokens endpoint and sending tokens with the ticker configured for staking:
 
    ```rust
-   stakeTokens()
+   stakeTokens(for_user: optional<ManagedAddress>)
    ```
 
 5. Anyone can call the mintResources endpoint to mint new resources at the interval set in the contract:
@@ -178,7 +183,7 @@ The contract maintains several [storage mappers](src/storage.rs):
 7. Users can claim any available resources by calling the claimResources endpoint:
 
    ```rust
-   claimResources()
+   claimResources(for_user: optional<ManagedAddress>)
    ```
 
 ## *Specific Contract Deployment Parameters*

@@ -31,7 +31,7 @@ impl Character {
     }
 
     pub fn is_soldier(&self) -> bool {
-        self.rank > 0
+        self.rank == 1
     }
 
     pub fn upgrade_soldier(soldier: Character, add_attack: u8, add_defence: u8) -> Self {

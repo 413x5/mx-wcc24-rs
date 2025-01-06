@@ -8,6 +8,80 @@ pub trait ResourcesModule:
     crate::common::CommonModule +
     crate::storage::StorageModule
 {
+
+    /// Endpoint for minting base resources
+    #[endpoint(mintResources)]
+    fn mint_resources(&self){
+
+        // Mint any available wood resources
+        if !self.wood_mint_contract_address().is_empty() {
+            self.resource_contract_mint(self.wood_mint_contract_address().get());
+        }
+
+        // Mint any available food resources
+        if !self.food_mint_contract_address().is_empty() {
+            self.resource_contract_mint(self.food_mint_contract_address().get());
+        }
+
+        // Mint any available stone resources
+        if !self.stone_mint_contract_address().is_empty() {
+            self.resource_contract_mint(self.stone_mint_contract_address().get());
+        }
+
+        // Mint any available gold resources
+        if !self.gold_mint_contract_address().is_empty() {
+            self.resource_contract_mint(self.gold_mint_contract_address().get());
+        }
+
+    }
+
+    /// Claims any unclaimed base resources
+    #[endpoint(claimResources)]
+    fn claim_resources(&self) {
+
+        // Send the resources to the calling user
+        let user = self.blockchain().get_caller();
+
+        // Claim any available wood resources
+        if !self.wood_mint_contract_address().is_empty() {
+            self.resource_contract_claim(self.wood_mint_contract_address().get(), &user);
+        }
+
+        // Claim any available food resources
+        if !self.food_mint_contract_address().is_empty() {
+            self.resource_contract_claim(self.food_mint_contract_address().get(), &user);
+        }
+
+        // Claim any available stone resources
+        if !self.stone_mint_contract_address().is_empty() {
+            self.resource_contract_claim(self.stone_mint_contract_address().get(), &user);
+        }
+
+        // Claim any available gold resources
+        if !self.gold_mint_contract_address().is_empty() {
+            self.resource_contract_claim(self.gold_mint_contract_address().get(), &user);
+        }
+    }
+
+    /// Mint any available base resources
+    fn resource_contract_mint(&self, resource_contract_address: ManagedAddress) {
+        
+        self.tx()
+            .to(&resource_contract_address)
+            .raw_call(RESOURCE_CONTRACT_MINT_RESOURCES_ENDPOINT_NAME)
+            .sync_call();
+    }
+
+    /// Claim any available base resources
+    fn resource_contract_claim(&self, resource_contract_address: ManagedAddress, user: &ManagedAddress) {
+
+        self.tx()
+            .to(&resource_contract_address)
+            .raw_call(RESOURCE_CONTRACT_CLAIM_RESOURCES_ENDPOINT_NAME)
+            .argument(&user)
+            .sync_call();
+    }
+
     /// Calls the resource transform contract to create ORE tokens
     #[endpoint(createOre)]
     fn create_ore(&self, ore_units: u64) {

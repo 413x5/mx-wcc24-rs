@@ -4,10 +4,12 @@
 use multiversx_sc::imports::*;
 
 pub mod constants;
+pub mod data;
 pub mod admin;
 pub mod storage;
 
 use constants::*;
+use data::*;
 
 #[multiversx_sc::contract]
 pub trait ToolsContract: 
@@ -113,6 +115,9 @@ pub trait ToolsContract:
         // Get the collection ID
         let collection_id = self.tools_nft_collection().get_token_id();
 
+        // Create new shield
+        let shield = Tool::new_shield();
+
         // Set the amount to mint to 1 NFT
         let amount = BigUint::from(1u64);
 
@@ -125,10 +130,10 @@ pub trait ToolsContract:
         let royalties = BigUint::from(SHIELD_NFT_ROYALTIES);
 
         // Get the attributes
-        let attributes = self.get_shiled_nft_attributes();
+        let attributes = self.get_nft_attributes(&shield);
 
         // Get the URIs
-        let uris = self.get_shield_nft_asset_uris();
+        let uris = self.get_nft_asset_uris(&shield);
 
         // Get the attributes hash
         let attributes_sha256 = self.crypto().sha256(&attributes);
@@ -150,32 +155,6 @@ pub trait ToolsContract:
         nft_nonce
     }
 
-    /// Gets the attributes for the Shield NFT
-    fn get_shiled_nft_attributes(&self) -> ManagedBuffer {
-        let nft_attributes = ManagedBuffer::from(
-            sc_format!("metadata:{}/shield.json;tags:tool,shield",
-            ManagedBuffer::from(IPFS_CID)
-        ));
-        nft_attributes
-    }
-
-    /// Get the URIs for the NFT assets (image, metadata)
-    fn get_shield_nft_asset_uris(&self) -> ManagedVec<ManagedBuffer> {
-        // Get the base filename
-        let asset_base_filename = 
-            sc_format!("https://{}.ipfs.w3s.link/shield", ManagedBuffer::from(IPFS_CID)
-        );
-        // Get the image and metadata URIs by adding the file extension
-        let asset_image = sc_format!("{}.png", asset_base_filename);
-        let asset_metadata = sc_format!("{}.json", asset_base_filename);
-        
-        // Return the URIs
-        let mut assets = 
-            ManagedVec::from_single_item(asset_image);
-            assets.push(asset_metadata);
-
-        assets
-    }
 
 
     // Sword functionality
@@ -286,6 +265,9 @@ pub trait ToolsContract:
         // Get the collection ID
         let collection_id = self.tools_nft_collection().get_token_id();
 
+        // Create new sword
+        let sword = Tool::new_sword();
+
         // Set the amount to mint to 1 NFT
         let amount = BigUint::from(1u64);
 
@@ -298,10 +280,10 @@ pub trait ToolsContract:
         let royalties = BigUint::from(SWORD_NFT_ROYALTIES);
 
         // Get the attributes
-        let attributes = self.get_sword_nft_attributes();
+        let attributes = self.get_nft_attributes(&sword);
 
         // Get the URIs
-        let uris = self.get_sword_nft_asset_uris();
+        let uris = self.get_nft_asset_uris(&sword);
 
         // Get the attributes hash
         let attributes_sha256 = self.crypto().sha256(&attributes);
@@ -323,24 +305,37 @@ pub trait ToolsContract:
         nft_nonce
     }
 
-    /// Gets the attributes for the Sword NFT
-    fn get_sword_nft_attributes(&self) -> ManagedBuffer {
+
+    // Common functions
+
+    /// Gets the attributes for the NFT
+    /// Encode nft attributes in the format: metadata:IPFS_CID/{filename}.json;tags:{tag(s)}{PREFIX}{tool_type}:{attack}:{defence}
+    /// Ex: metadata:IPFS_CID/shield.json;tags:tool,shield;t:1:0:1
+    /// Ex: metadata:IPFS_CID/sword.json;tags:tool,sword;t:2:1:0
+    fn get_nft_attributes(&self, tool: &Tool) -> ManagedBuffer {
         let nft_attributes = ManagedBuffer::from(
-            sc_format!("metadata:{}/sword.json;tags:tool,sword",
-            ManagedBuffer::from(IPFS_CID)
-        ));
+            sc_format!("metadata:{}/{}.{};tags:{}{}{}:{}:{}",
+            ManagedBuffer::from(IPFS_CID),
+            self.get_asset_filename(tool),
+            ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION), 
+            self.get_asset_tags(tool),
+            ManagedBuffer::from(NFT_TOOL_ATTRIBUTES_PREFIX), 
+            tool.tool_type, 
+            tool.attack, 
+            tool.defence));
         nft_attributes
     }
 
     /// Get the URIs for the NFT assets (image, metadata)
-    fn get_sword_nft_asset_uris(&self) -> ManagedVec<ManagedBuffer> {
+    fn get_nft_asset_uris(&self, tool: &Tool) -> ManagedVec<ManagedBuffer> {
         // Get the base filename
         let asset_base_filename = 
-            sc_format!("https://{}.ipfs.w3s.link/sword", ManagedBuffer::from(IPFS_CID)
-        );
+            sc_format!("https://{}.ipfs.w3s.link/{}", 
+                ManagedBuffer::from(IPFS_CID), 
+                self.get_asset_filename(tool));
         // Get the image and metadata URIs by adding the file extension
-        let asset_image = sc_format!("{}.png", asset_base_filename);
-        let asset_metadata = sc_format!("{}.json", asset_base_filename);
+        let asset_image = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_IMAGE_FILE_EXTENSION));
+        let asset_metadata = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION));
         
         // Return the URIs
         let mut assets = 
@@ -351,7 +346,20 @@ pub trait ToolsContract:
     }
 
 
-    // Common functions
+    /// Get the asset filename based on the tool
+    fn get_asset_filename(&self, tool: &Tool) -> ManagedBuffer {
+        if tool.is_shield() { return ManagedBuffer::from(SHIELD_FILE_NAME) };
+        if tool.is_sword() { return ManagedBuffer::from(SWORD_FILE_NAME) };
+        sc_panic!("Unknown tool type {}.", tool.tool_type);
+    }
+
+    /// Get the asset tags based on the tool
+    fn get_asset_tags(&self, tool: &Tool) -> ManagedBuffer {
+        if tool.is_shield() { return ManagedBuffer::from(SHIELD_NFT_TAGS) };
+        if tool.is_sword() { return ManagedBuffer::from(SWORD_NFT_TAGS) };
+        sc_panic!("Unknown tool type {}.", tool.tool_type);
+    }
+
 
     /// Check if a token is a required token
     fn is_required_token(&self, check_token_id: &TokenIdentifier, required_token_ticker: &str) -> bool {

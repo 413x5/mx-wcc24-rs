@@ -36,9 +36,12 @@ pub trait ResourceMintContract:
     fn upgrade(&self) {}
 
     /// Endpoint for staking tokens
+    /// 
+    /// # Arguments
+    /// * `for_user` - User address optional, if not specified the caller address will be used
     #[payable("*")]
     #[endpoint(stakeTokens)]
-    fn stake_tokens(&self) {
+    fn stake_tokens(&self, for_user: OptionalValue<ManagedAddress>) {
         require!(!self.stake_token_ticker().is_empty(), ERR_STAKE_TOKEN_NOT_SET);
         let stake_token_ticker = self.stake_token_ticker().get();
 
@@ -57,9 +60,13 @@ pub trait ResourceMintContract:
             );
         }
 
-        let caller = self.blockchain().get_caller();
+        let user = match for_user {
+            OptionalValue::Some(address) => address,
+            OptionalValue::None => self.blockchain().get_caller(),
+        };
+
         let current_round = self.blockchain().get_block_round();
-        let mut user_stakes = self.stakes_info().get(&caller).unwrap_or_default();
+        let mut user_stakes = self.stakes_info().get(&user).unwrap_or_default();
 
         // Process each payment and store as an individual stake
         for payment in payments.iter() {
@@ -73,7 +80,7 @@ pub trait ResourceMintContract:
             };
             user_stakes.push(stake_info);
         }
-        self.stakes_info().insert(caller, user_stakes);
+        self.stakes_info().insert(user, user_stakes);
     }
 
     /// Endpoint for minting resources
@@ -84,7 +91,7 @@ pub trait ResourceMintContract:
             ERR_RESOURCE_TOKEN_NOT_ISSUED
         );
         require!(
-            self.resource_token_has_local_mint_role().get(),
+            self.contract_has_local_mint_role().get(),
             ERR_CONTRACT_NO_MINT_ROLE
         );
         
@@ -107,24 +114,32 @@ pub trait ResourceMintContract:
     }
 
     /// Endpoint for claiming resources
+    /// 
+    /// # Arguments
+    /// * `for_user` - User address optional, if not specified the caller address will be used
     #[endpoint(claimResources)]
-    fn claim_resources(&self) {
-        let caller = self.blockchain().get_caller();
-        let user_available = self.user_unclaimed_resources(&caller);
+    fn claim_resources(&self, for_user: OptionalValue<ManagedAddress>) {
+
+        let user = match for_user {
+            OptionalValue::Some(address) => address,
+            OptionalValue::None => self.blockchain().get_caller(),
+        };
+
+        let user_available = self.user_unclaimed_resources(&user);
 
         // Send any available resources to the caller
         if user_available > BigUint::zero() {
             let resource_token_id = self.resource_token_id().get();
             self.send().direct_esdt(
-                &caller,
+                &user,
                 &resource_token_id,
                 0,
                 &user_available
             );
             // Update user state
-            self.user_has_unclaimed_resources(&caller).set(false);
-            let user_claimed = self.user_claimed_resources().get(&caller).unwrap_or_default();
-            self.user_claimed_resources().insert(caller, user_claimed + user_available);
+            self.user_has_unclaimed_resources(&user).set(false);
+            let user_claimed = self.user_claimed_resources().get(&user).unwrap_or_default();
+            self.user_claimed_resources().insert(user, user_claimed + user_available);
         }
     }
 

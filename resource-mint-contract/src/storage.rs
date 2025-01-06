@@ -52,9 +52,9 @@ pub trait StorageModule {
     fn resource_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
 
     /// Resource token has local mint role
-    #[view(getResourceTokenHasLocalMintRole)]
-    #[storage_mapper("resourceTokenHasLocalMintRole")]
-    fn resource_token_has_local_mint_role(&self) -> SingleValueMapper<bool>;
+    #[view(getContractHasLocalMintRole)]
+    #[storage_mapper("contractHasLocalMintRole")]
+    fn contract_has_local_mint_role(&self) -> SingleValueMapper<bool>;
 
     /// Last resource mint round
     #[view(getLastResourceMintRound)]

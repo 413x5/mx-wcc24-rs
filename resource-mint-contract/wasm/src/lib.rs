@@ -32,13 +32,13 @@ multiversx_sc_wasm_adapter::endpoints! {
         getUserClaimedResources => user_claimed_resources
         getUserHasUnclaimedResources => user_has_unclaimed_resources
         getResourceTokenId => resource_token_id
-        getResourceTokenHasLocalMintRole => resource_token_has_local_mint_role
+        getContractHasLocalMintRole => contract_has_local_mint_role
         getLastResourceMintRound => last_resource_mint_round
         setMintRoundsInterval => set_mint_rounds_interval
         setStakeThreshold => set_stake_threshold
         setOptionMintIfClaimed => set_option_mint_if_claimed
         issueResourceToken => issue_resource_token
-        setResourceTokenLocalMintRole => set_resource_token_local_mint_role
+        setContractLocalMintRole => set_contract_local_mint_role
         getUserUnclaimedResources => user_unclaimed_resources
     )
 }

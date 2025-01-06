@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           18
+// Endpoints:                           26
 // Async Callback:                       1
-// Total number of exported functions:  21
+// Total number of exported functions:  29
 
 #![no_std]
 
@@ -24,15 +24,23 @@ multiversx_sc_wasm_adapter::endpoints! {
         setCharacterContractAddress => set_character_contract_address
         setResourceTransformContractAddress => set_resource_transform_contract_address
         setToolsContractAddress => set_tools_contract_address
-        setResourceMintContractAddress => set_resource_mint_contract_address
+        setWoodMintContractAddress => set_wood_mint_contract_address
+        setFoodMintContractAddress => set_food_mint_contract_address
+        setStoneMintContractAddress => set_stone_mint_contract_address
+        setGoldMintContractAddress => set_gold_mint_contract_address
         getDeposits => get_deposits
         characterContractAddress => character_contract_address
         resourceTransformContractAddress => resource_transform_contract_address
         toolsContractAddress => tools_contract_address
-        resourceMintContractAddress => resource_mint_contract_address
+        woodMintContractAddress => wood_mint_contract_address
+        foodMintContractAddress => food_mint_contract_address
+        stoneMintContractAddress => stone_mint_contract_address
+        goldMintContractAddress => gold_mint_contract_address
         mintCitizen => mint_citizen
         claimCitizen => claim_citizen
         upgradeCitizenToSoldier => upgrade_citizen_to_soldier
+        mintResources => mint_resources
+        claimResources => claim_resources
         createOre => create_ore
         mintShield => mint_shield
         claimShield => claim_shield

@@ -85,9 +85,54 @@
         },
         {
             "docs": [
-                "Set resource mint contract address"
+                "Set wood mint contract address"
             ],
-            "name": "setResourceMintContractAddress",
+            "name": "setWoodMintContractAddress",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set food mint contract address"
+            ],
+            "name": "setFoodMintContractAddress",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set stone mint contract address"
+            ],
+            "name": "setStoneMintContractAddress",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set gold mint contract address"
+            ],
+            "name": "setGoldMintContractAddress",
             "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [
@@ -153,9 +198,48 @@
         },
         {
             "docs": [
-                "Address of the resource mint contract"
+                "Address of the Wood mint contract"
             ],
-            "name": "resourceMintContractAddress",
+            "name": "woodMintContractAddress",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Address of the Food mint contract"
+            ],
+            "name": "foodMintContractAddress",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Address of the Stone mint contract"
+            ],
+            "name": "stoneMintContractAddress",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Address of the Gold mint contract"
+            ],
+            "name": "goldMintContractAddress",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -200,6 +284,24 @@
                     "multi_arg": true
                 }
             ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint for minting base resources"
+            ],
+            "name": "mintResources",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Claims any unclaimed base resources"
+            ],
+            "name": "claimResources",
+            "mutability": "mutable",
+            "inputs": [],
             "outputs": []
         },
         {

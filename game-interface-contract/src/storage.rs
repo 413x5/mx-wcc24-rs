@@ -25,9 +25,24 @@ pub trait StorageModule {
     #[storage_mapper("tools_contract_address")]
     fn tools_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
 
-    /// Address of the resource mint contract
-    #[view(resourceMintContractAddress)]
-    #[storage_mapper("resource_mint_contract_address")]
-    fn resource_mint_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
+    /// Address of the Wood mint contract
+    #[view(woodMintContractAddress)]
+    #[storage_mapper("wood_mint_contract_address")]
+    fn wood_mint_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
+
+    /// Address of the Food mint contract
+    #[view(foodMintContractAddress)]
+    #[storage_mapper("food_mint_contract_address")]
+    fn food_mint_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
+
+    /// Address of the Stone mint contract
+    #[view(stoneMintContractAddress)]
+    #[storage_mapper("stone_mint_contract_address")]
+    fn stone_mint_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
+
+    /// Address of the Gold mint contract
+    #[view(goldMintContractAddress)]
+    #[storage_mapper("gold_mint_contract_address")]
+    fn gold_mint_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
 
 }

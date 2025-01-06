@@ -34,35 +34,32 @@ pub trait AdminModule: crate::storage::StorageModule
         self.tools_contract_address().set(address);
     }
 
-    /// Set resource mint contract address
+    /// Set wood mint contract address
     #[only_owner]
-    #[endpoint(setResourceMintContractAddress)]
-    fn set_resource_mint_contract_address(&self, address: ManagedAddress) {
-        self.resource_mint_contract_address().set(address);
+    #[endpoint(setWoodMintContractAddress)]
+    fn set_wood_mint_contract_address(&self, address: ManagedAddress) {
+        self.wood_mint_contract_address().set(address);
     }
 
-    // #[only_owner]
-    // #[endpoint(setDepositBalance)]
-    // fn set_deposit_balance(&self, token: TokenIdentifier, new_balance: BigUint) {
-    //     let user = self.blockchain().get_caller();
-    //     let user_deposits = self.get_deposits().get(&user).unwrap_or_default();
-    //     let mut new_deposits = ManagedVec::new();
-    //     let mut found = false;
-
-    //     for deposit in user_deposits.iter() {
-    //         if deposit.token == token {
-    //             new_deposits.push(DepositInfo {
-    //                 token: token.clone(),
-    //                 balance: new_balance.clone(),
-    //             });
-    //             found = true;
-    //         } else {
-    //             new_deposits.push(deposit);
-    //         }
-    //     }
-        
-    //     require!(found, "Deposit not found for token {}", token);
-    //     self.get_deposits().insert(user, new_deposits);
-    // }
-
+    /// Set food mint contract address
+    #[only_owner]
+    #[endpoint(setFoodMintContractAddress)]
+    fn set_food_mint_contract_address(&self, address: ManagedAddress) {
+        self.food_mint_contract_address().set(address);
     }
+
+    /// Set stone mint contract address
+    #[only_owner]
+    #[endpoint(setStoneMintContractAddress)]
+    fn set_stone_mint_contract_address(&self, address: ManagedAddress) {
+        self.stone_mint_contract_address().set(address);
+    }
+
+    /// Set gold mint contract address
+    #[only_owner]
+    #[endpoint(setGoldMintContractAddress)]
+    fn set_gold_mint_contract_address(&self, address: ManagedAddress) {
+        self.gold_mint_contract_address().set(address);
+    }
+
+}

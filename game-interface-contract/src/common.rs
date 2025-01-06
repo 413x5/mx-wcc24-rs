@@ -33,8 +33,4 @@ pub trait CommonModule:
         require!(!self.tools_contract_address().is_empty(), ERR_TOOLS_CONTRACT_ADDRESS_NOT_SET);
     }
 
-    /// Require the resource mint contract address is set
-    fn require_resource_mint_contract_address(&self) {
-        require!(!self.resource_mint_contract_address().is_empty(), ERR_RESOURCE_MINT_CONTRACT_ADDRESS_NOT_SET);
-    }
 }
