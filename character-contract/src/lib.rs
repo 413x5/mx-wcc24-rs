@@ -72,48 +72,48 @@ pub trait CharacterContract:
         };
 
         // Check if the user has any NFTs to mint
-        let mut user_citizens_to_mint = self.citizens_to_mint().get(&user).unwrap_or_default();
-        let user_citizens_pending = user_citizens_to_mint.len();
+        let user_citizens = self.citizens_to_mint().get(&user).unwrap_or_default();
+        let citizens_pending_count = user_citizens.len();
 
         // Exit with an error if the user has no NFTs to mint
-        require!(user_citizens_pending > 0, "No citizens pending to be minted.");
+        require!(citizens_pending_count > 0, "No citizens pending to be minted.");
 
         let mut citizens_minted = 0;
 
-        // Mint the available NFTs
-        for i in 0..user_citizens_to_mint.len() {
+        let mut still_minting : ManagedVec<u64> = ManagedVec::new();
+
+        // Find mintable citizens
+        for timestamp in user_citizens.iter() {
         
-            // Check if the minting period is over
-            let mint_start_timestamp = user_citizens_to_mint.get(i);
-            if self.blockchain().get_block_timestamp() - mint_start_timestamp >= MINT_CITIZEN_SECONDS {
-            
-                // Mint the NFT
-                let nft_nonce = self.create_citizen_nft();
-
-                citizens_minted += 1;
-
-                // Transfer the NFT to the user
-                self.send().direct_esdt(
-                    &user,
-                    &self.nft_token_id().get_token_id(),
-                    nft_nonce,
-                    &BigUint::from(1u64),
-                    );
-
-                // Remove the mint start timestamp for the user
-                user_citizens_to_mint.remove(i);
+            // Check if the minting period has elapsed
+            if self.blockchain().get_block_timestamp() - timestamp < MINT_CITIZEN_SECONDS {
+                still_minting.push(timestamp);
+                continue;
             }
 
-            // Update the user's mint list
-            if user_citizens_to_mint.is_empty() {
-                self.citizens_to_mint().remove(&user);
-            } else {
-                self.citizens_to_mint().insert(user.clone(), user_citizens_to_mint.clone());
-            }
+            // Mint the NFT
+            let nft_nonce = self.create_citizen_nft();
+
+            citizens_minted += 1;
+
+         // Transfer the NFT to the user
+            self.send().direct_esdt(
+                &user,
+                &self.nft_token_id().get_token_id(),
+                nft_nonce,
+                &BigUint::from(1u64),
+            );
+        }
+
+        // Update the user's mint list
+        if  still_minting.is_empty() {
+            self.citizens_to_mint().remove(&user);
+        } else {
+            self.citizens_to_mint().insert(user, still_minting);
         }
 
         // Check if any NFTs were minted and exit with an error if still in the minting period
-        if citizens_minted == 0 { sc_panic!("{} citizen(s) still in the minting period.", user_citizens_pending); }
+        if citizens_minted == 0 { sc_panic!("{} citizen(s) still in the minting period.", citizens_pending_count); }
 
     }
 

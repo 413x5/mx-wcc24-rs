@@ -60,48 +60,49 @@ pub trait ToolsContract:
         };
 
         // Check if the user has any NFTs to mint
-        let mut user_shields_to_mint = self.shields_to_mint().get(&user).unwrap_or_default();
-        let user_shields_pending = user_shields_to_mint.len();
+        let user_shields = self.shields_to_mint().get(&user).unwrap_or_default();
+        let shields_pending_count = user_shields.len();
 
         // Exit with an error if the user has no NFTs to mint
-        require!(user_shields_pending > 0, "No shields pending to be minted.");
+        require!(shields_pending_count > 0, "No shields pending to be minted.");
 
         let mut shields_minted = 0;
 
-        // Mint the available NFTs
-        for i in 0..user_shields_to_mint.len() {
+        let mut still_minting : ManagedVec<u64> = ManagedVec::new();
+
+        // Find mintable shields
+        for timestamp in user_shields.iter() {
         
             // Check if the minting period is over
-            let mint_start_timestamp = user_shields_to_mint.get(i);
-            if self.blockchain().get_block_timestamp() - mint_start_timestamp >= MINT_SHIELD_SECONDS {
+            if self.blockchain().get_block_timestamp() - timestamp <  MINT_SHIELD_SECONDS {
+                still_minting.push(timestamp);
+                continue;
+            }
             
-                // Mint the NFT
-                let nft_nonce = self.create_shield_nft();
+            // Mint the NFT
+            let nft_nonce = self.create_shield_nft();
 
-                shields_minted += 1;
+            shields_minted += 1;
 
-                // Transfer the NFT to the user
-                self.send().direct_esdt(
-                    &user,
-                    &self.tools_nft_collection().get_token_id(),
-                    nft_nonce,
-                    &BigUint::from(1u64),
-                    );
+            // Transfer the NFT to the user
+            self.send().direct_esdt(
+                &user,
+                &self.tools_nft_collection().get_token_id(),
+                nft_nonce,
+                &BigUint::from(1u64),
+            );
 
-                // Remove the mint start timestamp for the user
-                user_shields_to_mint.remove(i);
-            }
+        };
 
-            // Update the user's mint list
-            if user_shields_to_mint.is_empty() {
-                self.shields_to_mint().remove(&user);
-            } else {
-                self.shields_to_mint().insert(user.clone(), user_shields_to_mint.clone());
-            }
+        // Update the user's mint list
+        if still_minting.is_empty() {
+            self.shields_to_mint().remove(&user);
+        } else {
+            self.shields_to_mint().insert(user, still_minting);
         }
-
+        
         // Check if any NFTs were minted and exit with an error if still in the minting period
-        if shields_minted == 0 { sc_panic!("{} shield(s) still in the minting period.", user_shields_pending); }
+        if shields_minted == 0 { sc_panic!("{} shield(s) still in the minting period.", shields_pending_count); }
 
     }
 
@@ -210,48 +211,49 @@ pub trait ToolsContract:
         };
 
         // Check if the user has any NFTs to mint
-        let mut user_swords_to_mint = self.swords_to_mint().get(&user).unwrap_or_default();
-        let user_swords_pending = user_swords_to_mint.len();
+        let user_swords = self.swords_to_mint().get(&user).unwrap_or_default();
+        let swords_pending_count = user_swords.len();
 
         // Exit with an error if the user has no NFTs to mint
-        require!(user_swords_pending > 0, "No swords pending to be minted.");
+        require!(swords_pending_count > 0, "No swords pending to be minted.");
 
         let mut swords_minted = 0;
 
-        // Mint the available NFTs
-        for i in 0..user_swords_to_mint.len() {
+        let mut still_minting : ManagedVec<u64> = ManagedVec::new();
+
+        // Find mintable swords
+        for timestamp in user_swords.iter() {
         
             // Check if the minting period is over
-            let mint_start_timestamp = user_swords_to_mint.get(i);
-            if self.blockchain().get_block_timestamp() - mint_start_timestamp >= MINT_SWORD_SECONDS {
+            if self.blockchain().get_block_timestamp() - timestamp <  MINT_SWORD_SECONDS {
+                still_minting.push(timestamp);
+                continue;
+            }
             
-                // Mint the NFT
-                let nft_nonce = self.create_sword_nft();
+            // Mint the NFT
+            let nft_nonce = self.create_sword_nft();
 
-                swords_minted += 1;
+            swords_minted += 1;
 
-                // Transfer the NFT to the user
-                self.send().direct_esdt(
-                    &user,
-                    &self.tools_nft_collection().get_token_id(),
-                    nft_nonce,
-                    &BigUint::from(1u64),
-                    );
+            // Transfer the NFT to the user
+            self.send().direct_esdt(
+                &user,
+                &self.tools_nft_collection().get_token_id(),
+                nft_nonce,
+                &BigUint::from(1u64),
+            );
 
-                // Remove the mint start timestamp for the user
-                user_swords_to_mint.remove(i);
-            }
+        };
 
-            // Update the user's mint list
-            if user_swords_to_mint.is_empty() {
-                self.swords_to_mint().remove(&user);
-            } else {
-                self.swords_to_mint().insert(user.clone(), user_swords_to_mint.clone());
-            }
+        // Update the user's mint list
+        if still_minting.is_empty() {
+            self.swords_to_mint().remove(&user);
+        } else {
+            self.swords_to_mint().insert(user, still_minting);
         }
-
+        
         // Check if any NFTs were minted and exit with an error if still in the minting period
-        if swords_minted == 0 { sc_panic!("{} sword(s) still in the minting period.", user_swords_pending); }
+        if swords_minted == 0 { sc_panic!("{} sword(s) still in the minting period.", swords_pending_count); }
 
     }
 
