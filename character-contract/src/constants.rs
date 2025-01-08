@@ -12,7 +12,7 @@ pub const ORE_TICKER: &str = "ORE-";
 // Game settings
 pub const MINT_CITIZEN_WOOD_QUANTITY: u64 = 10;
 pub const MINT_CITIZEN_FOOD_QUANTITY: u64 = 15;
-pub const MINT_CITIZEN_SECONDS: u64 = 3600;
+pub const MINT_CITIZEN_SECONDS_DEFAULT: u64 = 3600;
 pub const CITIZEN_TO_SOLDIER_GOLD_QUANTITY: u64 = 5;
 pub const CITIZEN_TO_SOLDIER_ORE_QUANTITY: u64 = 5;
 // NFT Collection settings

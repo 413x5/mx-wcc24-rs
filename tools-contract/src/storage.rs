@@ -19,6 +19,16 @@ pub trait StorageModule {
     #[storage_mapper("swordsToMint")]
     fn swords_to_mint(&self) -> MapMapper<ManagedAddress, ManagedVec<u64>>;
 
+    /// Time in seconds to mint a shield
+    #[view(getMintShieldSeconds)]
+    #[storage_mapper("mintShieldSeconds")]
+    fn mint_shield_seconds(&self) -> SingleValueMapper<u64>;
+
+    /// Time in seconds to mint a sword
+    #[view(getMintSwordSeconds)]
+    #[storage_mapper("mintSwordSeconds")]
+    fn mint_sword_seconds(&self) -> SingleValueMapper<u64>;
+
     /// Last minted NFT nonce
     #[view(getLastMintedNftNonce)]
     #[storage_mapper("lastMintedNftNonce")]

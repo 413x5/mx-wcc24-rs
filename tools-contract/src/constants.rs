@@ -8,10 +8,10 @@ pub const ORE_TICKER: &str = "ORE-";
 pub const GOLD_TICKER: &str = "GOLD-";
 /// Game settings
 pub const MINT_SHIELD_ORE_QUANTITY: u64 = 2;
-pub const MINT_SHIELD_SECONDS: u64 = 60;
+pub const MINT_SHIELD_SECONDS_DEFAULT: u64 = 3600;
 pub const MINT_SWORD_GOLD_QUANTITY: u64 = 1;
 pub const MINT_SWORD_ORE_QUANTITY: u64 = 3;
-pub const MINT_SWORD_SECONDS: u64 = 60;
+pub const MINT_SWORD_SECONDS_DEFAULT: u64 = 3600;
 /// NFT Collection settings
 pub const IPFS_CID: &str = "bafybeieysc7cv3cgwfdjdhujmmvscca4h67mbidbnbfzchyad4lib2ocpu";
 pub const TOOLS_COLLECTION_NAME: &str = "Tools";

@@ -70,11 +70,14 @@ pub trait ToolsContract:
 
         let mut still_minting : ManagedVec<u64> = ManagedVec::new();
 
+        let mint_shield_seconds = if self.mint_shield_seconds().is_empty() { MINT_SHIELD_SECONDS_DEFAULT }
+            else { self.mint_shield_seconds().get() };
+
         // Find mintable shields
         for timestamp in user_shields.iter() {
         
             // Check if the minting period is over
-            if self.blockchain().get_block_timestamp() - timestamp <  MINT_SHIELD_SECONDS {
+            if self.blockchain().get_block_timestamp() - timestamp <  mint_shield_seconds {
                 still_minting.push(timestamp);
                 continue;
             }
@@ -221,11 +224,14 @@ pub trait ToolsContract:
 
         let mut still_minting : ManagedVec<u64> = ManagedVec::new();
 
+        let mint_sword_seconds = if self.mint_sword_seconds().is_empty() { MINT_SWORD_SECONDS_DEFAULT } 
+            else { self.mint_sword_seconds().get() };
+
         // Find mintable swords
         for timestamp in user_swords.iter() {
         
             // Check if the minting period is over
-            if self.blockchain().get_block_timestamp() - timestamp <  MINT_SWORD_SECONDS {
+            if self.blockchain().get_block_timestamp() - timestamp <  mint_sword_seconds {
                 still_minting.push(timestamp);
                 continue;
             }

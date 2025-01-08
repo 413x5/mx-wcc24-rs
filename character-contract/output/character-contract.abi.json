@@ -91,6 +91,18 @@
             "outputs": []
         },
         {
+            "name": "setMintCitizenSeconds",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "mint_citizen_seconds",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
             "docs": [
                 "NFT token id (collection)"
             ],
@@ -114,6 +126,19 @@
                 {
                     "type": "variadic<multi<Address,List<u64>>>",
                     "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Mint citizen seconds"
+            ],
+            "name": "getMintCitizenSeconds",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
                 }
             ]
         },

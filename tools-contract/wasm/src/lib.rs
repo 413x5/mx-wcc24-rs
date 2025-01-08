@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            9
+// Endpoints:                           13
 // Async Callback:                       1
-// Total number of exported functions:  12
+// Total number of exported functions:  16
 
 #![no_std]
 
@@ -27,8 +27,12 @@ multiversx_sc_wasm_adapter::endpoints! {
         getToolsNftCollection => tools_nft_collection
         getShieldsToMint => shields_to_mint
         getSwordsToMint => swords_to_mint
+        getMintShieldSeconds => mint_shield_seconds
+        getMintSwordSeconds => mint_sword_seconds
         getLastMintedNftNonce => last_minted_nft_nonce
         registerToolsCollection => register_tools_collection
+        setMintShieldSeconds => set_mint_shield_seconds
+        setMintSwordSeconds => set_mint_sword_seconds
     )
 }
 

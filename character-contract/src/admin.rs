@@ -53,4 +53,10 @@ pub trait AdminModule:
             },
         }
     }
+
+    #[only_owner]
+    #[endpoint(setMintCitizenSeconds)]
+    fn set_mint_citizen_seconds(&self, mint_citizen_seconds: u64) {
+        self.mint_citizen_seconds().set(mint_citizen_seconds);
+    }
 }

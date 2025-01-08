@@ -14,6 +14,11 @@ pub trait StorageModule {
     #[storage_mapper("citizensToMint")]
     fn citizens_to_mint(&self) -> MapMapper<ManagedAddress, ManagedVec<u64>>;
 
+    /// Mint citizen seconds
+    #[view(getMintCitizenSeconds)]
+    #[storage_mapper("mintCitizenSeconds")]
+    fn mint_citizen_seconds(&self) -> SingleValueMapper<u64>;
+
     /// Last minted NFT nonce
     #[view(getLastMintedNftNonce)]
     #[storage_mapper("lastMintedNftNonce")]

@@ -82,11 +82,14 @@ pub trait CharacterContract:
 
         let mut still_minting : ManagedVec<u64> = ManagedVec::new();
 
+        let mint_citizen_seconds = if self.mint_citizen_seconds().is_empty() { MINT_CITIZEN_SECONDS_DEFAULT }
+            else { self.mint_citizen_seconds().get() };
+
         // Find mintable citizens
         for timestamp in user_citizens.iter() {
         
             // Check if the minting period has elapsed
-            if self.blockchain().get_block_timestamp() - timestamp < MINT_CITIZEN_SECONDS {
+            if self.blockchain().get_block_timestamp() - timestamp < mint_citizen_seconds {
                 still_minting.push(timestamp);
                 continue;
             }

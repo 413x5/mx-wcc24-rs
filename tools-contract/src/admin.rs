@@ -53,5 +53,19 @@ pub trait AdminModule:
             },
         }
     }
-    
+
+    /// Set the time in seconds to mint a shield
+    #[only_owner]
+    #[endpoint(setMintShieldSeconds)]
+    fn set_mint_shield_seconds(&self, mint_shield_seconds: u64){
+        self.mint_shield_seconds().set(mint_shield_seconds);
+    }
+
+    /// Set the time in seconds to mint a sword
+    #[only_owner]
+    #[endpoint(setMintSwordSeconds)]
+    fn set_mint_sword_seconds(&self, mint_sword_seconds: u64){
+        self.mint_sword_seconds().set(mint_sword_seconds);
+    }
+
 }

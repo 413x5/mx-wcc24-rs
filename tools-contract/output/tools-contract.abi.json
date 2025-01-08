@@ -135,6 +135,32 @@
         },
         {
             "docs": [
+                "Time in seconds to mint a shield"
+            ],
+            "name": "getMintShieldSeconds",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Time in seconds to mint a sword"
+            ],
+            "name": "getMintSwordSeconds",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "docs": [
                 "Last minted NFT nonce"
             ],
             "name": "getLastMintedNftNonce",
@@ -157,6 +183,36 @@
                 "EGLD"
             ],
             "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set the time in seconds to mint a shield"
+            ],
+            "name": "setMintShieldSeconds",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "mint_shield_seconds",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set the time in seconds to mint a sword"
+            ],
+            "name": "setMintSwordSeconds",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "mint_sword_seconds",
+                    "type": "u64"
+                }
+            ],
             "outputs": []
         }
     ],
