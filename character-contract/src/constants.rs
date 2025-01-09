@@ -24,7 +24,6 @@ pub const NFT_NAME_SOLDIER: &str = "Soldier";
 pub const NFT_ROYALTIES: u64 = 500; // 5%
 // NFT Assets settings
 pub const IPFS_CID: &str = "bafybeih3vwnfq7qyvyb5s2ojjk4cs6gcwxzpatujtahpeiap5xu5k4r3pm";
-pub const NFT_CHARACTER_ATTRIBUTES_PREFIX: &str = ";c:";
 pub const CITIZEN_FILE_NAME : &str = "citizen";
 pub const CITIZEN_NFT_TAGS : &str = "character,citizen";
 pub const SOLDIER_FILE_NAME : &str = "soldier";

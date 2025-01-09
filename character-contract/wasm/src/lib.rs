@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            9
+// Endpoints:                           12
 // Async Callback:                       1
-// Total number of exported functions:  12
+// Total number of exported functions:  15
 
 #![no_std]
 
@@ -23,12 +23,15 @@ multiversx_sc_wasm_adapter::endpoints! {
         mintCitizen => mint_citizen
         claimCitizen => claim_citizen
         upgradeCitizenToSoldier => upgrade_citizen_to_soldier
+        upgradeSoldier => upgrade_soldier
         registerCharactersCollection => register_characters_collection
         setMintCitizenSeconds => set_mint_citizen_seconds
-        getNftTokenId => nft_token_id
+        setToolsCollectionId => set_tools_collection_id
+        getCharactersNftCollection => characters_nft_collection
         getCitizensToMint => citizens_to_mint
         getMintCitizenSeconds => mint_citizen_seconds
         getLastMintedNftNonce => last_minted_nft_nonce
+        getToolsNftCollection => tools_nft_collection
     )
 }
 

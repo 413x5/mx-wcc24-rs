@@ -13,7 +13,7 @@
         },
         "framework": {
             "name": "multiversx-sc",
-            "version": "0.54.6"
+            "version": "0.55.0"
         }
     },
     "name": "CharacterContract",
@@ -78,6 +78,20 @@
             "outputs": []
         },
         {
+            "name": "upgradeSoldier",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "owner_address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
             "docs": [
                 "Register character collection as dynamic NFT and set all roles"
             ],
@@ -91,6 +105,9 @@
             "outputs": []
         },
         {
+            "docs": [
+                "Set the time in seconds to mint a citizen"
+            ],
             "name": "setMintCitizenSeconds",
             "onlyOwner": true,
             "mutability": "mutable",
@@ -104,9 +121,24 @@
         },
         {
             "docs": [
-                "NFT token id (collection)"
+                "Set the tools NFT collection ID"
             ],
-            "name": "getNftTokenId",
+            "name": "setToolsCollectionId",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "collection_id",
+                    "type": "TokenIdentifier"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Character NFT token id (collection)"
+            ],
+            "name": "getCharactersNftCollection",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -152,6 +184,19 @@
             "outputs": [
                 {
                     "type": "u64"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Tools NFT token id (collection)"
+            ],
+            "name": "getToolsNftCollection",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
                 }
             ]
         }

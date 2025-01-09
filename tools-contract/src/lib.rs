@@ -175,9 +175,9 @@ pub trait ToolsContract:
 
         // Check the gold and ore required
         for payment in payments.iter() {
-            let token_id = payment.token_identifier;
-            if self.is_required_token(&token_id, GOLD_TICKER) { gold_amount = payment.amount.clone(); }
-            if self.is_required_token(&token_id, ORE_TICKER) { ore_amount = payment.amount.clone(); }         
+            let token_id = &payment.token_identifier;
+            if self.is_required_token(token_id, GOLD_TICKER) { gold_amount = payment.amount.clone(); }
+            if self.is_required_token(token_id, ORE_TICKER) { ore_amount = payment.amount.clone(); }         
         }
 
         require!(gold_amount == MINT_SWORD_GOLD_QUANTITY, "Gold amount sent must be {}.", MINT_SWORD_GOLD_QUANTITY);

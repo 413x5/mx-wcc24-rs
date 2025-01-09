@@ -13,7 +13,7 @@
         },
         "framework": {
             "name": "multiversx-sc",
-            "version": "0.54.6"
+            "version": "0.55.0"
         }
     },
     "name": "GameInterfaceContract",
@@ -28,7 +28,7 @@
     "endpoints": [
         {
             "docs": [
-                "Endpoint to deposit resources in the game contract"
+                "Endpoint to deposit resources in the game interface contract"
             ],
             "name": "depositResources",
             "mutability": "mutable",
@@ -36,6 +36,63 @@
                 "*"
             ],
             "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint to deposit character NFT in the game interface contract"
+            ],
+            "name": "depositCharacterNft",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint to deposit tool NFT in the game interface contract"
+            ],
+            "name": "depositToolNft",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Clear deposits"
+            ],
+            "name": "clearDeposits",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set deposit balance"
+            ],
+            "name": "setDepositBalance",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "token_id",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "token_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "new_balance",
+                    "type": "BigUint"
+                }
+            ],
             "outputs": []
         },
         {
@@ -139,6 +196,30 @@
                 {
                     "name": "address",
                     "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "setCharactersCollectionId",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "collection_id",
+                    "type": "TokenIdentifier"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "setToolsCollectionId",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "collection_id",
+                    "type": "TokenIdentifier"
                 }
             ],
             "outputs": []
@@ -250,6 +331,32 @@
         },
         {
             "docs": [
+                "Id of the characters collection"
+            ],
+            "name": "charactersCollectionId",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Id of the tools collection"
+            ],
+            "name": "toolsCollectionId",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
+                }
+            ]
+        },
+        {
+            "docs": [
                 "Calls the character contract to mint a citizen using resources from user's deposits"
             ],
             "name": "mintCitizen",
@@ -282,6 +389,24 @@
                     "name": "nft_owner_address",
                     "type": "optional<Address>",
                     "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the character contract to upgrade the soldier"
+            ],
+            "name": "upgradeSoldier",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "soldier_nft_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "tool_nft_nonce",
+                    "type": "u64"
                 }
             ],
             "outputs": []
@@ -361,12 +486,16 @@
         "DepositInfo": {
             "type": "struct",
             "docs": [
-                "Info structure for each token deposit"
+                "Info structure for each token deposit (fungible and non-fungible)"
             ],
             "fields": [
                 {
-                    "name": "token",
+                    "name": "token_id",
                     "type": "TokenIdentifier"
+                },
+                {
+                    "name": "token_nonce",
+                    "type": "u64"
                 },
                 {
                     "name": "balance",

@@ -50,7 +50,7 @@ pub trait ResourceMintContract:
 
         // Check that all received tokens are stakeable
         for payment in payments.iter() {
-            let token_id = payment.token_identifier;
+            let token_id = &payment.token_identifier;
             let token_id_buffer = token_id.as_managed_buffer();
 
             require!(
@@ -70,12 +70,12 @@ pub trait ResourceMintContract:
 
         // Process each payment and store as an individual stake
         for payment in payments.iter() {
-            let token_id = payment.token_identifier;
-            let amount = payment.amount;
+            let token_id = &payment.token_identifier;
+            let amount = &payment.amount;
 
             let stake_info = StakeInfo {
-                token: token_id,
-                amount,
+                token: token_id.clone(),
+                amount: amount.clone(),
                 round: current_round,
             };
             user_stakes.push(stake_info);

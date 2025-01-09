@@ -34,7 +34,7 @@ pub trait AdminModule: crate::storage::StorageModule {
         require!(!token_name.is_empty(), ERR_TOKEN_NAME_EMPTY);
         require!(!token_ticker.is_empty(), ERR_TOKEN_TICKER_EMPTY);
 
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().egld();
         let issue_cost = BigUint::from(ISSUE_FEE);
         require!(
             *payment >= issue_cost,
@@ -87,7 +87,7 @@ pub trait AdminModule: crate::storage::StorageModule {
             },
             ManagedAsyncCallResult::Err(_) => {
                 let caller = self.blockchain().get_owner_address();
-                let returned = self.call_value().egld_value();
+                let returned = self.call_value().egld();
                 if *returned > 0 {
                     // Return issue payment in case of error
                     self.send().direct_egld(&caller, &returned);

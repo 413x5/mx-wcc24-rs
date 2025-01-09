@@ -12,7 +12,6 @@
   "cleanReturnData",
   "getGasLeft",
   "getNumArguments",
-  "getNumESDTTransfers",
   "mBufferAppend",
   "mBufferAppendBytes",
   "mBufferCopyByteSlice",

@@ -5,7 +5,8 @@ use crate::constants::*;
 #[multiversx_sc::module]
 pub trait ToolsModule:
     crate::common::CommonModule +
-    crate::storage::StorageModule
+    crate::storage::StorageModule +
+    game_common_module::GameCommonModule
 {
     // Shield endpoints
 
@@ -22,7 +23,7 @@ pub trait ToolsModule:
         let deposits = self.get_deposits().get(&user).unwrap_or_default();  
 
         // Find ore and gold deposits
-        let find_ore_deposit = deposits.iter().find(|deposit| self.is_required_token(&deposit.token, ORE_TOKEN_TICKER));
+        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TOKEN_TICKER));
 
         match find_ore_deposit {
             None => require!(false, "No ore deposited. Need at least {}.", ore_quantity),
@@ -32,7 +33,7 @@ pub trait ToolsModule:
                 require!(ore_deposit.balance >= ore_quantity, "Not enough ore deposited. Need at least {}.", ore_quantity);
 
                 // Create the payment for the amount of ore to the character contract
-                let ore_token_payment = EsdtTokenPayment::new(ore_deposit.token.clone(), 0u64, ore_quantity.clone());
+                let ore_token_payment = EsdtTokenPayment::new(ore_deposit.token_id.clone(), 0u64, ore_quantity);
 
                 // Call the tools contract to mint the citizen
                 self.tx()
@@ -42,7 +43,7 @@ pub trait ToolsModule:
                     // Set the receiver address for the NFT to the user address
                     .argument(&user)
                     // Set the callback for updating deposit amounts if successful
-                    .with_callback(self.callbacks().mint_shield_callback(&user, ore_deposit.token))
+                    .with_callback(self.callbacks().mint_shield_callback(&user, ore_deposit.token_id.clone()))
                     .async_call_and_exit();
             }
         }
@@ -50,28 +51,31 @@ pub trait ToolsModule:
 
     /// Callback for the mint shield transaction to update deposit amounts
     #[callback]
-    fn mint_shield_callback(&self, 
-        user: &ManagedAddress, 
-        ore_token: TokenIdentifier, 
-        #[call_result] result: ManagedAsyncCallResult<()>) {
-
+    fn mint_shield_callback(
+        &self,
+        user: &ManagedAddress,
+        ore_token: TokenIdentifier,
+        #[call_result] result: ManagedAsyncCallResult<()>,
+    ) {
         match result {
             ManagedAsyncCallResult::Ok(_) => {
-                // Get user deposits and update spent food and wood
-                let deposits = self.get_deposits().get(&user).unwrap_or_default();
-
-                for mut deposit in deposits.iter() {
-                    if deposit.token == ore_token {
-                        deposit.balance -= MINT_SHIELD_ORE_QUANTITY;
-                        continue;
+                // Get user deposits and update spent ore
+                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
+                let mut i = 0;
+                while i < deposits.len() {
+                    if deposits.get(i).token_id == ore_token {
+                        deposits.get_mut(i).balance -= MINT_SHIELD_ORE_QUANTITY;
+                        break;
                     }
+                    i += 1;
                 }
+
                 // Update deposits to storage
                 self.get_deposits().insert(user.clone(), deposits);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // If the transaction fails, deposits are not updated
-            }
+            },
         }
     }
 
@@ -107,8 +111,8 @@ pub trait ToolsModule:
         let deposits = self.get_deposits().get(&user).unwrap_or_default();  
 
         // Find ore and gold deposits
-        let find_ore_deposit = deposits.iter().find(|deposit| self.is_required_token(&deposit.token, ORE_TOKEN_TICKER));
-        let find_gold_deposit = deposits.iter().find(|deposit| self.is_required_token(&deposit.token, GOLD_TOKEN_TICKER));
+        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TOKEN_TICKER));
+        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TOKEN_TICKER));
 
         match (find_ore_deposit, find_gold_deposit) {
             (None, None) => require!(false, "No ore or gold deposited. Need at least {} and {}.", ore_quantity, gold_quantity),
@@ -121,8 +125,8 @@ pub trait ToolsModule:
                 require!(gold_deposit.balance >= gold_quantity, "Not enough gold deposited. Need at least {}.", gold_quantity);
 
                 // Create the payment for the amount of ore and gold to the character contract
-                let ore_token_payment = EsdtTokenPayment::new(ore_deposit.token.clone(), 0u64, ore_quantity.clone());
-                let gold_token_payment = EsdtTokenPayment::new(gold_deposit.token.clone(), 0u64, gold_quantity.clone());
+                let ore_token_payment = EsdtTokenPayment::new(ore_deposit.token_id.clone(), 0u64, ore_quantity.clone());
+                let gold_token_payment = EsdtTokenPayment::new(gold_deposit.token_id.clone(), 0u64, gold_quantity.clone());
 
                 let mut payments : ManagedVec<EsdtTokenPayment<Self::Api>> = ManagedVec::new();
                 payments.push(ore_token_payment);
@@ -136,7 +140,7 @@ pub trait ToolsModule:
                     // Set the receiver address for the NFT to the user address
                     .argument(&user)
                     // Set the callback for updating deposit amounts if successful
-                    .with_callback(self.callbacks().mint_sword_callback(&user, ore_deposit.token, gold_deposit.token))
+                    .with_callback(self.callbacks().mint_sword_callback(&user, ore_deposit.token_id.clone(), gold_deposit.token_id.clone()))
                     .async_call_and_exit();
             },
         }
@@ -153,17 +157,17 @@ pub trait ToolsModule:
         match result {
             ManagedAsyncCallResult::Ok(_) => {
                 // Get user deposits and update spent food and wood
-                let deposits = self.get_deposits().get(&user).unwrap_or_default();
+                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
 
-                for mut deposit in deposits.iter() {
-                    if deposit.token == ore_token {
-                        deposit.balance -= MINT_SWORD_ORE_QUANTITY;
-                        continue;
+                let mut i = 0;
+                while i < deposits.len() {
+                    if deposits.get(i).token_id == ore_token {
+                        deposits.get_mut(i).balance -= MINT_SWORD_ORE_QUANTITY;
                     }
-                    if deposit.token == gold_token {
-                        deposit.balance -= MINT_SWORD_GOLD_QUANTITY;
-                        continue;
+                    if deposits.get(i).token_id == gold_token {
+                        deposits.get_mut(i).balance -= MINT_SWORD_GOLD_QUANTITY;
                     }
+                    i += 1;
                 }
                 // Update deposits to storage
                 self.get_deposits().insert(user.clone(), deposits);

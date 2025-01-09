@@ -4,6 +4,8 @@ pub const ERR_CHARACTER_CONTRACT_ADDRESS_NOT_SET: &str = "Character contract add
 pub const ERR_RESOURCE_TRANSFORM_CONTRACT_ADDRESS_NOT_SET: &str = "Resource transform contract address not set.";
 pub const ERR_TOOLS_CONTRACT_ADDRESS_NOT_SET: &str = "Tools contract address not set.";
 pub const ERR_RESOURCE_MINT_CONTRACT_ADDRESS_NOT_SET: &str = "Resource mint contract address not set.";
+pub const ERR_CHARACTER_COLLECTION_NOT_SET: &str = "Character collection id not set.";
+pub const ERR_TOOLS_COLLECTION_NOT_SET: &str = "Tools collection id not set.";
 /// Token tickers
 pub const WOOD_TOKEN_TICKER: &str = "WOOD-";
 pub const FOOD_TOKEN_TICKER: &str = "FOOD-";
@@ -21,6 +23,7 @@ pub const TOOLS_CONTRACT_MINT_SHIELD_ENDPOINT_NAME: &str = "mintShield";
 pub const TOOLS_CONTRACT_MINT_SWORD_ENDPOINT_NAME: &str = "mintSword";
 pub const TOOLS_CONTRACT_CLAIM_SHIELD_ENDPOINT_NAME: &str = "claimShield";
 pub const TOOLS_CONTRACT_CLAIM_SWORD_ENDPOINT_NAME: &str = "claimSword";
+pub const CHARACTER_CONTRACT_UPGRADE_SOLDIER_ENDPOINT_NAME: &str = "upgradeSoldier";
 /// Game settings
 pub const MINT_CITIZEN_WOOD_QUANTITY: u64 = 10;
 pub const MINT_CITIZEN_FOOD_QUANTITY: u64 = 15;

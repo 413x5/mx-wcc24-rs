@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           26
+// Endpoints:                           35
 // Async Callback:                       1
-// Total number of exported functions:  29
+// Total number of exported functions:  38
 
 #![no_std]
 
@@ -21,6 +21,10 @@ multiversx_sc_wasm_adapter::endpoints! {
         init => init
         upgrade => upgrade
         depositResources => deposit_resources
+        depositCharacterNft => deposit_character_nft
+        depositToolNft => deposit_tool_nft
+        clearDeposits => clear_deposits
+        setDepositBalance => set_deposit_balance
         setCharacterContractAddress => set_character_contract_address
         setResourceTransformContractAddress => set_resource_transform_contract_address
         setToolsContractAddress => set_tools_contract_address
@@ -28,6 +32,8 @@ multiversx_sc_wasm_adapter::endpoints! {
         setFoodMintContractAddress => set_food_mint_contract_address
         setStoneMintContractAddress => set_stone_mint_contract_address
         setGoldMintContractAddress => set_gold_mint_contract_address
+        setCharactersCollectionId => set_characters_collection
+        setToolsCollectionId => set_tools_collection
         getDeposits => get_deposits
         characterContractAddress => character_contract_address
         resourceTransformContractAddress => resource_transform_contract_address
@@ -36,9 +42,12 @@ multiversx_sc_wasm_adapter::endpoints! {
         foodMintContractAddress => food_mint_contract_address
         stoneMintContractAddress => stone_mint_contract_address
         goldMintContractAddress => gold_mint_contract_address
+        charactersCollectionId => characters_collection_id
+        toolsCollectionId => tools_collection_id
         mintCitizen => mint_citizen
         claimCitizen => claim_citizen
         upgradeCitizenToSoldier => upgrade_citizen_to_soldier
+        upgradeSoldier => upgrade_soldier
         mintResources => mint_resources
         claimResources => claim_resources
         createOre => create_ore

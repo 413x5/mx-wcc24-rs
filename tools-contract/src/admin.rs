@@ -20,7 +20,7 @@ pub trait AdminModule:
     fn register_tools_collection(&self) {
         require!(self.tools_nft_collection().is_empty(), "Tools collection already registered.");
 
-        let register_cost = self.call_value().egld_value();
+        let register_cost = self.call_value().egld();
         require!(*register_cost == REGISTER_FEE, "Send 0.05 EGLD for the register cost.");
         
         self.tx()

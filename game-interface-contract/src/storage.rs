@@ -45,4 +45,14 @@ pub trait StorageModule {
     #[storage_mapper("gold_mint_contract_address")]
     fn gold_mint_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
 
+    /// Id of the characters collection
+    #[view(charactersCollectionId)]
+    #[storage_mapper("characters_collection_id")]
+    fn characters_collection_id(&self) -> SingleValueMapper<TokenIdentifier>;
+
+    /// Id of the tools collection
+    #[view(toolsCollectionId)]
+    #[storage_mapper("tools_collection_id")]
+    fn tools_collection_id(&self) -> SingleValueMapper<TokenIdentifier>;
+
 }

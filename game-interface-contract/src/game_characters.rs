@@ -3,11 +3,12 @@ use multiversx_sc::types::EsdtTokenPayment;
 
 use crate::constants::*;
 
-
+/// Module for interacting with the character contract
 #[multiversx_sc::module]
 pub trait CharactersModule: 
     crate::storage::StorageModule +
-    crate::common::CommonModule
+    crate::common::CommonModule +
+    game_common_module::GameCommonModule
 {
 
     /// Calls the character contract to mint a citizen using resources from user's deposits
@@ -24,8 +25,8 @@ pub trait CharactersModule:
         let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find wood and food deposits
-        let find_wood_deposit = deposits.iter().find(|deposit| self.is_required_token(&deposit.token, WOOD_TOKEN_TICKER));
-        let find_food_deposit = deposits.iter().find(|deposit| self.is_required_token(&deposit.token, FOOD_TOKEN_TICKER));
+        let find_wood_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, WOOD_TOKEN_TICKER));
+        let find_food_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, FOOD_TOKEN_TICKER));
 
         match (find_wood_deposit, find_food_deposit) {
             (None, None) => require!(false, "No wood or food deposited. Need at least {} and {}.", wood_quantity, food_quantity),
@@ -38,8 +39,8 @@ pub trait CharactersModule:
                 require!(food_deposit.balance >= food_quantity, "Not enough food deposited. Need at least {}.", food_quantity);
 
                 // Create the payment for the amount of wood and food to the character contract
-                let wood_token_payment = EsdtTokenPayment::new(wood_deposit.token.clone(), 0u64, wood_quantity.clone());
-                let food_token_payment = EsdtTokenPayment::new(food_deposit.token.clone(), 0u64, food_quantity.clone());
+                let wood_token_payment = EsdtTokenPayment::new(wood_deposit.token_id.clone(), 0u64, wood_quantity);
+                let food_token_payment = EsdtTokenPayment::new(food_deposit.token_id.clone(), 0u64, food_quantity);
 
                 let mut payments : ManagedVec<EsdtTokenPayment<Self::Api>> = ManagedVec::new();
                 payments.push(wood_token_payment);
@@ -53,7 +54,7 @@ pub trait CharactersModule:
                     // Set the receiver address for the NFT to the user address
                     .argument(&user)
                     // Set the callback for updating deposit amounts if successful
-                    .with_callback(self.callbacks().mint_citizen_callback(&user, wood_deposit.token, food_deposit.token))
+                    .with_callback(self.callbacks().mint_citizen_callback(&user, wood_deposit.token_id.clone(), food_deposit.token_id.clone()))
                     .async_call_and_exit();
             },
         }
@@ -70,18 +71,18 @@ pub trait CharactersModule:
         match result {
             ManagedAsyncCallResult::Ok(_) => {
                 // Get user deposits and update spent food and wood
-                let deposits = self.get_deposits().get(&user).unwrap_or_default();
-
-                for mut deposit in deposits.iter() {
-                    if deposit.token == wood_token {
-                        deposit.balance -= MINT_CITIZEN_WOOD_QUANTITY;
-                        continue;
+                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
+                let mut i = 0;
+                while i < deposits.len() {
+                    if deposits.get(i).token_id == wood_token {
+                        deposits.get_mut(i).balance -= MINT_CITIZEN_WOOD_QUANTITY;
                     }
-                    if deposit.token == food_token {
-                        deposit.balance -= MINT_CITIZEN_FOOD_QUANTITY;
-                        continue;
+                    if deposits.get(i).token_id == food_token {
+                        deposits.get_mut(i).balance -= MINT_CITIZEN_FOOD_QUANTITY;
                     }
+                    i += 1;
                 }
+
                 // Update deposits to storage
                 self.get_deposits().insert(user.clone(), deposits);
             },
@@ -121,8 +122,8 @@ pub trait CharactersModule:
         let user = self.blockchain().get_caller();
         let deposits = self.get_deposits().get(&user).unwrap_or_default();
         // Find gold and ore deposits
-        let find_gold_deposit = deposits.iter().find(|deposit| self.is_required_token(&deposit.token, GOLD_TOKEN_TICKER));
-        let find_ore_deposit = deposits.iter().find(|deposit| self.is_required_token(&deposit.token, ORE_TOKEN_TICKER));
+        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TOKEN_TICKER));
+        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TOKEN_TICKER));
 
         match (find_gold_deposit, find_ore_deposit) {
             (None, None) => require!(false, "No gold or ore deposited. Need at least {} and {}.", gold_amount, ore_amount),
@@ -134,8 +135,8 @@ pub trait CharactersModule:
                 require!(gold_deposit.balance >= gold_amount, "Not enough gold deposited. Need at least {}.", gold_amount);
                 require!(ore_deposit.balance >= ore_amount, "Not enough ore deposited. Need at least {}.", ore_amount);
                 // Create the payment for the amount of gold and ore to the character contract
-                let gold_token_payment = EsdtTokenPayment::new(gold_deposit.token.clone(), 0u64, gold_amount.clone());
-                let ore_token_payment = EsdtTokenPayment::new(ore_deposit.token.clone(), 0u64, ore_amount.clone());
+                let gold_token_payment = EsdtTokenPayment::new(gold_deposit.token_id.clone(), 0u64, gold_amount.clone());
+                let ore_token_payment = EsdtTokenPayment::new(ore_deposit.token_id.clone(), 0u64, ore_amount.clone());
                 
                 let mut payments : ManagedVec<EsdtTokenPayment<Self::Api>> = ManagedVec::new();
                 payments.push(gold_token_payment);
@@ -154,7 +155,7 @@ pub trait CharactersModule:
                     .argument(&citizen_nft_nonce)
                     .argument(&nft_owner)
                     // Set the callback for updating deposit amounts if successful
-                    .with_callback(self.callbacks().upgrade_citizen_callback(&user, gold_deposit.token, ore_deposit.token))
+                    .with_callback(self.callbacks().upgrade_citizen_callback(&user, gold_deposit.token_id.clone(), ore_deposit.token_id.clone()))
                     .async_call_and_exit();
             },
         }
@@ -171,17 +172,16 @@ pub trait CharactersModule:
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 // Get user deposits and update spent gold and ore
-                let deposits = self.get_deposits().get(&user).unwrap_or_default();
-
-                for mut deposit in deposits.iter() {
-                    if deposit.token == gold_token {
-                        deposit.balance -= UPGRADE_CITIZEN_TO_SOLDIER_GOLD_QUANTITY;
-                        continue;
+                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
+                let mut i = 0;
+                while i < deposits.len() {
+                    if deposits.get(i).token_id == gold_token {
+                        deposits.get_mut(i).balance -= UPGRADE_CITIZEN_TO_SOLDIER_GOLD_QUANTITY;
                     }
-                    if deposit.token == ore_token {
-                        deposit.balance -= UPGRADE_CITIZEN_TO_SOLDIER_ORE_QUANTITY;
-                        continue;
+                    if deposits.get(i).token_id == ore_token {
+                        deposits.get_mut(i).balance -= UPGRADE_CITIZEN_TO_SOLDIER_ORE_QUANTITY;
                     }
+                    i += 1;
                 }
                 // Update deposits to storage
                 self.get_deposits().insert(user.clone(), deposits);
@@ -189,6 +189,84 @@ pub trait CharactersModule:
             ManagedAsyncCallResult::Err(_) => {
                 // If the transaction fails, deposits are not updated
             },
+        }
+    }
+
+    /// Calls the character contract to upgrade the soldier
+    #[endpoint(upgradeSoldier)]
+    fn upgrade_soldier(&self, soldier_nft_nonce: u64, tool_nft_nonce: u64) {
+        self.require_character_contract_address();
+
+        let user = self.blockchain().get_caller();
+        let deposits = self.get_deposits().get(&user).unwrap_or_default();
+
+        // Find character NFT
+        let find_soldier_nft = &deposits.iter().find(|deposit| self.is_required_nft(
+            &deposit.token_id, 
+            deposit.token_nonce, 
+            self.characters_collection_id().get().as_managed_buffer(),
+            soldier_nft_nonce));
+        // Find tool NFT
+        let find_tool_nft = &deposits.iter().find(|deposit| self.is_required_nft(
+            &deposit.token_id, 
+            deposit.token_nonce, 
+            self.tools_collection_id().get().as_managed_buffer(),
+            tool_nft_nonce));
+
+        match (find_soldier_nft, find_tool_nft) {
+            (None, None) => require!(false, "No soldier NFT or tool NFT deposited."),
+            (None, Some(_)) => require!(false, "No soldier NFT deposited."),
+            (Some(_), None) => require!(false, "No tool NFT deposited."),
+            (Some(soldier_nft), Some(tool_nft)) => 
+            {
+                let soldier_nft_transfer = EsdtTokenPayment::new(soldier_nft.token_id.clone(), soldier_nft.token_nonce, BigUint::from(1u64));
+                let tool_nft_transfer = EsdtTokenPayment::new(tool_nft.token_id.clone(), tool_nft.token_nonce, BigUint::from(1u64));
+
+                let mut transfers : ManagedVec<EsdtTokenPayment<Self::Api>> = ManagedVec::new();
+                transfers.push(soldier_nft_transfer);
+                transfers.push(tool_nft_transfer);
+
+                // Call the character contract to upgrade the soldier NFT
+                self.tx()
+                    .to(self.character_contract_address().get())
+                    .with_multi_token_transfer(transfers)
+                    .raw_call(CHARACTER_CONTRACT_UPGRADE_SOLDIER_ENDPOINT_NAME)
+                    .argument(&user)
+                    // Set the callback for removing used NFTs from deposits if successful
+                    .with_callback(self.callbacks().upgrade_soldier_callback(&user, soldier_nft.token_nonce, tool_nft.token_nonce))
+                    .async_call_and_exit();
+            },
+        }
+
+    }
+
+    #[callback]
+    fn upgrade_soldier_callback(&self,
+        user: &ManagedAddress,
+        soldier_nft_nonce: u64,
+        tool_nft_nonce: u64,
+        #[call_result] result: ManagedAsyncCallResult<()>) {
+        match result {
+            ManagedAsyncCallResult::Ok(()) => {
+
+                let deposits = self.get_deposits().get(&user).unwrap_or_default();
+                let mut new_deposits = ManagedVec::new();
+
+                let mut i = 0;
+                while i < deposits.len() {
+                    let current_deposit = deposits.get(i).clone();
+                    
+                    // Skip the NFTs that were used (soldier and tool)
+                    if !self.is_required_nft(&current_deposit.token_id, current_deposit.token_nonce, self.characters_collection_id().get().as_managed_buffer(), soldier_nft_nonce) 
+                        && !self.is_required_nft(&current_deposit.token_id, current_deposit.token_nonce, self.tools_collection_id().get().as_managed_buffer(), tool_nft_nonce) {
+                        new_deposits.push(current_deposit);
+                    }
+                    i += 1;
+                }
+                // Update deposits to storage
+                self.get_deposits().insert(user.clone(), new_deposits);
+            },
+            ManagedAsyncCallResult::Err(_) => {},
         }
     }
 

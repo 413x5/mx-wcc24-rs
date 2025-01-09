@@ -29,7 +29,7 @@ pub trait ResourceTransformContract {
     fn issue_and_set_roles_ore_token(&self) {
         require!(self.ore_token_id().is_empty(), "Ore token already issued.");
 
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().egld();
         require!(*payment == ISSUE_FEE, "Send 0.05 EGLD for the issue cost.");
 
         self.ore_token_id().issue_and_set_all_roles(

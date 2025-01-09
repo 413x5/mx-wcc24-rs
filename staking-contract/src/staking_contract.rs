@@ -52,7 +52,7 @@ pub trait StakingContract {
         
         // Check the EGLD payment is enough for issuing the token and token amount is greater than 0.
         // If more EGLD are sent, the difference will be returned to the caller in the callback
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().egld();
         let issue_cost = BigUint::from(ISSUE_FEE);
         require!(
             *payment >= issue_cost,
@@ -163,9 +163,9 @@ pub trait StakingContract {
 
         // Check that all received tokens are stakeable
         for payment in payments.iter() {
-            let token_id = payment.token_identifier;
+            let token_id = &payment.token_identifier;
 
-            self.require_expected_token(&token_id, STAKE_TOKENID_PREFIX);
+            self.require_expected_token(token_id, STAKE_TOKENID_PREFIX);
         }
 
         let caller = self.blockchain().get_caller();

@@ -20,7 +20,7 @@ pub trait TokenManager {
     fn issue_token_snow(&self, token_amount: BigUint, token_name: OptionalValue<ManagedBuffer>) {
         // Check the EGLD payment is enough for issuing the token and token amount is greater than 0.
         // If more EGLD are sent, the difference will be returned to the caller in the callback
-        let payment = self.call_value().egld_value();
+        let payment = self.call_value().egld();
         let issue_cost = BigUint::from(ISSUE_FEE);
         require!(
             *payment >= issue_cost,
