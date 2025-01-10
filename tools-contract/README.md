@@ -51,7 +51,7 @@ Starts the Shield NFT minting process:
 
 - Requires: 2 ORE tokens
 - Cooldown: 1 hour between mints
-- Optional: Specify a receiver address
+- Optional: Specify a receiver address (used in the [Game Interface](../game-interface-contract/README.md) contract)
 - Burns the ORE tokens and registers the mint timestamp
 
 ### Claim Shield
@@ -64,7 +64,7 @@ fn claim_shield(&self, receiver_address: OptionalValue<ManagedAddress>)
 Claims any ready Shield NFTs for the caller:
 
 - Checks if minting period (1 hour) has passed
-- Optional: Specify a receiver address
+- Optional: Specify a receiver address (used in the [Game Interface](../game-interface-contract/README.md) contract)
 - Mints and transfers the Shield NFT to the receiver
 - Multiple shields can be claimed at once if ready
 
@@ -80,7 +80,7 @@ Starts the Sword NFT minting process:
 
 - Requires: 1 GOLD token and 3 ORE tokens
 - Cooldown: 1 hour between mints
-- Optional: Specify a receiver address
+- Optional: Specify a receiver address (used in the [Game Interface](../game-interface-contract/README.md) contract)
 - Burns the tokens and registers the mint timestamp
 
 ### Claim Sword
