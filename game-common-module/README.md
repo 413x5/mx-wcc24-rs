@@ -85,14 +85,14 @@ fn decode_tool(&self, nft_attributes: ManagedBuffer) -> Tool
 
 To use this module in a contract:
 
-1. Add the module as a dependency in your contract's `Cargo.toml`:
+Add the module as a dependency in your contract's `Cargo.toml`:
 
 ```toml
 [dependencies.game-common-module]
 path = "../game-common-module"
 ```
 
-2. Import and use the module in your contract:
+Import and use the module in your contract:
 
 ```rust
 use game_common_module::*;
