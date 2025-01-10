@@ -103,7 +103,7 @@ The NFT assets are stored on IPFS with the following structure:
 - Base URL: `https://{CID}.ipfs.w3s.link/`
 - IPFS CID: `bafybeih3vwnfq7qyvyb5s2ojjk4cs6gcwxzpatujtahpeiap5xu5k4r3pm`
 
-#### Asset Files [(Included here)](/character-contract/nft-data/)
+#### Asset Files [(Included)](/character-contract/nft-assets/)
 
 1. **Citizen**:
    - Image: `citizen.png`
@@ -191,9 +191,9 @@ The contract handles various error cases including:
 ## How to Use
 
 1. Upload character assets to [IPFS](https://web3.storage/):
-   - [Citizen and Soldier images](/character-contract/nft-data/) (.png)
-   - [Metadata files](/character-contract/nft-data/) (.json)
-   - Set the IPFS CID in the [contract](src/constants.rs):
+   - [Citizen and Soldier images](/character-contract/nft-assets/) (.png)
+   - [Metadata files](/character-contract/nft-assets/) (.json)
+   - Set the IPFS CID in the [game common module](../game-common-module/src/constants.rs):
 
    ```rust
    pub const IPFS_CHARACTERS_CID: &str = "bafybeih3vwnfq7qyvyb5s2ojjk4cs6gcwxzpatujtahpeiap5xu5k4r3pm";
