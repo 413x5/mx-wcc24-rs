@@ -53,13 +53,13 @@ A smart contract that manages character NFTs for the game. The contract handles 
 
 A smart contract that allows users to transform STONE tokens into ORE tokens through a burning mechanism, where a specific amount of STONE is burned to mint ORE tokens.
 
-### [Game Interface Contract](game-interface-contract/README.md)
-
-A smart contract that serves as a unified interface for interacting with the game contracts. It manages user resource deposits, character operations, and tool crafting while handling MultiESDT token transfers between contracts.
-
 ### [Tools Contract](tools-contract/README.md)
 
 A smart contract that manages tool NFTs for the game. The contract handles minting Shields (using ORE) and Swords (using ORE and GOLD), which can be used to upgrade Soldier NFTs.
+
+### [Game Interface Contract](game-interface-contract/README.md)
+
+A smart contract that serves as a unified interface for interacting with the other game contracts. It manages user resource deposits, character operations, and tool crafting while handling MultiESDT token transfers between contracts.
 
 ## Common Modules
 
