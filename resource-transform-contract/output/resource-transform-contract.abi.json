@@ -34,7 +34,7 @@
             "onlyOwner": true,
             "mutability": "mutable",
             "payableInTokens": [
-                "EGLD"
+                "*"
             ],
             "inputs": [],
             "outputs": []

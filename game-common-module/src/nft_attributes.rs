@@ -8,6 +8,10 @@ pub trait NftAttributesDecodeModule {
 
     /// Decode the NFT attributes and return a Character object
     fn decode_character(&self, nft_attributes: ManagedBuffer) -> Character {
+
+        // Character prefix
+        let prefix_len = NFT_CHARACTER_ATTRIBUTES_PREFIX.len();
+        let prefix_bytes = NFT_CHARACTER_ATTRIBUTES_PREFIX.as_bytes();
         
         // Process attributes buffer
         const BATCH_SIZE: usize = 256; // should be enough for one pass
@@ -18,15 +22,16 @@ pub trait NftAttributesDecodeModule {
         let mut in_rank = false;
         let mut in_attack = false;
         let mut in_defence = false;
+
         
         nft_attributes.for_each_batch::<BATCH_SIZE, _>(|batch| {
             let mut i = 0;
             while i < batch.len() {
                 if !prefix_found {
                     // Search for the character prefix is present
-                    if i + 2 < batch.len() && &batch[i..i+3] == NFT_CHARACTER_ATTRIBUTES_PREFIX.as_bytes() {
+                    if i + prefix_len <= batch.len() && &batch[i..i+prefix_len] == prefix_bytes {
                         prefix_found = true;
-                        i += 3;
+                        i += prefix_len;
                         in_rank = true;
                         continue;
                     }
@@ -67,6 +72,10 @@ pub trait NftAttributesDecodeModule {
 
     /// Decode the NFT attributes and return a Tool object
     fn decode_tool(&self, nft_attributes: ManagedBuffer) -> Tool {
+
+        // Tool prefix
+        let prefix_len = NFT_TOOL_ATTRIBUTES_PREFIX.len();
+        let prefix_bytes = NFT_TOOL_ATTRIBUTES_PREFIX.as_bytes();
         
         // Process attributes buffer
         const BATCH_SIZE: usize = 256; // should be enough for one pass
@@ -83,9 +92,9 @@ pub trait NftAttributesDecodeModule {
             while i < batch.len() {
                 if !prefix_found {
                     // Search for the tool prefix is present
-                    if i + 2 < batch.len() && &batch[i..i+3] == NFT_TOOL_ATTRIBUTES_PREFIX.as_bytes() {
+                    if i + prefix_len <= batch.len() && &batch[i..i+prefix_len] == prefix_bytes {
                         prefix_found = true;
-                        i += 3;
+                        i += prefix_len;
                         in_tool_type = true;
                         continue;
                     }

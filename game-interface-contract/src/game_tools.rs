@@ -1,6 +1,6 @@
 use multiversx_sc::imports::*;
 
-use crate::constants::*;
+use game_common_module::constants::*;
 
 #[multiversx_sc::module]
 pub trait ToolsModule:
@@ -23,7 +23,7 @@ pub trait ToolsModule:
         let deposits = self.get_deposits().get(&user).unwrap_or_default();  
 
         // Find ore and gold deposits
-        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TOKEN_TICKER));
+        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TICKER));
 
         match find_ore_deposit {
             None => require!(false, "No ore deposited. Need at least {}.", ore_quantity),
@@ -111,8 +111,8 @@ pub trait ToolsModule:
         let deposits = self.get_deposits().get(&user).unwrap_or_default();  
 
         // Find ore and gold deposits
-        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TOKEN_TICKER));
-        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TOKEN_TICKER));
+        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TICKER));
+        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TICKER));
 
         match (find_ore_deposit, find_gold_deposit) {
             (None, None) => require!(false, "No ore or gold deposited. Need at least {} and {}.", ore_quantity, gold_quantity),

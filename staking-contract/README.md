@@ -39,7 +39,7 @@ A MultiversX smart contract that allows users to stake WINTER tokens and earn SN
 ### Stake Token
 
 ```rust
-#[payable("*")]
+#[payable]
 #[endpoint(stakeTokenWinter)]
 fn stake_token_winter(&self)
 ```

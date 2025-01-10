@@ -15,7 +15,7 @@ pub trait TokenManager {
     fn init(&self) {}
 
     /// Issue a new SNOW token with the specified amount and optional token name.
-    #[payable("EGLD")]
+    #[payable]
     #[endpoint(issueTokenSnow)]
     fn issue_token_snow(&self, token_amount: BigUint, token_name: OptionalValue<ManagedBuffer>) {
         // Check the EGLD payment is enough for issuing the token and token amount is greater than 0.

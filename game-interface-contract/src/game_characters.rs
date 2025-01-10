@@ -1,7 +1,7 @@
 use multiversx_sc::imports::*;
 use multiversx_sc::types::EsdtTokenPayment;
 
-use crate::constants::*;
+use game_common_module::constants::*;
 
 /// Module for interacting with the character contract
 #[multiversx_sc::module]
@@ -25,8 +25,8 @@ pub trait CharactersModule:
         let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find wood and food deposits
-        let find_wood_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, WOOD_TOKEN_TICKER));
-        let find_food_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, FOOD_TOKEN_TICKER));
+        let find_wood_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, WOOD_TICKER));
+        let find_food_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, FOOD_TICKER));
 
         match (find_wood_deposit, find_food_deposit) {
             (None, None) => require!(false, "No wood or food deposited. Need at least {} and {}.", wood_quantity, food_quantity),
@@ -116,14 +116,14 @@ pub trait CharactersModule:
 
         self.require_character_contract_address();
         // Get the gold and ore required
-        let gold_amount = BigUint::from(UPGRADE_CITIZEN_TO_SOLDIER_GOLD_QUANTITY);
-        let ore_amount = BigUint::from(UPGRADE_CITIZEN_TO_SOLDIER_ORE_QUANTITY);
+        let gold_amount = BigUint::from(CITIZEN_TO_SOLDIER_GOLD_QUANTITY);
+        let ore_amount = BigUint::from(CITIZEN_TO_SOLDIER_ORE_QUANTITY);
 
         let user = self.blockchain().get_caller();
         let deposits = self.get_deposits().get(&user).unwrap_or_default();
         // Find gold and ore deposits
-        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TOKEN_TICKER));
-        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TOKEN_TICKER));
+        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TICKER));
+        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TICKER));
 
         match (find_gold_deposit, find_ore_deposit) {
             (None, None) => require!(false, "No gold or ore deposited. Need at least {} and {}.", gold_amount, ore_amount),
@@ -176,10 +176,10 @@ pub trait CharactersModule:
                 let mut i = 0;
                 while i < deposits.len() {
                     if deposits.get(i).token_id == gold_token {
-                        deposits.get_mut(i).balance -= UPGRADE_CITIZEN_TO_SOLDIER_GOLD_QUANTITY;
+                        deposits.get_mut(i).balance -= CITIZEN_TO_SOLDIER_GOLD_QUANTITY;
                     }
                     if deposits.get(i).token_id == ore_token {
-                        deposits.get_mut(i).balance -= UPGRADE_CITIZEN_TO_SOLDIER_ORE_QUANTITY;
+                        deposits.get_mut(i).balance -= CITIZEN_TO_SOLDIER_ORE_QUANTITY;
                     }
                     i += 1;
                 }
@@ -250,21 +250,31 @@ pub trait CharactersModule:
             ManagedAsyncCallResult::Ok(()) => {
 
                 let deposits = self.get_deposits().get(&user).unwrap_or_default();
-                let mut new_deposits = ManagedVec::new();
+                // Create a new deposits list to add every other deposit except the NFTs that were used
+                let mut user_deposits = ManagedVec::new();
+
+                let characters_collection_id = self.characters_collection_id().get().as_managed_buffer().clone();
+                let tools_collection_id = self.tools_collection_id().get().as_managed_buffer().clone();
 
                 let mut i = 0;
                 while i < deposits.len() {
                     let current_deposit = deposits.get(i).clone();
-                    
+                    let current_token_id = current_deposit.token_id.clone();
+                    let current_token_nonce = current_deposit.token_nonce;
+
                     // Skip the NFTs that were used (soldier and tool)
-                    if !self.is_required_nft(&current_deposit.token_id, current_deposit.token_nonce, self.characters_collection_id().get().as_managed_buffer(), soldier_nft_nonce) 
-                        && !self.is_required_nft(&current_deposit.token_id, current_deposit.token_nonce, self.tools_collection_id().get().as_managed_buffer(), tool_nft_nonce) {
-                        new_deposits.push(current_deposit);
+                    if self.is_required_nft(&current_token_id, current_token_nonce, &characters_collection_id, soldier_nft_nonce) {
+                        i += 1; continue;
                     }
+                    if self.is_required_nft(&current_token_id, current_token_nonce, &tools_collection_id, tool_nft_nonce) {
+                        i += 1; continue;
+                    }
+                    // Add the other deposits
+                    user_deposits.push(current_deposit);
                     i += 1;
                 }
                 // Update deposits to storage
-                self.get_deposits().insert(user.clone(), new_deposits);
+                self.get_deposits().insert(user.clone(), user_deposits);
             },
             ManagedAsyncCallResult::Err(_) => {},
         }

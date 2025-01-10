@@ -37,7 +37,7 @@ Key parameters:
 ### Resource Transformation
 
 ```rust
-#[payable("*")]
+#[payable]
 #[endpoint(createOre)]
 fn create_ore(&self, receiver_address: OptionalValue<ManagedAddress>)
 ```
@@ -51,7 +51,7 @@ fn create_ore(&self, receiver_address: OptionalValue<ManagedAddress>)
 
 ```rust
 #[only_owner]
-#[payable("EGLD")]
+#[payable]
 #[endpoint(issueAndSetRolesOreToken)]
 fn issue_and_set_roles_ore_token(&self)
 ```
@@ -79,7 +79,7 @@ The contract handles various error cases including:
 
    ```rust
    #[only_owner]
-   #[payable("EGLD")]
+   #[payable]
    issueAndSetRolesOreToken()
    ```
 
@@ -91,7 +91,7 @@ The contract handles various error cases including:
 3. Users can transform STONE tokens into ORE by calling the createOre endpoint:
 
    ```rust
-   #[payable("*")]
+   #[payable]
    createOre(
        receiver_address: OptionalValue<ManagedAddress>
    )

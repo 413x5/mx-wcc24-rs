@@ -43,16 +43,31 @@ A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and ea
 
 ### [Resource Mint Contract](resource-mint-contract/README.md)
 
-A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and mint any number of other ESDT Fungible tokens (WOOD, FOOD, STONE, GOLD) based on their stake amount and time intervals.
+A smart contract that allows users to stake ESDT Fungible tokens (WINTER) and mint game resources (WOOD, FOOD, STONE, GOLD) based on their stake amount and time intervals.
 
 ### [Character Contract](character-contract/README.md)
 
-A smart contract that manages character NFTs for a MultiversX blockchain game. The contract handles two types of characters: Citizens and Soldiers, with the ability to upgrade Citizens to Soldiers using specific resources.
+A smart contract that manages character NFTs for the game. The contract handles minting Citizens using resources (WOOD, FOOD), upgrading them to Soldiers (using GOLD, ORE), and further upgrading Soldiers with Tool NFTs (Shields and Swords).
 
 ### [Resource Transform Contract](resource-transform-contract/README.md)
 
-A smart contract that allows users to transform resources (STONE tokens into ORE tokens), where a specific amount of STONE can be burned to mint ORE tokens.
+A smart contract that allows users to transform STONE tokens into ORE tokens through a burning mechanism, where a specific amount of STONE is burned to mint ORE tokens.
 
 ### [Game Interface Contract](game-interface-contract/README.md)
 
-A smart contract that serves as a unified interface for interacting with the other game contracts. It handles MultiESDT token transfers and BackTransfers from the other contracts.
+A smart contract that serves as a unified interface for interacting with the game contracts. It manages user resource deposits, character operations, and tool crafting while handling MultiESDT token transfers between contracts.
+
+### [Tools Contract](tools-contract/README.md)
+
+A smart contract that manages tool NFTs for the game. The contract handles minting Shields (using ORE) and Swords (using ORE and GOLD), which can be used to upgrade Soldier NFTs.
+
+## Common Modules
+
+### [Game Common Module](game-common-module/README.md)
+
+A shared module used across game contracts that provides:
+
+- Common data structures for Characters and Tools
+- NFT attribute decoding
+- Token validation utilities
+- Shared constants and configurations

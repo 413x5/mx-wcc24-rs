@@ -20,7 +20,7 @@ The contract is organized into several modules:
 
 - [`lib.rs`](src/lib.rs): Main contract implementation with deposit management
 - [`game_characters.rs`](src/game_characters.rs): Character-related operations (citizen minting, citizen claim, soldier upgrading)
-- [`game_resources.rs`](src/game_resources.rs): Resource transformation operations (ORE creation)
+- [`game_resources.rs`](src/game_resources.rs): Resource claiming and transformation operations (ORE creation)
 - [`game_tools.rs`](src/game_tools.rs): Tools-related operations (shield minting, sword minting)
 - [`admin.rs`](src/admin.rs): Admin endpoints for contract configuration (set game contract addresses)
 - [`storage.rs`](src/storage.rs): Storage mappers for state management
@@ -51,7 +51,7 @@ Key parameters:
 ### Resource Management
 
 ```rust
-#[payable("*")]
+#[payable]
 #[endpoint(depositResources)]
 fn deposit_resources(&self)
 ```
@@ -140,6 +140,20 @@ fn upgrade_citizen_to_soldier(
   - 5 GOLD tokens
   - 5 ORE tokens
 - Burns the resources and upgrades the NFT in place
+
+```rust
+#[endpoint(upgradeSoldier)]
+fn upgrade_soldier(&self, soldier_nft_nonce: u64, tool_nft_nonce: u64)
+```
+
+- Upgrades a Soldier NFT with a Tool NFT through the [Character Contract](../character-contract/README.md)
+- Parameters:
+  - `soldier_nft_nonce`: Nonce of the Soldier NFT to upgrade
+  - `tool_nft_nonce`: Nonce of the Tool NFT to use
+- Requires deposited:
+  - 1 Soldier NFT (specified by nonce)
+  - 1 Tool NFT (specified by nonce)
+- Returns the upgraded Soldier NFT to the owner
 
 ### Tools Operations
 
@@ -270,7 +284,7 @@ The contract handles various error cases including:
 3. Deposit available resources:
 
    ```rust
-   #[payable("*")]
+   #[payable]
    depositResources()
    ```
 
@@ -317,6 +331,16 @@ The contract handles various error cases including:
    Requires deposited:
    - 5 GOLD tokens
    - 5 ORE tokens
+
+   Upgrade Soldier:
+
+   ```rust
+   upgradeSoldier(soldier_nft_nonce: u64, tool_nft_nonce: u64)
+   ```
+
+   Requires deposited:
+   - 1 Soldier NFT (specified by nonce)
+   - 1 Tool NFT (specified by nonce)
 
    Mint Shield:
 

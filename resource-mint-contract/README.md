@@ -31,7 +31,7 @@ The contract is organized into several modules:
 ### [`stakeTokens`](src/lib.rs)
 
 ```rust
-#[payable("*")]
+#[payable]
 #[endpoint(stakeTokens)]
 fn stake_tokens(&self, for_user: OptionalValue<ManagedAddress>)
 ```
@@ -72,7 +72,7 @@ fn claim_resources(&self, for_user: OptionalValue<ManagedAddress>)
 
 ```rust
 #[only_owner]
-#[payable("EGLD")]
+#[payable]
 #[endpoint(issueResourceToken)]
 fn issue_resource_token(token_name: ManagedBuffer, token_ticker: ManagedBuffer, initial_supply: OptionalValue<BigUint>)
 ```

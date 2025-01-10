@@ -44,7 +44,7 @@ pub trait StakingContract {
 
     /// Issue the reward token
     #[only_owner]
-    #[payable("EGLD")]
+    #[payable]
     #[endpoint(issueRewardToken)]
     fn issue_reward_token(&self, initial_supply: OptionalValue<BigUint>) {
         // Check if reward token has already been issued
@@ -155,7 +155,7 @@ pub trait StakingContract {
     // Public endpoints
 
     /// Stake tokens
-    #[payable("*")]
+    #[payable]
     #[endpoint(stakeTokenWinter)]
     fn stake_token_winter(&self) {
         let payments = self.call_value().all_esdt_transfers();

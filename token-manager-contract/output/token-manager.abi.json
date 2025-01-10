@@ -33,7 +33,7 @@
             "name": "issueTokenSnow",
             "mutability": "mutable",
             "payableInTokens": [
-                "EGLD"
+                "*"
             ],
             "inputs": [
                 {

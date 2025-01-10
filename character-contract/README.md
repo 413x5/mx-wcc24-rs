@@ -1,6 +1,6 @@
 # Character Contract
 
-A MultiversX smart contract that manages character NFTs for a blockchain game. The contract handles two types of characters: Citizens and Soldiers, with the ability to upgrade Citizens to Soldiers using specific resources.
+A MultiversX smart contract that handles character NFTs for the game. The contract manages the minting and upgrading of character NFTs (Citizens and Soldiers) and their interactions with tool NFTs.
 
 ## Overview
 
@@ -8,7 +8,7 @@ The contract implements a character NFT game where players can use the tokens fr
 
 - Mint Citizen NFTs using WOOD and FOOD tokens
 - Upgrade Citizens to Soldiers using GOLD and ORE tokens
-- Upgrade Soldiers attributes attack and defence
+- Upgrade Soldiers with Tool NFTs (Shields and Swords)
 
 ## Contract Structure
 
@@ -44,7 +44,7 @@ Key parameters:
 ### Citizen creation
 
 ```rust
-#[payable("*")]
+#[payable]
 #[endpoint(mintCitizen)]
 fn mint_citizen(&self, receiver_address: OptionalValue<ManagedAddress>)
 ```
@@ -66,7 +66,7 @@ fn claim_citizen(&self, receiver_address: OptionalValue<ManagedAddress>)
 ### Citizen upgrade to Soldier
 
 ```rust
-#[payable("*")]
+#[payable]
 #[endpoint(upgradeCitizenToSoldier)]
 fn upgrade_citizen_to_soldier(
     &self,
@@ -78,6 +78,21 @@ fn upgrade_citizen_to_soldier(
 - Upgrades a Citizen to a Soldier
 - Requires 5 GOLD and 5 ORE tokens
 - Takes the citizen NFT nonce and owner address as parameters
+
+### Soldier upgrade with Tools
+
+```rust
+#[payable]
+#[endpoint(upgradeSoldier)]
+fn upgrade_soldier(&self, owner_address: ManagedAddress)
+```
+
+- Upgrades a Soldier NFT with a Tool NFT (Shield or Sword)
+- Takes the owner address as parameter
+- Requires:
+  - 1 Soldier NFT
+  - 1 Tool NFT
+- Returns the upgraded Soldier NFT to the owner
 
 ## NFT Metadata
 
@@ -154,9 +169,24 @@ The metadata recreation is handled by the [ESDTMetaDataRecreate](https://docs.mu
 
 The contract handles various error cases including:
 
-- Insufficient resource payments
-- Invalid character upgrades
-- Incorrect minting periods
+1. Minting Citizen:
+   - Incorrect number of payment tokens
+   - Wrong token types
+   - Incorrect token amounts
+
+2. Claiming Citizen:
+   - No citizens pending to be minted
+   - Minting period not elapsed
+
+3. Upgrading to Soldier:
+   - Incorrect number of payment tokens
+   - Wrong token types
+   - Incorrect token amounts
+
+4. Upgrading Soldier:
+   - Incorrect number of NFTs
+   - Wrong NFT types
+   - NFT ownership verification
 
 ## How to Use
 
@@ -166,7 +196,7 @@ The contract handles various error cases including:
    - Set the IPFS CID in the [contract](src/constants.rs):
 
    ```rust
-   pub const IPFS_CID: &str = "bafybeih3vwnfq7qyvyb5s2ojjk4cs6gcwxzpatujtahpeiap5xu5k4r3pm";
+   pub const IPFS_CHARACTERS_CID: &str = "bafybeih3vwnfq7qyvyb5s2ojjk4cs6gcwxzpatujtahpeiap5xu5k4r3pm";
    ```
 
 2. Build and Deploy the contract following the [instructions](../README.md#building-the-contracts)
@@ -177,7 +207,7 @@ The contract handles various error cases including:
 
    ```rust
    #[only_owner]
-   #[payable("EGLD")]
+   #[payable]
    registerCharactersCollection()
    ```
 
@@ -189,7 +219,7 @@ The contract handles various error cases including:
 4. Users can start minting Citizens by sending the required resources:
 
    ```rust
-   #[payable("*")]
+   #[payable]
    mintCitizen(
        receiver_address: OptionalValue<ManagedAddress>
    )
@@ -210,7 +240,7 @@ The contract handles various error cases including:
 6. Citizens can be upgraded to Soldiers by sending the required resources:
 
    ```rust
-   #[payable("*")]
+   #[payable]
    upgradeCitizenToSoldier(
        citizen_nft_nonce: u64,
        owner_address: ManagedAddress
@@ -220,3 +250,16 @@ The contract handles various error cases including:
    Required tokens:
    - 5 GOLD
    - 5 ORE
+
+7. Soldiers can be upgraded with Tools:
+
+   ```rust
+   #[payable]
+   upgradeSoldier(
+       owner_address: ManagedAddress
+   )
+   ```
+
+   Required NFTs:
+   - 1 Soldier NFT
+   - 1 Tool NFT (Shield or Sword)

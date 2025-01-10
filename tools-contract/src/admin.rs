@@ -1,6 +1,6 @@
 use multiversx_sc::imports::*;
 
-use crate::constants::*;
+use game_common_module::constants::*;
 
 
 #[multiversx_sc::module]
@@ -15,7 +15,7 @@ pub trait AdminModule:
 
     /// Register collection as dynamic NFT and set all roles
     #[only_owner]
-    #[payable("EGLD")]
+    #[payable]
     #[endpoint(registerToolsCollection)]
     fn register_tools_collection(&self) {
         require!(self.tools_nft_collection().is_empty(), "Tools collection already registered.");

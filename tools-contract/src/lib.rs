@@ -8,25 +8,28 @@ pub mod data;
 pub mod admin;
 pub mod storage;
 
-use constants::*;
 use data::*;
+
+use game_common_module::constants::*;
 
 #[multiversx_sc::contract]
 pub trait ToolsContract: 
     storage::StorageModule +
-    admin::AdminModule {
+    admin::AdminModule +
+    game_common_module::GameCommonModule 
+{
 
     // Shield fuctionality
 
     /// Mints a Shield NFT
-    #[payable("*")]
+    #[payable]
     #[endpoint(mintShield)]
     fn mint_shield(&self, receiver_address: OptionalValue<ManagedAddress>) {
 
         let (token_id, payment_amount) = self.call_value().single_fungible_esdt();
 
         let mut ore_amount = BigUint::zero();
-        if self.is_required_token(&token_id, ORE_TICKER) { ore_amount = payment_amount.clone(); }
+        if self.is_required_token_str(&token_id, ORE_TICKER) { ore_amount = payment_amount.clone(); }
 
         require!(ore_amount == MINT_SHIELD_ORE_QUANTITY, "Ore amount sent must be {}.", MINT_SHIELD_ORE_QUANTITY);
 
@@ -164,7 +167,7 @@ pub trait ToolsContract:
     // Sword functionality
 
     /// Mints a Sword NFT
-    #[payable("*")]
+    #[payable]
     #[endpoint(mintSword)]
     fn mint_sword(&self, receiver_address: OptionalValue<ManagedAddress>) {
         let payments = self.call_value().all_esdt_transfers();
@@ -176,8 +179,8 @@ pub trait ToolsContract:
         // Check the gold and ore required
         for payment in payments.iter() {
             let token_id = &payment.token_identifier;
-            if self.is_required_token(token_id, GOLD_TICKER) { gold_amount = payment.amount.clone(); }
-            if self.is_required_token(token_id, ORE_TICKER) { ore_amount = payment.amount.clone(); }         
+            if self.is_required_token_str(token_id, GOLD_TICKER) { gold_amount = payment.amount.clone(); }
+            if self.is_required_token_str(token_id, ORE_TICKER) { ore_amount = payment.amount.clone(); }         
         }
 
         require!(gold_amount == MINT_SWORD_GOLD_QUANTITY, "Gold amount sent must be {}.", MINT_SWORD_GOLD_QUANTITY);
@@ -323,7 +326,7 @@ pub trait ToolsContract:
     fn get_nft_attributes(&self, tool: &Tool) -> ManagedBuffer {
         let nft_attributes = ManagedBuffer::from(
             sc_format!("metadata:{}/{}.{};tags:{}{}{}:{}:{}",
-            ManagedBuffer::from(IPFS_CID),
+            ManagedBuffer::from(IPFS_TOOLS_CID),
             self.get_asset_filename(tool),
             ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION), 
             self.get_asset_tags(tool),
@@ -339,7 +342,7 @@ pub trait ToolsContract:
         // Get the base filename
         let asset_base_filename = 
             sc_format!("https://{}.ipfs.w3s.link/{}", 
-                ManagedBuffer::from(IPFS_CID), 
+                ManagedBuffer::from(IPFS_TOOLS_CID), 
                 self.get_asset_filename(tool));
         // Get the image and metadata URIs by adding the file extension
         let asset_image = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_IMAGE_FILE_EXTENSION));
@@ -366,19 +369,6 @@ pub trait ToolsContract:
         if tool.is_shield() { return ManagedBuffer::from(SHIELD_NFT_TAGS) };
         if tool.is_sword() { return ManagedBuffer::from(SWORD_NFT_TAGS) };
         sc_panic!("Unknown tool type {}.", tool.tool_type);
-    }
-
-
-    /// Check if a token is a required token
-    fn is_required_token(&self, check_token_id: &TokenIdentifier, required_token_ticker: &str) -> bool {
-        check_token_id.as_managed_buffer().copy_slice(0, required_token_ticker.len()).unwrap_or_default()
-         == ManagedBuffer::from(required_token_ticker.as_bytes())
-    }
-
-    /// Check if a token is a required token and terminates if not
-    fn require_expected_token(&self, check_token_id: &TokenIdentifier, required_token_ticker: &str) {
-        let expected_token = ManagedBuffer::from(required_token_ticker.as_bytes());
-        require!(self.is_required_token(check_token_id, required_token_ticker), "Invalid token {}. Expected {}.", check_token_id, expected_token);
     }
 
     /// Require that the tools collection is issued

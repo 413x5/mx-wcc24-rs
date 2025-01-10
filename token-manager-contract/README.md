@@ -29,7 +29,7 @@ A MultiversX smart contract that allows users to issue and manage SNOW tokens.
 ### Issue Token
 
 ```rust
-#[payable("EGLD")]
+#[payable]
 #[endpoint(issueTokenSnow)]
 fn issueTokenSnow(&self, token_amount: BigUint, token_name: OptionalValue<ManagedBuffer>)
 ```

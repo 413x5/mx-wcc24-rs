@@ -8,7 +8,6 @@ pub mod storage;
 pub mod views;
 pub mod constants;
 
-use constants::*;
 use game_common_module::data::*;
 use game_common_module::constants::*;
 
@@ -23,7 +22,7 @@ pub trait CharacterContract:
 {
 
     /// Mints a Citizen NFT
-    #[payable("*")]
+    #[payable]
     #[endpoint(mintCitizen)]
     fn mint_citizen(&self, receiver_address: OptionalValue<ManagedAddress>) {
         let payments = self.call_value().all_esdt_transfers();
@@ -123,7 +122,7 @@ pub trait CharacterContract:
     }
 
 
-    #[payable("*")]
+    #[payable]
     #[endpoint(upgradeCitizenToSoldier)]
     fn upgrade_citizen_to_soldier(&self, citizen_nft_nonce: u64, owner_address: ManagedAddress) {
         self.require_character_collection();
@@ -155,19 +154,19 @@ pub trait CharacterContract:
 
     }
 
-
-    #[payable("*")]
+    /// Upgrades a Soldier NFT with a Tool NFT
+    #[payable]
     #[endpoint(upgradeSoldier)]
     fn upgrade_soldier(&self, owner_address: ManagedAddress) {
         self.require_character_collection();
         self.require_tools_collection();
 
         let transfers = self.call_value().all_esdt_transfers();
-        require!(transfers.len() == 2, "Endpoint requires 2 transfers, a Soldier NFT and a Tool NFT.");
+        require!(transfers.len() == 2, "Endpoint requires 2 transfers, a Character NFT and a Tool NFT.");
 
-        let mut soldier_nft_nonce = 0;
+        let mut character_nft_nonce = 0;
         let mut tool_nft_nonce = 0;
-        let mut soldier_nft_count = BigUint::zero();
+        let mut character_nft_count = BigUint::zero();
         let mut tool_nft_count = BigUint::zero();
 
         // Check the NFTs required
@@ -175,8 +174,8 @@ pub trait CharacterContract:
             let token_id = &transfer.token_identifier;
 
             if self.is_required_token(&token_id, &self.characters_nft_collection().get_token_id().as_managed_buffer()) {
-                soldier_nft_nonce = transfer.token_nonce;
-                soldier_nft_count = transfer.amount.clone(); 
+                character_nft_nonce = transfer.token_nonce;
+                character_nft_count = transfer.amount.clone(); 
             }
             if self.is_required_token(&token_id, &self.tools_nft_collection().get().as_managed_buffer()) {
                 tool_nft_nonce = transfer.token_nonce;
@@ -184,17 +183,17 @@ pub trait CharacterContract:
             }
         }
 
-        require!(soldier_nft_count == 1, "No Soldier NFT received.");
+        require!(character_nft_count == 1, "No Soldier NFT received.");
         require!(tool_nft_count == 1, "No Tool NFT received.");
 
         // Upgrade the NFT
-        self.upgrade_soldier_nft(soldier_nft_nonce, tool_nft_nonce);
+        self.upgrade_soldier_nft(character_nft_nonce, tool_nft_nonce);
 
         // Send the soldier NFT back to the owner
         self.send().direct_esdt(
             &owner_address,
             &self.characters_nft_collection().get_token_id(),
-            soldier_nft_nonce,
+            character_nft_nonce,
             &BigUint::from(1u64),
         );
 
@@ -227,7 +226,7 @@ pub trait CharacterContract:
             &(last_minted_nft_nonce + 1));
 
         // Set the royalties
-        let royalties = BigUint::from(NFT_ROYALTIES);
+        let royalties = BigUint::from(CHARACTER_NFT_ROYALTIES);
 
         // Get the attributes
         let attributes = self.get_nft_attributes(&new_citizen);
@@ -308,7 +307,7 @@ pub trait CharacterContract:
     }
 
     /// Upgrades a Soldier NFT
-    fn upgrade_soldier_nft(&self, soldier_nft_nonce: u64, tool_nft_nonce: u64) {
+    fn upgrade_soldier_nft(&self, character_nft_nonce: u64, tool_nft_nonce: u64) {
         self.require_character_collection();
         self.require_tools_collection();
 
@@ -316,7 +315,7 @@ pub trait CharacterContract:
         let owner_address = self.blockchain().get_sc_address();
 
         // Get the character NFT data
-        let character_nft_data = self.blockchain().get_esdt_token_data(&owner_address, &self.characters_nft_collection().get_token_id(), soldier_nft_nonce);
+        let character_nft_data = self.blockchain().get_esdt_token_data(&owner_address, &self.characters_nft_collection().get_token_id(), character_nft_nonce);
 
         // Get the NFT attributes
         let character_nft_attributes = character_nft_data.attributes;
@@ -327,7 +326,10 @@ pub trait CharacterContract:
 
         // Check if the character is a soldier
         require!(character.is_soldier(), "Character is not a soldier");
-        
+
+        // Character is an upgradable soldier
+        let mut soldier = character;
+
         // Get the tool NFT data
         let tool_nft_data = self.blockchain().get_esdt_token_data(&owner_address, &self.tools_nft_collection().get(), tool_nft_nonce);
 
@@ -338,19 +340,13 @@ pub trait CharacterContract:
         // Decode the NFT attributes
         let tool = self.decode_tool(tool_nft_attributes);
 
-        // Check if the NFT is a shield or a sword
-        require!(tool.is_shield() || tool.is_sword(), "Tool is not a shield or a sword");
-
-        // Upgradable character
-        let mut soldier = character;
-
         // Upgrade the soldier
         soldier.upgrade(&tool);
 
         // NFT name
         let new_nft_name = sc_format!("{} {}",
             ManagedBuffer::from(NFT_NAME_SOLDIER.as_bytes()),
-            soldier_nft_nonce);
+            character_nft_nonce);
 
         // Get new NFT attributes
         let new_attributes = self.get_nft_attributes(&soldier);
@@ -366,7 +362,7 @@ pub trait CharacterContract:
             .to(self.blockchain().get_sc_address())
             .raw_call(ESDT_METADATA_RECREATE_ENDPOINT_NAME)
             .argument(&self.characters_nft_collection().get_token_id())
-            .argument(&soldier_nft_nonce)
+            .argument(&character_nft_nonce)
             .argument(&new_nft_name)
             .argument(&character_nft_data.royalties)
             .argument(&new_attributes_hash)
@@ -377,8 +373,6 @@ pub trait CharacterContract:
             }
         // Send the transaction and wait for completion (sync call)
         tx.sync_call();
-
-        
     }
 
     /// Require that the character collection is issued
@@ -397,7 +391,7 @@ pub trait CharacterContract:
     fn get_nft_attributes(&self, character: &Character) -> ManagedBuffer {
         let nft_attributes = ManagedBuffer::from(
             sc_format!("metadata:{}/{}.{};tags:{}{}{}:{}:{}",
-            ManagedBuffer::from(IPFS_CID),
+            ManagedBuffer::from(IPFS_CHARACTERS_CID),
             self.get_asset_filename(character),
             ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION), 
             self.get_nft_tags(character),
@@ -414,7 +408,7 @@ pub trait CharacterContract:
         let asset_base_filename = 
             //sc_format!("https://ipfs.io/ipfs/{}/{}", // This IPFS gateway timeouts
             sc_format!("https://{}.ipfs.w3s.link/{}",  // New IPFS gateway
-            ManagedBuffer::from(IPFS_CID), // IPFS CID
+            ManagedBuffer::from(IPFS_CHARACTERS_CID), // IPFS CID
             self.get_asset_filename(character)
         );
         // Get the image and metadata URIs by adding the file extension

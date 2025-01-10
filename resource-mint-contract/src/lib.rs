@@ -39,7 +39,7 @@ pub trait ResourceMintContract:
     /// 
     /// # Arguments
     /// * `for_user` - User address optional, if not specified the caller address will be used
-    #[payable("*")]
+    #[payable]
     #[endpoint(stakeTokens)]
     fn stake_tokens(&self, for_user: OptionalValue<ManagedAddress>) {
         require!(!self.stake_token_ticker().is_empty(), ERR_STAKE_TOKEN_NOT_SET);

@@ -1,6 +1,6 @@
 use multiversx_sc::imports::*;
 
-use crate::constants::*;
+use game_common_module::constants::*;
 
 #[multiversx_sc::module]
 pub trait ResourcesModule:
@@ -91,7 +91,7 @@ pub trait ResourcesModule:
         let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find stone deposit
-        let find_stone_deposit = deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, STONE_TOKEN_TICKER));
+        let find_stone_deposit = deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, STONE_TICKER));
         match find_stone_deposit {
             None => require!(false, "No stone deposited. Need at least {}.", STONE_AMMOUNT_FOR_ORE),
             Some(stone_deposit) => {

@@ -16,6 +16,7 @@ use constants::*;
 use data::*;
 
 
+
 #[multiversx_sc::contract]
 pub trait GameInterfaceContract: 
     admin::AdminModule + 

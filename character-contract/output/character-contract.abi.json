@@ -78,6 +78,9 @@
             "outputs": []
         },
         {
+            "docs": [
+                "Upgrades a Soldier NFT with a Tool NFT"
+            ],
             "name": "upgradeSoldier",
             "mutability": "mutable",
             "payableInTokens": [
@@ -99,7 +102,7 @@
             "onlyOwner": true,
             "mutability": "mutable",
             "payableInTokens": [
-                "EGLD"
+                "*"
             ],
             "inputs": [],
             "outputs": []

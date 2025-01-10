@@ -1,7 +1,6 @@
 use multiversx_sc::imports::*;
 
-use crate::constants::*;
-
+use game_common_module::constants::*;
 
 #[multiversx_sc::module]
 pub trait AdminModule: 
@@ -15,7 +14,7 @@ pub trait AdminModule:
 
     /// Register character collection as dynamic NFT and set all roles
     #[only_owner]
-    #[payable("EGLD")]
+    #[payable]
     #[endpoint(registerCharactersCollection)]
     fn register_characters_collection(&self) {
         require!(self.characters_nft_collection().is_empty(), "Character collection already registered.");

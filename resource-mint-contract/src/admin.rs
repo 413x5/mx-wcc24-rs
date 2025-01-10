@@ -27,7 +27,7 @@ pub trait AdminModule: crate::storage::StorageModule {
 
     /// Issue token to be used for minting resources
     #[only_owner]
-    #[payable("EGLD")]
+    #[payable]
     #[endpoint(issueResourceToken)]
     fn issue_resource_token(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer, initial_supply: OptionalValue<BigUint>) {
         require!(self.resource_token_id().is_empty(), ERR_RESOURCE_TOKEN_ALREADY_ISSUED);

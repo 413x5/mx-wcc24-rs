@@ -312,6 +312,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a0d2fde1f7b3d48b8395d5f2de76c18a528bd6a9cdde438df747bfcba3e05d6f"
 
 [[package]]
+name = "game-common-module"
+version = "0.0.0"
+dependencies = [
+ "multiversx-sc",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -892,6 +899,7 @@ dependencies = [
 name = "tools-contract"
 version = "0.0.0"
 dependencies = [
+ "game-common-module",
  "multiversx-sc",
  "multiversx-sc-scenario",
  "num-bigint",

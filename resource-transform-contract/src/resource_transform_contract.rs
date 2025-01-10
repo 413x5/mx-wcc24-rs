@@ -24,7 +24,7 @@ pub trait ResourceTransformContract {
 
     /// Issue and set all roles for the ore token
     #[only_owner]
-    #[payable("EGLD")]
+    #[payable]
     #[endpoint(issueAndSetRolesOreToken)]
     fn issue_and_set_roles_ore_token(&self) {
         require!(self.ore_token_id().is_empty(), "Ore token already issued.");
@@ -62,7 +62,7 @@ pub trait ResourceTransformContract {
     // Public endpoints
 
     /// Create ore by burning the stone tokens
-    #[payable("*")]
+    #[payable]
     #[endpoint(createOre)]
     fn create_ore(&self, receiver_address: OptionalValue<ManagedAddress>) {
         self.ore_token_id().require_issued_or_set();
