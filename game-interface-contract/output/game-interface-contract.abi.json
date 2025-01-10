@@ -64,39 +64,6 @@
         },
         {
             "docs": [
-                "Clear deposits"
-            ],
-            "name": "clearDeposits",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "docs": [
-                "Set deposit balance"
-            ],
-            "name": "setDepositBalance",
-            "onlyOwner": true,
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "token_id",
-                    "type": "TokenIdentifier"
-                },
-                {
-                    "name": "token_nonce",
-                    "type": "u64"
-                },
-                {
-                    "name": "new_balance",
-                    "type": "BigUint"
-                }
-            ],
-            "outputs": []
-        },
-        {
-            "docs": [
                 "Set character contract address"
             ],
             "name": "setCharacterContractAddress",
@@ -220,6 +187,43 @@
                 {
                     "name": "collection_id",
                     "type": "TokenIdentifier"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Clear deposits"
+            ],
+            "name": "clearDeposits",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set deposit balance"
+            ],
+            "name": "setDepositBalance",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "user",
+                    "type": "Address"
+                },
+                {
+                    "name": "token_id",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "token_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "new_balance",
+                    "type": "BigUint"
                 }
             ],
             "outputs": []

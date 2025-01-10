@@ -141,8 +141,8 @@ The module provides various constants used across contracts:
   - Tools: `TOOLS_COLLECTION_NAME` ("Tools"), `TOOLS_COLLECTION_TICKER` ("TOOLS")
 
 - NFT Names:
-  - `NFT_NAME_CITIZEN`: "Citizen"
-  - `NFT_NAME_SOLDIER`: "Soldier"
+  - `CITIZEN_NFT_NAME`: "Citizen"
+  - `SOLDIER_NFT_NAME`: "Soldier"
   - `SHIELD_NFT_NAME`: "Shield"
   - `SWORD_NFT_NAME`: "Sword"
 

@@ -27,8 +27,8 @@ pub const CHARACTER_COLLECTION_TICKER: &str = "CHARACTER";
 pub const TOOLS_COLLECTION_NAME: &str = "Tools";
 pub const TOOLS_COLLECTION_TICKER: &str = "TOOLS";
 /// NFT names
-pub const NFT_NAME_CITIZEN: &str = "Citizen";
-pub const NFT_NAME_SOLDIER: &str = "Soldier";
+pub const CITIZEN_NFT_NAME: &str = "Citizen";
+pub const SOLDIER_NFT_NAME: &str = "Soldier";
 pub const SHIELD_NFT_NAME: &str = "Shield";
 pub const SWORD_NFT_NAME: &str = "Sword";
 /// NFT royalties
@@ -61,8 +61,8 @@ pub const RESOURCE_TRANSFORM_CONTRACT_CREATE_ORE_ENDPOINT_NAME: &str = "createOr
 pub const CHARACTER_CONTRACT_MINT_CITIZEN_ENDPOINT_NAME: &str = "mintCitizen";
 pub const CHARACTER_CONTRACT_CLAIM_CITIZEN_ENDPOINT_NAME: &str = "claimCitizen";
 pub const CHARACTER_CONTRACT_UPGRADE_CITIZEN_TO_SOLDIER_ENDPOINT_NAME: &str = "upgradeCitizenToSoldier";
+pub const CHARACTER_CONTRACT_UPGRADE_SOLDIER_ENDPOINT_NAME: &str = "upgradeSoldier";
 pub const TOOLS_CONTRACT_MINT_SHIELD_ENDPOINT_NAME: &str = "mintShield";
 pub const TOOLS_CONTRACT_MINT_SWORD_ENDPOINT_NAME: &str = "mintSword";
 pub const TOOLS_CONTRACT_CLAIM_SHIELD_ENDPOINT_NAME: &str = "claimShield";
 pub const TOOLS_CONTRACT_CLAIM_SWORD_ENDPOINT_NAME: &str = "claimSword";
-pub const CHARACTER_CONTRACT_UPGRADE_SOLDIER_ENDPOINT_NAME: &str = "upgradeSoldier";

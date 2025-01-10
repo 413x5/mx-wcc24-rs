@@ -222,7 +222,7 @@ pub trait CharacterContract:
 
         // Set the NFT name
         let nft_name = sc_format!("{} {}",
-            ManagedBuffer::from(NFT_NAME_CITIZEN.as_bytes()),
+            ManagedBuffer::from(CITIZEN_NFT_NAME.as_bytes()),
             &(last_minted_nft_nonce + 1));
 
         // Set the royalties
@@ -276,7 +276,7 @@ pub trait CharacterContract:
 
         // Create new NFT name
         let new_nft_name = sc_format!("{} {}",
-            ManagedBuffer::from(NFT_NAME_SOLDIER.as_bytes()),
+            ManagedBuffer::from(SOLDIER_NFT_NAME.as_bytes()),
             citizen_nft_nonce);
 
         // Get new NFT attributes
@@ -345,7 +345,7 @@ pub trait CharacterContract:
 
         // NFT name
         let new_nft_name = sc_format!("{} {}",
-            ManagedBuffer::from(NFT_NAME_SOLDIER.as_bytes()),
+            ManagedBuffer::from(SOLDIER_NFT_NAME.as_bytes()),
             character_nft_nonce);
 
         // Get new NFT attributes

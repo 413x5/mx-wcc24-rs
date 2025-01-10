@@ -23,8 +23,6 @@ multiversx_sc_wasm_adapter::endpoints! {
         depositResources => deposit_resources
         depositCharacterNft => deposit_character_nft
         depositToolNft => deposit_tool_nft
-        clearDeposits => clear_deposits
-        setDepositBalance => set_deposit_balance
         setCharacterContractAddress => set_character_contract_address
         setResourceTransformContractAddress => set_resource_transform_contract_address
         setToolsContractAddress => set_tools_contract_address
@@ -34,6 +32,8 @@ multiversx_sc_wasm_adapter::endpoints! {
         setGoldMintContractAddress => set_gold_mint_contract_address
         setCharactersCollectionId => set_characters_collection
         setToolsCollectionId => set_tools_collection
+        clearDeposits => clear_deposits
+        setDepositBalance => set_deposit_balance
         getDeposits => get_deposits
         characterContractAddress => character_contract_address
         resourceTransformContractAddress => resource_transform_contract_address
