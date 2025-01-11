@@ -1,0 +1,170 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.85.0-nightly",
+            "commitHash": "5f23ef7d3f7a8c3e0ca5c4e1978829c0448a3686",
+            "commitDate": "2024-12-20",
+            "channel": "Nightly",
+            "short": "rustc 1.85.0-nightly (5f23ef7d3 2024-12-20)"
+        },
+        "contractCrate": {
+            "name": "game-arena-contract",
+            "version": "0.0.0"
+        },
+        "framework": {
+            "name": "multiversx-sc",
+            "version": "0.55.0"
+        }
+    },
+    "name": "GameArenaContract",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "upgradeConstructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "name": "setCharactersNftCollection",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "collection_id",
+                    "type": "TokenIdentifier"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Creates a new game"
+            ],
+            "name": "createGame",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "initiator_address",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "acceptGame",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "game_id",
+                    "type": "u64"
+                },
+                {
+                    "name": "competitor_address",
+                    "type": "optional<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Open games"
+            ],
+            "name": "getOpenGames",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<multi<u64,Game>>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Completed games"
+            ],
+            "name": "getCompletedGames",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<multi<u64,Game>>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Characters NFT collection"
+            ],
+            "name": "getCharactersNftCollection",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "TokenIdentifier"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Last game ID"
+            ],
+            "name": "getLastGameId",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        }
+    ],
+    "esdtAttributes": [],
+    "hasCallback": false,
+    "types": {
+        "Game": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "initiator",
+                    "type": "Address"
+                },
+                {
+                    "name": "competitor",
+                    "type": "Option<Address>"
+                },
+                {
+                    "name": "fee_token",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "fee_amount",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "initiator_soldier_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "competitor_soldier_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "winner_soldier_nonce",
+                    "type": "u64"
+                }
+            ]
+        }
+    }
+}
