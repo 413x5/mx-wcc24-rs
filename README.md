@@ -63,7 +63,7 @@ A smart contract that manages game challenges and resolves battles between playe
 
 ### *[Game Interface Contract](game-interface-contract/README.md)*
 
-A smart contract that serves as a unified interface for interacting with the other game contracts. It manages user resource deposits, character operations, and tool crafting while handling MultiESDT token transfers between contracts.
+A smart contract that serves as a unified interface for interacting with the other game contracts. It manages user resource deposits, character operations, tool crafting and game battles, by handling required MultiESDT token transfers between contracts.
 
 ## Common Modules
 
