@@ -28,9 +28,9 @@
     "endpoints": [
         {
             "docs": [
-                "Endpoint to deposit resources in the game interface contract"
+                "Endpoint to deposit tokens in the game interface contract"
             ],
-            "name": "depositResources",
+            "name": "depositTokens",
             "mutability": "mutable",
             "payableInTokens": [
                 "*"
@@ -97,6 +97,21 @@
                 "Set tools contract address"
             ],
             "name": "setToolsContractAddress",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Set game arena contract address"
+            ],
+            "name": "setGameArenaContractAddress",
             "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [
@@ -193,12 +208,35 @@
         },
         {
             "docs": [
-                "Clear deposits"
+                "Clear all deposits"
             ],
             "name": "clearDeposits",
             "onlyOwner": true,
             "mutability": "mutable",
             "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Clear deposit"
+            ],
+            "name": "clearDeposit",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "user",
+                    "type": "Address"
+                },
+                {
+                    "name": "token_id",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "token_nonce",
+                    "type": "u64"
+                }
+            ],
             "outputs": []
         },
         {
@@ -273,6 +311,19 @@
                 "Address of the tools contract"
             ],
             "name": "toolsContractAddress",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Address of the game arena contract"
+            ],
+            "name": "gameArenaContractAddress",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
@@ -481,6 +532,54 @@
             "name": "claimSword",
             "mutability": "mutable",
             "inputs": [],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the game arena contract to create a game"
+            ],
+            "name": "createGame",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "soldier_nft_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "fee_token_id",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "fee_amount",
+                    "type": "BigUint"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Calls the game arena contract to accept a game"
+            ],
+            "name": "acceptGame",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "game_id",
+                    "type": "u64"
+                },
+                {
+                    "name": "soldier_nft_nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "fee_token_id",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "fee_amount",
+                    "type": "BigUint"
+                }
+            ],
             "outputs": []
         }
     ],

@@ -66,3 +66,5 @@ pub const TOOLS_CONTRACT_MINT_SHIELD_ENDPOINT_NAME: &str = "mintShield";
 pub const TOOLS_CONTRACT_MINT_SWORD_ENDPOINT_NAME: &str = "mintSword";
 pub const TOOLS_CONTRACT_CLAIM_SHIELD_ENDPOINT_NAME: &str = "claimShield";
 pub const TOOLS_CONTRACT_CLAIM_SWORD_ENDPOINT_NAME: &str = "claimSword";
+pub const GAME_ARENA_CONTRACT_CREATE_GAME_ENDPOINT_NAME: &str = "createGame";
+pub const GAME_ARENA_CONTRACT_ACCEPT_GAME_ENDPOINT_NAME: &str = "acceptGame";

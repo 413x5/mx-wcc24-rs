@@ -34,6 +34,13 @@ pub trait AdminModule: crate::storage::StorageModule
         self.tools_contract_address().set(address);
     }
 
+    /// Set game arena contract address
+    #[only_owner]
+    #[endpoint(setGameArenaContractAddress)]
+    fn set_game_arena_contract_address(&self, address: ManagedAddress) {
+        self.game_arena_contract_address().set(address);
+    }
+
     /// Set wood mint contract address
     #[only_owner]
     #[endpoint(setWoodMintContractAddress)]
@@ -77,12 +84,32 @@ pub trait AdminModule: crate::storage::StorageModule
 
     // For troubleshooting
 
-    /// Clear deposits
+    /// Clear all deposits
     #[only_owner]
     #[endpoint(clearDeposits)]
     fn clear_deposits(&self) {
         self.get_deposits().clear();
     }
+
+    /// Clear deposit
+    #[only_owner]
+    #[endpoint(clearDeposit)]
+    fn clear_deposit(&self, user: ManagedAddress, token_id: TokenIdentifier, token_nonce: u64) {
+        let mut user_deposits = self.get_deposits().get(&user).unwrap_or_default();
+        let mut i = 0;
+        let mut deposit_index = 0;
+        while i < user_deposits.len() {
+            if user_deposits.get(i).token_id == token_id && user_deposits.get(i).token_nonce == token_nonce {
+                deposit_index = i;
+                break;
+            }
+            i += 1;
+        }
+
+        user_deposits.remove(deposit_index);
+        self.get_deposits().insert(user, user_deposits);
+    }
+
 
     /// Set deposit balance
     #[only_owner]

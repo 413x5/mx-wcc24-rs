@@ -32,4 +32,9 @@ pub trait CommonModule:
         require!(!self.tools_collection_id().is_empty(), ERR_TOOLS_COLLECTION_NOT_SET);
     }
 
+    /// Require the game arena contract address is set
+    fn require_game_arena_contract_address(&self) {
+        require!(!self.game_arena_contract_address().is_empty(), ERR_GAME_ARENA_CONTRACT_ADDRESS_NOT_SET);
+    }
+
 }

@@ -6,6 +6,36 @@ use crate::constants::*;
 #[multiversx_sc::module]
 pub trait NftAttributesDecodeModule {
 
+    /// Get the character from the NFT attributes data
+    fn get_character(&self, owner_address: &ManagedAddress, character_collection_id: &TokenIdentifier, character_nonce: u64) -> Character {
+        // Get the character NFT data
+        let character_nft_data = self.blockchain().get_esdt_token_data(owner_address, character_collection_id, character_nonce);
+
+        // Get the NFT attributes
+        let nft_attributes = character_nft_data.attributes;
+        require!(!nft_attributes.is_empty(), "Cannot get character nonce {} NFT attributes. Is the NFT owner address correct?", character_nonce);
+
+        // Decode the NFT attributes
+        let character = self.decode_character(nft_attributes);
+
+        character
+    }
+
+    /// Get the tool from the NFT attributes data
+    fn get_tool(&self, owner_address: &ManagedAddress, tool_collection_id: &TokenIdentifier, tool_nonce: u64) -> Tool {
+        // Get the tool NFT data
+        let tool_nft_data = self.blockchain().get_esdt_token_data(owner_address, tool_collection_id, tool_nonce);
+
+        // Get the NFT attributes
+        let nft_attributes = tool_nft_data.attributes;
+        require!(!nft_attributes.is_empty(), "Cannot get tool nonce {} NFT attributes. Is the NFT owner address correct?", tool_nonce);
+
+        // Decode the NFT attributes
+        let tool = self.decode_tool(nft_attributes);
+
+        tool
+    }
+
     /// Decode the NFT attributes and return a Character object
     fn decode_character(&self, nft_attributes: ManagedBuffer) -> Character {
 

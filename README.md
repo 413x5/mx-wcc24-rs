@@ -57,7 +57,11 @@ A smart contract that allows users to transform STONE tokens into ORE tokens thr
 
 A smart contract that manages tool NFTs for the game. The contract handles minting Shields (using ORE) and Swords (using ORE and GOLD), which can be used to upgrade Soldier NFTs.
 
-### [Game Interface Contract](game-interface-contract/README.md)
+### [Game Arena Contract](game-arena-contract/README.md)
+
+A smart contract that manages game challenges and resolves battles between players. The contract handles creating game challenges, accepting challenges, and resolving battles between Soldiers.
+
+### *[Game Interface Contract](game-interface-contract/README.md)*
 
 A smart contract that serves as a unified interface for interacting with the other game contracts. It manages user resource deposits, character operations, and tool crafting while handling MultiESDT token transfers between contracts.
 

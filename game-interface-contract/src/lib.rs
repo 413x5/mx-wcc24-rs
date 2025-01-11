@@ -11,6 +11,7 @@ pub mod common;
 pub mod game_characters;
 pub mod game_resources;
 pub mod game_tools;
+pub mod game_arena;
 
 use constants::*;
 use data::*;
@@ -25,13 +26,14 @@ pub trait GameInterfaceContract:
     game_characters::CharactersModule +
     game_resources::ResourcesModule +
     game_tools::ToolsModule +
+    game_arena::GameArenaModule +
     game_common_module::GameCommonModule
     
 {
-    /// Endpoint to deposit resources in the game interface contract
+    /// Endpoint to deposit tokens in the game interface contract
     #[payable]
-    #[endpoint(depositResources)]
-    fn deposit_resources(&self) {
+    #[endpoint(depositTokens)]
+    fn deposit_tokens(&self) {
         let payments = self.call_value().all_esdt_transfers();
         require!(!payments.is_empty(), ERR_NO_ESDT_TOKENS_RECEIVED);
         

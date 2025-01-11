@@ -258,15 +258,8 @@ pub trait CharacterContract:
     fn upgrade_citizen_to_soldier_nft(&self, citizen_nft_nonce: u64, owner_address: ManagedAddress) {
         self.require_character_collection();
 
-        // Get the character NFT data
-        let character_nft_data = self.blockchain().get_esdt_token_data(&owner_address, &self.characters_nft_collection().get_token_id(), citizen_nft_nonce);
-
-        // Get the NFT attributes
-        let nft_attributes = character_nft_data.attributes;
-        require!(!nft_attributes.is_empty(), "Cannot get NFT attributes. Is the NFT owner address correct?");
-
-        // Decode the NFT attributes
-        let character = self.decode_character(nft_attributes);
+        // Get character
+        let character = self.get_character(&owner_address, &self.characters_nft_collection().get_token_id(), citizen_nft_nonce);
 
         // Check if the NFT is a citizen
         require!(character.is_citizen(), "Character is not a citizen");
@@ -278,6 +271,9 @@ pub trait CharacterContract:
         let new_nft_name = sc_format!("{} {}",
             ManagedBuffer::from(SOLDIER_NFT_NAME.as_bytes()),
             citizen_nft_nonce);
+
+        // Set the royalties
+        let royalties = BigUint::from(CHARACTER_NFT_ROYALTIES);
 
         // Get new NFT attributes
         let new_attributes = self.get_nft_attributes(&soldier);
@@ -295,7 +291,7 @@ pub trait CharacterContract:
             .argument(&self.characters_nft_collection().get_token_id())
             .argument(&citizen_nft_nonce)
             .argument(&new_nft_name)
-            .argument(&character_nft_data.royalties)
+            .argument(&royalties)
             .argument(&new_attributes_hash)
             .argument(&new_attributes);
             // Add the new URIs
@@ -314,15 +310,8 @@ pub trait CharacterContract:
         // The owner address is the SC address since the NFTs are sent to the SC
         let owner_address = self.blockchain().get_sc_address();
 
-        // Get the character NFT data
-        let character_nft_data = self.blockchain().get_esdt_token_data(&owner_address, &self.characters_nft_collection().get_token_id(), character_nft_nonce);
-
-        // Get the NFT attributes
-        let character_nft_attributes = character_nft_data.attributes;
-        require!(!character_nft_attributes.is_empty(), "Cannot get character NFT attributes. Is the NFT owner address correct?");
-
-        // Decode the NFT attributes
-        let character = self.decode_character(character_nft_attributes);
+        // Get the character
+        let character = self.get_character(&owner_address, &self.characters_nft_collection().get_token_id(), character_nft_nonce);
 
         // Check if the character is a soldier
         require!(character.is_soldier(), "Character is not a soldier");
@@ -330,15 +319,8 @@ pub trait CharacterContract:
         // Character is an upgradable soldier
         let mut soldier = character;
 
-        // Get the tool NFT data
-        let tool_nft_data = self.blockchain().get_esdt_token_data(&owner_address, &self.tools_nft_collection().get(), tool_nft_nonce);
-
-        // Get the NFT attributes
-        let tool_nft_attributes = tool_nft_data.attributes;
-        require!(!tool_nft_attributes.is_empty(), "Cannot get tool NFT attributes. Is the NFT owner address correct?");
-
-        // Decode the NFT attributes
-        let tool = self.decode_tool(tool_nft_attributes);
+        // Get the tool
+        let tool = self.get_tool(&owner_address, &self.tools_nft_collection().get(), tool_nft_nonce);
 
         // Upgrade the soldier
         soldier.upgrade(&tool);
@@ -347,6 +329,9 @@ pub trait CharacterContract:
         let new_nft_name = sc_format!("{} {}",
             ManagedBuffer::from(SOLDIER_NFT_NAME.as_bytes()),
             character_nft_nonce);
+
+        // Set the royalties
+        let royalties = BigUint::from(CHARACTER_NFT_ROYALTIES);
 
         // Get new NFT attributes
         let new_attributes = self.get_nft_attributes(&soldier);
@@ -364,7 +349,7 @@ pub trait CharacterContract:
             .argument(&self.characters_nft_collection().get_token_id())
             .argument(&character_nft_nonce)
             .argument(&new_nft_name)
-            .argument(&character_nft_data.royalties)
+            .argument(&royalties)
             .argument(&new_attributes_hash)
             .argument(&new_attributes);
             // Add the new URIs

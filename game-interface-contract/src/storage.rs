@@ -25,6 +25,11 @@ pub trait StorageModule {
     #[storage_mapper("tools_contract_address")]
     fn tools_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
 
+    /// Address of the game arena contract
+    #[view(gameArenaContractAddress)]
+    #[storage_mapper("game_arena_contract_address")]
+    fn game_arena_contract_address(&self) -> SingleValueMapper<ManagedAddress>;
+
     /// Address of the Wood mint contract
     #[view(woodMintContractAddress)]
     #[storage_mapper("wood_mint_contract_address")]

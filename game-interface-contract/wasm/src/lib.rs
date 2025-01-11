@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           35
+// Endpoints:                           40
 // Async Callback:                       1
-// Total number of exported functions:  38
+// Total number of exported functions:  43
 
 #![no_std]
 
@@ -20,12 +20,13 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
-        depositResources => deposit_resources
+        depositTokens => deposit_tokens
         depositCharacterNft => deposit_character_nft
         depositToolNft => deposit_tool_nft
         setCharacterContractAddress => set_character_contract_address
         setResourceTransformContractAddress => set_resource_transform_contract_address
         setToolsContractAddress => set_tools_contract_address
+        setGameArenaContractAddress => set_game_arena_contract_address
         setWoodMintContractAddress => set_wood_mint_contract_address
         setFoodMintContractAddress => set_food_mint_contract_address
         setStoneMintContractAddress => set_stone_mint_contract_address
@@ -33,11 +34,13 @@ multiversx_sc_wasm_adapter::endpoints! {
         setCharactersCollectionId => set_characters_collection
         setToolsCollectionId => set_tools_collection
         clearDeposits => clear_deposits
+        clearDeposit => clear_deposit
         setDepositBalance => set_deposit_balance
         getDeposits => get_deposits
         characterContractAddress => character_contract_address
         resourceTransformContractAddress => resource_transform_contract_address
         toolsContractAddress => tools_contract_address
+        gameArenaContractAddress => game_arena_contract_address
         woodMintContractAddress => wood_mint_contract_address
         foodMintContractAddress => food_mint_contract_address
         stoneMintContractAddress => stone_mint_contract_address
@@ -55,6 +58,8 @@ multiversx_sc_wasm_adapter::endpoints! {
         claimShield => claim_shield
         mintSword => mint_sword
         claimSword => claim_sword
+        createGame => create_game
+        acceptGame => accept_game
     )
 }
 
