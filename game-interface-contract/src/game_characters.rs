@@ -214,9 +214,9 @@ pub trait CharactersModule:
             tool_nft_nonce));
 
         match (find_soldier_nft, find_tool_nft) {
-            (None, None) => require!(false, "No soldier NFT or tool NFT deposited."),
-            (None, Some(_)) => require!(false, "No soldier NFT deposited."),
-            (Some(_), None) => require!(false, "No tool NFT deposited."),
+            (None, None) => require!(false, "No soldier NFT nonce {} or tool NFT nonce {} deposited.", soldier_nft_nonce, tool_nft_nonce),
+            (None, Some(_)) => require!(false, "No soldier NFT nonce {} deposited.", soldier_nft_nonce),
+            (Some(_), None) => require!(false, "No tool NFT nonce {} deposited.", tool_nft_nonce),
             (Some(soldier_nft), Some(tool_nft)) => 
             {
                 let soldier_nft_transfer = EsdtTokenPayment::new(soldier_nft.token_id.clone(), soldier_nft.token_nonce, BigUint::from(1u64));
@@ -249,16 +249,16 @@ pub trait CharactersModule:
         match result {
             ManagedAsyncCallResult::Ok(()) => {
 
-                let deposits = self.get_deposits().get(&user).unwrap_or_default();
+                let old_deposits = self.get_deposits().get(&user).unwrap_or_default();
                 // Create a new deposits list to add every other deposit except the NFTs that were used
-                let mut user_deposits = ManagedVec::new();
+                let mut new_deposits = ManagedVec::new();
 
                 let characters_collection_id = self.characters_collection_id().get().as_managed_buffer().clone();
                 let tools_collection_id = self.tools_collection_id().get().as_managed_buffer().clone();
 
                 let mut i = 0;
-                while i < deposits.len() {
-                    let current_deposit = deposits.get(i).clone();
+                while i < old_deposits.len() {
+                    let current_deposit = old_deposits.get(i).clone();
                     let current_token_id = current_deposit.token_id.clone();
                     let current_token_nonce = current_deposit.token_nonce;
 
@@ -270,11 +270,11 @@ pub trait CharactersModule:
                         i += 1; continue;
                     }
                     // Add the other deposits
-                    user_deposits.push(current_deposit);
+                    new_deposits.push(current_deposit);
                     i += 1;
                 }
                 // Update deposits to storage
-                self.get_deposits().insert(user.clone(), user_deposits);
+                self.get_deposits().insert(user.clone(), new_deposits);
             },
             ManagedAsyncCallResult::Err(_) => {},
         }

@@ -10,7 +10,7 @@ pub trait ResourcesModule:
     game_common_module::GameCommonModule
 {
 
-    /// Endpoint for minting base resources
+    /// Calls the resource contracts to mint any available base resources
     #[endpoint(mintResources)]
     fn mint_resources(&self){
 
@@ -36,7 +36,7 @@ pub trait ResourcesModule:
 
     }
 
-    /// Claims any unclaimed base resources
+    /// Calls the resource contracts to claim any unclaimed base resources
     #[endpoint(claimResources)]
     fn claim_resources(&self) {
 
@@ -64,7 +64,7 @@ pub trait ResourcesModule:
         }
     }
 
-    /// Mint any available base resources
+    /// Calls the resource contract to mint any available base resources
     fn resource_contract_mint(&self, resource_contract_address: ManagedAddress) {
         
         self.tx()
@@ -73,7 +73,7 @@ pub trait ResourcesModule:
             .sync_call();
     }
 
-    /// Claim any available base resources
+    /// Calls the resource contract to claim any available base resources
     fn resource_contract_claim(&self, resource_contract_address: ManagedAddress, user: &ManagedAddress) {
 
         self.tx()

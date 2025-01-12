@@ -468,7 +468,7 @@
         },
         {
             "docs": [
-                "Endpoint for minting base resources"
+                "Calls the resource contracts to mint any available base resources"
             ],
             "name": "mintResources",
             "mutability": "mutable",
@@ -477,7 +477,7 @@
         },
         {
             "docs": [
-                "Claims any unclaimed base resources"
+                "Calls the resource contracts to claim any unclaimed base resources"
             ],
             "name": "claimResources",
             "mutability": "mutable",

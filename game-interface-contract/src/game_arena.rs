@@ -30,13 +30,13 @@ pub trait GameArenaModule:
         let find_fee_token_deposit = &deposits.iter().find(|deposit| self.is_required_token(&deposit.token_id, fee_token_id.as_managed_buffer()));
 
         match (find_soldier_nft, find_fee_token_deposit) {
-            (None, None) => require!(false, "No character NFT or fee token deposited. Need at least {} and {}.", soldier_nft_nonce, fee_amount),
+            (None, None) => require!(false, "No character NFT or fee token deposited. Need character NFT with nonce {} and fee token {}.", soldier_nft_nonce, fee_token_id),
             (None, Some(_)) => require!(false, "No character NFT deposited with nonce {}.", soldier_nft_nonce),
-            (Some(_), None) => require!(false, "No fee token deposited. Need at least {}.", fee_amount),
+            (Some(_), None) => require!(false, "No fee token deposited. Need at least {} {}.", fee_amount, fee_token_id),
             (Some(soldier_nft_deposit), Some(fee_token_deposit)) => 
             {   
                 // Check deposit amounts
-                require!(fee_token_deposit.balance >= fee_amount, "Not enough fee token deposited. Need at least {}.", fee_amount);
+                require!(fee_token_deposit.balance >= fee_amount, "Not enough fee token deposited. Need at least {} {}.", fee_amount, fee_token_id);
 
                 // Get the soldier NFT and fee token
                 let soldier_nft_token_id = soldier_nft_deposit.token_id.clone();
@@ -144,7 +144,12 @@ pub trait GameArenaModule:
                         i += 1;
                         continue;
                     }
-                    if self.is_required_nft(&deposits.get(i).token_id, deposits.get(i).token_nonce, &self.characters_collection_id().get().as_managed_buffer(), soldier_nft_nonce) {
+                    if self.is_required_nft(
+                        &deposits.get(i).token_id, 
+                        deposits.get(i).token_nonce, 
+                        &self.characters_collection_id().get().as_managed_buffer(), 
+                        soldier_nft_nonce) 
+                    {
                         soldier_nft_deposit_index = i;
                     }
                     i += 1;
