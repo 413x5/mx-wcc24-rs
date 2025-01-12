@@ -6,7 +6,7 @@ use crate::constants::*;
 #[multiversx_sc::module]
 pub trait NftAttributesDecodeModule {
 
-    /// Get the character from the NFT attributes data
+    /// Get the character object from the NFT attributes data
     fn get_character(&self, owner_address: &ManagedAddress, character_collection_id: &TokenIdentifier, character_nonce: u64) -> Character {
         // Get the character NFT data
         let character_nft_data = self.blockchain().get_esdt_token_data(owner_address, character_collection_id, character_nonce);
@@ -21,7 +21,7 @@ pub trait NftAttributesDecodeModule {
         character
     }
 
-    /// Get the tool from the NFT attributes data
+    /// Get the tool object from the NFT attributes data
     fn get_tool(&self, owner_address: &ManagedAddress, tool_collection_id: &TokenIdentifier, tool_nonce: u64) -> Tool {
         // Get the tool NFT data
         let tool_nft_data = self.blockchain().get_esdt_token_data(owner_address, tool_collection_id, tool_nonce);
@@ -37,6 +37,8 @@ pub trait NftAttributesDecodeModule {
     }
 
     /// Decode the NFT attributes and return a Character object
+    /// Ex: metadata:IPFS_CID/citizen.json;tags:character,citizen;c:0:0:0
+    /// Ex: metadata:IPFS_CID/soldier21.json;tags:character,soldier;c:1:2:1
     fn decode_character(&self, nft_attributes: ManagedBuffer) -> Character {
 
         // Character prefix
@@ -101,6 +103,8 @@ pub trait NftAttributesDecodeModule {
 
 
     /// Decode the NFT attributes and return a Tool object
+    /// Ex: metadata:IPFS_CID/shield.json;tags:tool,shield;t:1:0:1
+    /// Ex: metadata:IPFS_CID/sword.json;tags:tool,sword;t:2:1:0
     fn decode_tool(&self, nft_attributes: ManagedBuffer) -> Tool {
 
         // Tool prefix

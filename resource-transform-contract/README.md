@@ -45,7 +45,7 @@ fn create_ore(&self, receiver_address: OptionalValue<ManagedAddress>)
 - Transforms STONE tokens into ORE tokens
 - Requires at least 20 STONE tokens per transformation
 - Burns the STONE tokens and mints ORE tokens
-- Optional receiver address for the minted ORE tokens
+- Optional receiver address for the minted ORE tokens, used in the [Game Interface Contract](../game-interface-contract/README.md)
 
 ## Admin Endpoints
 

@@ -38,7 +38,7 @@ fn stake_tokens(&self, for_user: OptionalValue<ManagedAddress>)
 
 - Allows users to stake tokens
 - Parameters:
-  - `for_user`: Optional address to stake for a different address than the caller, used in the [Game Interface contract](../game-interface-contract/README.md)
+  - `for_user`: Optional address to stake for a different address than the caller, used in the [Game Interface Contract](../game-interface-contract/README.md)
 - Tokens must match the configured stake token ticker
 - Each stake is recorded with the current round number
 
@@ -62,7 +62,7 @@ fn claim_resources(&self, for_user: OptionalValue<ManagedAddress>)
 
 - Allows users to claim their minted resources
 - Parameters:
-  - `for_user`: Optional address to claim for a different address than the caller, used in the [Game Interface contract](../game-interface-contract/README.md)
+  - `for_user`: Optional address to claim for a different address than the caller, used in the [Game Interface Contract](../game-interface-contract/README.md)
 - Updates user's claimed resources state
 - Transfers the resources directly to the user's address
 
