@@ -29,7 +29,8 @@ The contract is organized into several modules:
 - [`common.rs`](src/common.rs): Common functionality shared between modules
 - [`constants.rs`](src/constants.rs): Contract constants and game settings
 - [`data.rs`](src/data.rs): Data structures for contract states
-- [`views.rs`](src/views.rs): View functions (user resource balance)
+
+The contract uses the [Game Common Module](../game-common-module/README.md) to provide common functionality.
 
 ## Configuration
 

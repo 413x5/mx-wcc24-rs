@@ -6,6 +6,8 @@ A smart contract that manages PvP (Player vs Player) battles in the MultiversX b
 
 - [`game_arena_contract.rs`](src/game_arena_contract.rs): Core contract implementation containing game logic, storage, and endpoints
 
+The contract uses the [Game Common Module](../game-common-module/README.md) to provide common functionality.
+
 ## Game Mechanics
 
 ### Game Creation

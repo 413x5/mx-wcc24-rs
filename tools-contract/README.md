@@ -8,6 +8,8 @@ A smart contract that manages tool NFTs for the MultiversX blockchain game. The 
 - [`storage.rs`](src/storage.rs): Storage mappers for contract state
 - [`admin.rs`](src/admin.rs): Admin endpoints for contract configuration
 
+The contract uses the [Game Common Module](../game-common-module/README.md) to provide common functionality.
+
 ## NFT Collections
 
 ### Tools Collection
