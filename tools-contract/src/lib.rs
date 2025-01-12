@@ -3,13 +3,10 @@
 #[allow(unused_imports)]
 use multiversx_sc::imports::*;
 
-pub mod constants;
-pub mod data;
 pub mod admin;
 pub mod storage;
 
-use data::*;
-
+use game_common_module::data::*;
 use game_common_module::constants::*;
 
 #[multiversx_sc::contract]

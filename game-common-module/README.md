@@ -27,14 +27,16 @@ pub struct Character {
 
 - Represents game characters with attributes:
   - `rank`: 0 (Citizen) or 1 (Soldier)
-  - `attack`: Combat attack value
-  - `defence`: Combat defence value
+  - `attack`: Combat attack value (0-255)
+  - `defence`: Combat defence value (0-255)
 
 Helper functions:
 
 - `new_citizen()`: Creates a new Citizen (rank 0)
 - `new_soldier()`: Creates a new Soldier (rank 1)
 - `upgrade(&mut self, tool: &Tool)`: Upgrades character with a tool
+- `is_citizen()`: Returns true if character is a Citizen
+- `is_soldier()`: Returns true if character is a Soldier
 
 #### Tool
 
@@ -55,6 +57,8 @@ Helper functions:
 
 - `new_shield()`: Creates a new Shield (defence +1)
 - `new_sword()`: Creates a new Sword (attack +1)
+- `is_shield()`: Returns true if tool is a Shield
+- `is_sword()`: Returns true if tool is a Sword
 
 ### Token Validation
 
@@ -188,3 +192,7 @@ The module provides various constants used across contracts:
   - `TOOLS_CONTRACT_MINT_SWORD_ENDPOINT_NAME`: "mintSword"
   - `TOOLS_CONTRACT_CLAIM_SHIELD_ENDPOINT_NAME`: "claimShield"
   - `TOOLS_CONTRACT_CLAIM_SWORD_ENDPOINT_NAME`: "claimSword"
+
+- Game Arena Contract:
+  - `GAME_ARENA_CONTRACT_CREATE_GAME_ENDPOINT_NAME`: "createGame"
+  - `GAME_ARENA_CONTRACT_ACCEPT_GAME_ENDPOINT_NAME`: "acceptGame"

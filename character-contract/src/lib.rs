@@ -5,8 +5,6 @@ use multiversx_sc::imports::*;
 
 pub mod admin;
 pub mod storage;
-pub mod views;
-pub mod constants;
 
 use game_common_module::data::*;
 use game_common_module::constants::*;
@@ -16,7 +14,6 @@ use game_common_module::constants::*;
 pub trait CharacterContract:
     admin::AdminModule +
     storage::StorageModule +
-    views::ViewsModule +
     game_common_module::GameCommonModule +
     game_common_module::nft_attributes::NftAttributesDecodeModule
 {

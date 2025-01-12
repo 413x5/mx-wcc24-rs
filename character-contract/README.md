@@ -17,9 +17,8 @@ The contract is organized into several modules:
 - [`lib.rs`](src/lib.rs): Main contract implementation with public endpoints for minting and upgrading characters
 - [`admin.rs`](src/admin.rs): Admin endpoints for contract configuration
 - [`storage.rs`](src/storage.rs): Storage mappers for state management
-- [`data.rs`](src/data.rs): Character data structures and attribute management
-- [`constants.rs`](src/constants.rs): Contract constants including resource requirements and NFT configuration
-- [`views.rs`](src/views.rs): View functions for querying contract state
+
+The contract uses the [Game Common Module](../game-common-module/README.md) to provide common functionality.
 
 ## Configuration
 
