@@ -1,6 +1,7 @@
 use multiversx_sc::imports::*;
 
 use game_common_module::constants::*;
+use crate::data::*;
 
 #[multiversx_sc::module]
 pub trait ResourcesModule:
@@ -148,12 +149,22 @@ pub trait ResourcesModule:
                     // Update user deposits
                     let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
                     let mut i = 0;
+                    let mut found = false;
                     while i < deposits.len() {
                         if deposits.get(i).token_id == *received_token {
                             deposits.get_mut(i).balance += received_amount;
+                            found = true;
                             break;
                         }
                         i += 1;
+                    }
+                    // If the token is not in the user's deposits, add it
+                    if !found {
+                        deposits.push(DepositInfo {
+                            token_id: received_token.clone(),
+                            token_nonce: 0,
+                            balance: received_amount.clone(),
+                        });
                     }
                     // Update user deposits in storage
                     self.get_deposits().insert(user.clone(), deposits);
