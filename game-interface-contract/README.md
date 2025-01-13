@@ -60,7 +60,7 @@ fn deposit_tokens(&self)
 
 - Accepts any number of funglible token transfers
 - Adds tokens to user's deposits
-- Combines with existing deposits of the same token
+- Adds to existing deposits of the same token
 
 ```rust
 #[payable]
@@ -135,22 +135,21 @@ fn create_ore(&self, ore_units: u64)
 fn mint_citizen(&self)
 ```
 
-- Mints a new Citizen using deposited resources trough the [Character Contract](../character-contract/README.md)
+- Initiates the mint of a new Citizen using deposited resources, by calling the [Character Contract](../character-contract/README.md)
 - Automatically uses resources from user's deposits
 - Requires:
   - 10 WOOD tokens
   - 15 FOOD tokens
-- Initiates the minting period (3600 seconds)
-- Burns the resources
+- The resources are burned by the character contract
 
 ```rust
 #[endpoint(claimCitizen)]
 fn claim_citizen(&self)
 ```
 
-- Claims a Citizen NFT after the minting period trough the [Character Contract](../character-contract/README.md)
-- Must be called after mintCitizen and waiting period
-- NFT is sent directly to the caller's address
+- Claims a Citizen NFT after the minting period by calling the [Character Contract](../character-contract/README.md)
+- Should be called after calling mintCitizen and after the mint waiting period
+- The citizen NFT is sent directly to the user's address
 
 ```rust
 #[endpoint(upgradeCitizenToSoldier)]
@@ -161,28 +160,28 @@ fn upgrade_citizen_to_soldier(
 )
 ```
 
-- Upgrades a Citizen to a Soldier using deposited resources trough the [Character Contract](../character-contract/README.md)
+- Upgrades a Citizen to a Soldier using deposited resources by calling the [Character Contract](../character-contract/README.md)
 - Parameters:
   - `citizen_nft_nonce`: The nonce of the Citizen NFT to upgrade
-  - `nft_owner_address`: Optional address if the NFT owner is different from caller
+  - `nft_owner_address`: Optional address if the NFT owner is different from the caller
 - Requires deposited:
   - 5 GOLD tokens
   - 5 ORE tokens
-- Burns the resources and upgrades the NFT in place
+- The resources are burned by the character contract
 
 ```rust
 #[endpoint(upgradeSoldier)]
 fn upgrade_soldier(&self, soldier_nft_nonce: u64, tool_nft_nonce: u64)
 ```
 
-- Upgrades a Soldier NFT with a Tool NFT through the [Character Contract](../character-contract/README.md)
+- Upgrades a Soldier NFT with a Tool NFT by calling the [Character Contract](../character-contract/README.md)
 - Parameters:
   - `soldier_nft_nonce`: Nonce of the Soldier NFT to upgrade
   - `tool_nft_nonce`: Nonce of the Tool NFT to use
 - Requires deposited:
   - 1 Soldier NFT (specified by nonce)
   - 1 Tool NFT (specified by nonce)
-- Returns the upgraded Soldier NFT to the owner
+- Returns the upgraded Soldier NFT to the user
 
 ### Tools Operations
 
@@ -191,41 +190,39 @@ fn upgrade_soldier(&self, soldier_nft_nonce: u64, tool_nft_nonce: u64)
 fn mint_shield(&self)
 ```
 
-- Mints a Shield NFT using deposited resources through the [Tools Contract](../tools-contract/README.md)
+- Initiates the mint of a Shield NFT using deposited resources by calling the [Tools Contract](../tools-contract/README.md)
 - Automatically uses resources from user's deposits:
   - 2 ORE tokens
-- Initiates the minting period
-- Burns the resources
+- The resources are burned by the tools contract
 
 ```rust
 #[endpoint(claimShield)]
 fn claim_shield(&self)
 ```
 
-- Claims a Shield NFT after the minting period trough the [Tools Contract](../tools-contract/README.md)
-- Must be called after mintShield and waiting period
-- NFT is sent directly to the users's address
+- Claims a Shield NFT after the minting period by calling the [Tools Contract](../tools-contract/README.md)
+- Should be called after calling mintShield and after the waiting period
+- The NFT is sent directly to the user's address
 
 ```rust
 #[endpoint(mintSword)]
 fn mint_sword(&self)
 ```
 
-- Mints a Sword NFT using deposited resources through the [Tools Contract](../tools-contract/README.md)
+- Initiates the mint of a Sword NFT using deposited resources by calling the [Tools Contract](../tools-contract/README.md)
 - Automatically uses resources from user's deposits:
   - 3 ORE tokens
   - 1 GOLD tokens
-- Initiates the minting period
-- Burns the resources
+- The resources are burned by the tools contract
 
 ```rust
 #[endpoint(claimSword)]
 fn claim_sword(&self)
 ```
 
-- Claims a Sword NFT after the minting period trough the [Tools Contract](../tools-contract/README.md)
-- Must be called after mintSword and waiting period
-- NFT is sent directly to the user's address
+- Claims a Sword NFT after the minting period by calling the [Tools Contract](../tools-contract/README.md)
+- Should be called after calling mintSword and after the waiting period
+- The NFT is sent directly to the user's address
 
 ### Game Arena Operations
 
