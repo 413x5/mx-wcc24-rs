@@ -352,7 +352,7 @@ The contract handles various error cases including:
    depositTokens()
    ```
 
-   Send any tokens, including game tokens or NFTs:
+   Send any fungible game tokens:
    - WOOD tokens
    - FOOD tokens
    - STONE tokens
@@ -431,6 +431,7 @@ The contract handles various error cases including:
    #### - Deposit character NFTs and tool NFTs
 
     > [!NOTE]
+    >
     > To deposit NFTs, you cannot use the MultiversX Utility App's SC Interaction page, as it does not (yet) support NFT transfers.
     > To deposit NFTs, you can send them directly from you wallet, by using the [Web Wallet](https://devnet-wallet.multiversx.com/) or the [Chrome Extension Wallet](https://chromewebstore.google.com/detail/multiversx-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm)
     > - Select the NFT you want to send and click "Send"
