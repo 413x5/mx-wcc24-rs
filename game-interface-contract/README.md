@@ -320,7 +320,7 @@ The contract handles various error cases including:
 
 1. ### Build and Deploy the contract following the [instructions](../README.md#building-the-contracts)
 
-    Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints` and `Write endpoints` tabs to interact with the contract.
+    Use the [MultiversX Utility App](https://utils.multiversx.com/) **Read endpoints** and **Write endpoints** tabs to interact with the contract.
 
 2. ### Configure contract dependencies
 
@@ -457,7 +457,7 @@ The contract handles various error cases including:
 
       *ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`@6465706f7369744368617261637465724e6674`*
 
-    - You can now send the NFT to the contract by clickting the **Send NFT** button
+    - You can now send the NFT to the contract using the **Send NFT** button
 
    #### - Deposit Tool NFT
 
@@ -473,7 +473,7 @@ The contract handles various error cases including:
 
       *ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`@6465706f736974546f6f6c4e6674`*
 
-    - You can now send the NFT to the contract by clickting the **Send NFT** button
+    - You can now send the NFT to the contract using the **Send NFT** button
 
    #### - Upgrade Soldier
 
