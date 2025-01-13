@@ -374,10 +374,6 @@ The contract handles various error cases including:
    - 5 GOLD tokens
    - 5 ORE tokens
 
-   Requires deposited:
-   - 1 Soldier NFT (specified by nonce)
-   - 1 Tool NFT (specified by nonce)
-
    Mint Shield:
 
    ```rust
@@ -414,6 +410,10 @@ The contract handles various error cases including:
    ```rust
    upgradeSoldier(soldier_nft_nonce: u64, tool_nft_nonce: u64)
    ```
+
+   Requires deposited:
+   - 1 Soldier NFT (specified by nonce)
+   - 1 Tool NFT (specified by nonce)
 
    Create Game:
 
