@@ -42,13 +42,11 @@ Key parameters:
 
 - **Contract Dependencies**:
 
+  - [Resource Mint Contracts](../resource-mint-contract/README.md)
   - [Character Contract](../character-contract/README.md)
   - [Resource Transform Contract](../resource-transform-contract/README.md)
   - [Tools Contract](../tools-contract/README.md)
   - [Game Arena Contract](../game-arena-contract/README.md)
-  
-  Optional (for batch minting and claiming resources):
-  - [Resource Mint Contracts](../resource-mint-contract/README.md)
 
 ## Public Endpoints
 
@@ -437,26 +435,39 @@ The contract handles various error cases including:
 
 ## Contract Dependencies
 
-1. Character Contract
+1. Resource Mint Contracts
+   - Addresses must be set using
+   `setWoodMintContractAddress`,
+   `setFoodMintContractAddress`,
+   `setStoneMintContractAddress`,
+   `setGoldMintContractAddress`
+
+   - Required for minting and claiming the respective resources:
+     - WOOD tokens from wood mint contract
+     - FOOD tokens from food mint contract
+     - STONE tokens from stone mint contract
+     - GOLD tokens from gold mint contract
+
+2. Character Contract
    - Address must be set using `setCharacterContractAddress`
    - Required for:
      - Minting Citizens
      - Upgrading Citizens to Soldiers
      - Upgrading Soldiers with tools
 
-2. Resource Transform Contract
+3. Resource Transform Contract
    - Address must be set using `setResourceTransformContractAddress`
    - Required for:
      - Creating ORE tokens from STONE
 
-3. Tools Contract
+4. Tools Contract
    - Address must be set using `setToolsContractAddress`
    - Required for:
      - Minting Shields
      - Minting Swords
      - Upgrading Soldiers with tools
 
-4. Game Arena Contract
+5. Game Arena Contract
    - Address must be set using `setGameArenaContractAddress`
    - Required for:
      - Creating game challenges
