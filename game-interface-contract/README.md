@@ -50,7 +50,7 @@ Key parameters:
 
 ## Public Endpoints
 
-### Resource Management
+### Deposit Endpoints
 
 ```rust
 #[payable]
@@ -58,9 +58,36 @@ Key parameters:
 fn deposit_tokens(&self)
 ```
 
-- Accepts any tokens
-- Tracks deposits per user
-- Required for most game operations
+- Accepts any number of funglible token transfers
+- Adds tokens to user's deposits
+- Combines with existing deposits of the same token
+
+```rust
+#[payable]
+#[endpoint(depositCharacterNft)]
+fn deposit_character_nft(&self)
+```
+
+- Accepts a single Character NFT transfer
+- Validates NFT is from the Characters collection
+- Adds NFT to user's deposits for use in:
+  - Upgrading Citizens to Soldiers
+  - Creating game challenges
+  - Accepting game challenges
+
+```rust
+#[payable]
+#[endpoint(depositToolNft)]
+fn deposit_tool_nft(&self)
+```
+
+- Accepts a single Tool NFT transfer
+- Validates NFT is from the Tools collection
+- Adds NFT to user's deposits for:
+  - Upgrading Soldiers with Shields
+  - Upgrading Soldiers with Swords
+
+### Resource Management
 
 ```rust
 #[endpoint(mintResources)]
@@ -294,11 +321,11 @@ The contract handles various error cases including:
 
 ## How to Use
 
-1. Build and Deploy the contract following the [instructions](../README.md#building-the-contracts)
+1. ### Build and Deploy the contract following the [instructions](../README.md#building-the-contracts)
 
     Use the [MultiversX Utility App](https://utils.multiversx.com/) `Read endpoints` and `Write endpoints` tabs to interact with the contract.
 
-2. Configure contract dependencies:
+2. ### Configure contract dependencies
 
    ```rust
    #[only_owner]
@@ -318,7 +345,7 @@ The contract handles various error cases including:
    setGoldMintContractAddress(address: ManagedAddress)
    ```
 
-3. Deposit available resources:
+3. ### Deposit available resources
 
    ```rust
    #[payable]
@@ -331,13 +358,11 @@ The contract handles various error cases including:
    - STONE tokens
    - GOLD tokens
    - ORE tokens
-   - Character NFTs
-   - Tool NFTs
    - Any game fee tokens
 
-4. Use deposited resources:
+4. ### Use deposited resources
 
-   Mint Citizens:
+   #### - Mint Citizens
 
    ```rust
    mintCitizen()
@@ -347,13 +372,13 @@ The contract handles various error cases including:
    - 10 WOOD tokens
    - 15 FOOD tokens
 
-   Claim Citizen:
+   #### - Claim Citizen
 
    ```rust
    claimCitizen()
    ```
 
-   Create ORE:
+   #### - Create ORE
 
    ```rust
    createOre(ore_units: u64)
@@ -362,7 +387,7 @@ The contract handles various error cases including:
    Requires deposited:
    - 20 STONE tokens per ORE unit
 
-   Upgrade Citizen to Soldier:
+   #### - Upgrade Citizen to Soldier
 
    ```rust
    upgradeCitizenToSoldier(citizen_nft_nonce: u64, nft_owner_address: OptionalValue<ManagedAddress>)
@@ -372,7 +397,7 @@ The contract handles various error cases including:
    - 5 GOLD tokens
    - 5 ORE tokens
 
-   Mint Shield:
+   #### - Mint Shield
 
    ```rust
    mintShield()
@@ -381,13 +406,13 @@ The contract handles various error cases including:
    Requires deposited:
    - 2 ORE tokens
 
-   Claim Shield:
+   #### - Claim Shield
 
    ```rust
    claimShield()
    ```
 
-   Mint Sword:
+   #### - Mint Sword
 
    ```rust
    mintSword()
@@ -397,13 +422,60 @@ The contract handles various error cases including:
    - 3 ORE tokens
    - 1 GOLD tokens
 
-   Claim Sword:
+   #### - Claim Sword
 
    ```rust
    claimSword()
    ```
 
-   Upgrade Soldier:
+   #### - Deposit character NFTs and tool NFTs
+
+    > [!NOTE]
+    > To deposit NFTs, you cannot use the MultiversX Utility App's SC Interaction page, as it does not (yet) support NFT transfers.
+    > To deposit NFTs, you can send them directly from you wallet, by using the [Web Wallet](https://devnet-wallet.multiversx.com/) or the [Chrome Extension Wallet](https://chromewebstore.google.com/detail/multiversx-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm)
+    > - Select the NFT you want to send and click "Send"
+    > - On the `Transaction Details` page, in the `Receiver` field, enter the contract address
+    > - Expand the `Fee` section and enter `10,000,000` in the `Gas Limit` field, to have enough gas for the transfer transaction
+    > - The `Data` section should display the transaction data in this form (your actual data will be different):
+    >
+    >   `ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`
+    >
+    >   This represents the [Standard transfer transaction data](https://docs.multiversx.com/tokens/nft-tokens/#transfers) for sending the NFT to any other address.
+    >
+    >   Sending the NFT directly to the contract will not call the contract's *deposit* endpoint (and may also fail as the contract is not directly payable).
+    > - To send the NFT to the contract and call the *deposit* endpoint, we need to use the [Transfer to smart contract](https://docs.multiversx.com/tokens/nft-tokens/#transfers-to-a-smart-contract) transaction format, by adding to the transaction data the name of the endpoint to call (and any additional arguments if necessary)
+
+   #### - Deposit Character NFT
+
+   ```rust
+   depositCharacterNft()
+   ```
+
+    To call this endpoint in the NFT transfer transaction, we'll have to add its name at the end of the transaction data, as shown in the above Note.
+    The endpoint name has to be encoded in hexadecimal format. You can use the MultiversX Utility App [Converters](https://utils.multiversx.com/converters#string-converters-string-to-hexadecimal) section to do this. Enter `depositCharacterNft` in the *Convert a string to a hexadecimal encoded string* field, and click *Convert*. The *Result* field shows the hexadecimal encoded endpoint name, which is `6465706f7369744368617261637465724e6674`.
+    - To edit the transaction data, double-click the `Advanced` label near the `Data` field in the `Transaction Details` page, to make the field editable
+    - Add the endpoint name `6465706f7369744368617261637465724e6674` at the end of the transaction data and prefix it with the `@` character (that delimits the transaction arguments). The data should now look like:
+
+      ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`@6465706f7369744368617261637465724e6674`
+
+    - You can now send the NFT to the contract by clickting the `Send NFT` button
+
+   #### - Deposit Tool NFT
+
+   ```rust
+   depositToolNft()
+   ```
+
+    To call this endpoint in the NFT transfer transaction, we'll have to add its name at the end of the transaction data, as shown in the above Note.
+    The endpoint name has to be encoded in hexadecimal format. You can use the MultiversX Utility App [Converters](https://utils.multiversx.com/converters#string-converters-string-to-hexadecimal) section to do this. Enter `depositToolNft` in the *Convert a string to a hexadecimal encoded string* field, and click *Convert*. The *Result* field shows the hexadecimal encoded endpoint name, which is `6465706f736974546f6f6c4e6674`.
+    - To edit the transaction data, double-click the `Advanced` label near the `Data` field in the `Transaction Details` page, to make the field editable
+    - Add the endpoint name `6465706f736974546f6f6c4e6674` at the end of the transaction data and prefix it with the `@` character (that delimits the transaction arguments). The data should now look like:
+
+      ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`@6465706f736974546f6f6c4e6674`
+
+    - You can now send the NFT to the contract by clickting the `Send NFT` button
+
+   #### - Upgrade Soldier
 
    ```rust
    upgradeSoldier(soldier_nft_nonce: u64, tool_nft_nonce: u64)
@@ -413,7 +485,7 @@ The contract handles various error cases including:
    - 1 Soldier NFT (specified by nonce)
    - 1 Tool NFT (specified by nonce)
 
-   Create Game:
+   #### - Create Game
 
    ```rust
    createGame(soldier_nft_nonce: u64, fee_token_id: TokenIdentifier, fee_amount: BigUint)
@@ -423,7 +495,7 @@ The contract handles various error cases including:
    - 1 upgraded Soldier NFT (attack or defence > 0)
    - Fee amount in specified token
 
-   Accept Game:
+   #### - Accept Game
 
    ```rust
    acceptGame(game_id: u64, soldier_nft_nonce: u64, fee_token_id: TokenIdentifier, fee_amount: BigUint)
