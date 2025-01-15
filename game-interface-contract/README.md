@@ -343,7 +343,7 @@ The contract handles various error cases including:
      - Expand the **Fee** section and enter `10,000,000` in the **Gas Limit** field, to have enough gas for the transfer transaction
      - The **Data** section should display the transaction data in this form (your actual data will be different):
 
-        *`ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`*
+        *ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044*
 
       This represents the [Standard transfer data](https://docs.multiversx.com/tokens/nft-tokens/#transfers) for sending the NFT to any other address.
   
@@ -360,7 +360,7 @@ The contract handles various error cases including:
 
       *ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`@6465706f736974`*
 
-   - You can now send the NFT to the contract and call the contract's `deposit` endpoint using the **Send NFT** button
+   - You can now send the NFT to the contract and call the contract's `deposit` endpoint, using the **Send NFT** button
 
 4. ### Use deposited resources
 
