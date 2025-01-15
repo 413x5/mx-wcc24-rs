@@ -333,7 +333,8 @@ The contract handles various error cases including:
    - Any game fee tokens
    - Any Character or Tool NFTs
 
-    > [!NOTE]
+    >
+    > **NOTE**
     >
     > To deposit NFTs, you cannot use the MultiversX Utility App's SC Interaction page, as it does not (yet) support NFT transfers.
     > To deposit NFTs, you can send them directly from you wallet, by using the [Web Wallet](https://devnet-wallet.multiversx.com/) or the [Chrome Extension Wallet](https://chromewebstore.google.com/detail/multiversx-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm)
