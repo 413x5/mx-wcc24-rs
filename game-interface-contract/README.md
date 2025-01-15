@@ -324,7 +324,7 @@ The contract handles various error cases including:
    deposit()
    ```
 
-   Send any fungible game tokens:
+   Deposit any fungible tokens or game NFTs to the contract:
    - WOOD tokens
    - FOOD tokens
    - STONE tokens
@@ -333,32 +333,34 @@ The contract handles various error cases including:
    - Any game fee tokens
    - Any Character or Tool NFTs
 
-    >
-    > **NOTE**
-    >
-    > To deposit NFTs, you cannot use the MultiversX Utility App's SC Interaction page, as it does not (yet) support NFT transfers.
-    > To deposit NFTs, you can send them directly from you wallet, by using the [Web Wallet](https://devnet-wallet.multiversx.com/) or the [Chrome Extension Wallet](https://chromewebstore.google.com/detail/multiversx-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm)
-    > - Select the NFT you want to send and click **Send**
-    > - On the **Transaction Details** page, in the **Receiver** field, enter the contract address
-    > - Expand the **Fee** section and enter `10,000,000` in the **Gas Limit** field, to have enough gas for the transfer transaction
-    > - The **Data** section should display the transaction data in this form (your actual data will be different):
-    >
-    >   *`ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`*
-    >
-    >   This represents the [Standard transfer data](https://docs.multiversx.com/tokens/nft-tokens/#transfers) for sending the NFT to any other address.
-    >
-    >   Sending the NFT directly to the contract will not call the contract's `deposit` endpoint (and will also fail as the contract is not directly payable).
-    > - To send the NFT to the contract and call the `deposit` endpoint, we need to use the [Transfer to smart contract](https://docs.multiversx.com/tokens/nft-tokens/#transfers-to-a-smart-contract) transaction format, by adding into the transaction data the name of the endpoint to call (and any additional arguments if necessary)
+     ### NOTE
 
-    To call this endpoint in the NFT transfer transaction, we'll have to add its name at the end of the transaction data.
+      To deposit NFTs, you cannot use the MultiversX Utility App's SC Interaction page, as it does not (yet) support NFT transfers.
+      To deposit NFTs, you can send them directly from you wallet, by using the [Web Wallet](https://devnet-wallet.multiversx.com/) or the [Chrome Extension Wallet](https:/chromewebstore.google.com/detail/multiversx-wallet/dngmlblcodfobpdpecaadgfbcggfjfnm)
 
-    The endpoint name has to be encoded in hexadecimal format. You can use the MultiversX Utility App [Converters](https://utils.multiversx.com/converters#string-converters-string-to-hexadecimal) section to do this. Enter `deposit` in the **Convert a string to a hexadecimal encoded string** field, and click **Convert**. The **Result** field shows the hexadecimal encoded endpoint name, which is `6465706f736974`.
-    - To edit the transaction data, double-click the **Advanced** label near the **Data** field in the **Transaction Details** page, to make the field editable
-    - Add the encoded endpoint name `6465706f736974` at the end of the transaction data and prefix it with the `@` character (that delimits the transaction arguments). The data should now look like:
+     - Select the NFT you want to send and click **Send**
+     - On the **Transaction Details** page, in the **Receiver** field, enter the contract address
+     - Expand the **Fee** section and enter `10,000,000` in the **Gas Limit** field, to have enough gas for the transfer transaction
+     - The **Data** section should display the transaction data in this form (your actual data will be different):
 
-      *ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`@6465706f736974`
+        *`ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`*
 
-    - You can now send the NFT to the contract using the **Send NFT** button
+      This represents the [Standard transfer data](https://docs.multiversx.com/tokens/nft-tokens/#transfers) for sending the NFT to any other address.
+  
+      Sending the NFT directly to the contract will not call the contract's `deposit` endpoint (and will also fail as the contract is not directly payable).
+
+   - To send the NFT to the contract and call the `deposit` endpoint, we need to use the [Transfer to smart contract](https://docs.multiversx.com/tokens/nft-tokens/#transfers-to-a-smart-contract) transaction format, by adding into the transaction data the name of the endpoint to call (and any additional arguments if necessary)
+
+      To call this endpoint in the NFT transfer transaction, we'll have to add its name at the end of the transaction data.
+
+      The endpoint name has to be encoded in hexadecimal format. You can use the MultiversX Utility App [Converters](https://utils.multiversx.com/converters#string-converters-string-to-hexadecimal) section to do this. Enter `deposit` in the **Convert a string to a hexadecimal encoded string** field, and click **Convert**. The **Result** field shows the hexadecimal encoded endpoint name, which is `6465706f736974`.
+
+   - To edit the transaction data, double-click the **Advanced** label near the **Data** field in the **Transaction Details** page, to make the field editable
+   - Add the encoded endpoint name `6465706f736974` at the end of the transaction data and prefix it with the `@` character (that delimits the transaction arguments). The data should now look like:
+
+      *ESDTNFTTransfer@4348415241435445522d646366353235@23@01@000000000000000005005da6fd06e116c6cf6951fe964a61a9c70b415f6d9044`@6465706f736974`*
+
+   - You can now send the NFT to the contract and call the contract's `deposit` endpoint using the **Send NFT** button
 
 4. ### Use deposited resources
 
