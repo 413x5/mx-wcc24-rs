@@ -26,7 +26,7 @@ pub trait ToolsContract:
         let (token_id, payment_amount) = self.call_value().single_fungible_esdt();
 
         let mut ore_amount = BigUint::zero();
-        if self.is_required_token_str(&token_id, ORE_TICKER) { ore_amount = payment_amount.clone(); }
+        if self.is_required_token(&token_id, &ManagedBuffer::from(ORE_TICKER)) { ore_amount = payment_amount.clone(); }
 
         require!(ore_amount == MINT_SHIELD_ORE_QUANTITY, "Ore amount sent must be {}.", MINT_SHIELD_ORE_QUANTITY);
 
@@ -176,8 +176,8 @@ pub trait ToolsContract:
         // Check the gold and ore required
         for payment in payments.iter() {
             let token_id = &payment.token_identifier;
-            if self.is_required_token_str(token_id, GOLD_TICKER) { gold_amount = payment.amount.clone(); }
-            if self.is_required_token_str(token_id, ORE_TICKER) { ore_amount = payment.amount.clone(); }         
+            if self.is_required_token(token_id, &ManagedBuffer::from(GOLD_TICKER)) { gold_amount = payment.amount.clone(); }
+            if self.is_required_token(token_id, &ManagedBuffer::from(ORE_TICKER)) { ore_amount = payment.amount.clone(); }         
         }
 
         require!(gold_amount == MINT_SWORD_GOLD_QUANTITY, "Gold amount sent must be {}.", MINT_SWORD_GOLD_QUANTITY);

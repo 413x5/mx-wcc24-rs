@@ -30,31 +30,7 @@
             "docs": [
                 "Endpoint to deposit tokens in the game interface contract"
             ],
-            "name": "depositTokens",
-            "mutability": "mutable",
-            "payableInTokens": [
-                "*"
-            ],
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "docs": [
-                "Endpoint to deposit character NFT in the game interface contract"
-            ],
-            "name": "depositCharacterNft",
-            "mutability": "mutable",
-            "payableInTokens": [
-                "*"
-            ],
-            "inputs": [],
-            "outputs": []
-        },
-        {
-            "docs": [
-                "Endpoint to deposit tool NFT in the game interface contract"
-            ],
-            "name": "depositToolNft",
+            "name": "deposit",
             "mutability": "mutable",
             "payableInTokens": [
                 "*"
@@ -213,7 +189,12 @@
             "name": "clearDeposits",
             "onlyOwner": true,
             "mutability": "mutable",
-            "inputs": [],
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
             "outputs": []
         },
         {
@@ -272,10 +253,15 @@
             ],
             "name": "getDeposits",
             "mutability": "readonly",
-            "inputs": [],
+            "inputs": [
+                {
+                    "name": "user",
+                    "type": "Address"
+                }
+            ],
             "outputs": [
                 {
-                    "type": "variadic<multi<Address,List<DepositInfo>>>",
+                    "type": "variadic<DepositInfo>",
                     "multi_result": true
                 }
             ]

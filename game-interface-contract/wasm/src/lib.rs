@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           40
+// Endpoints:                           38
 // Async Callback:                       1
-// Total number of exported functions:  43
+// Total number of exported functions:  41
 
 #![no_std]
 
@@ -20,9 +20,7 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
-        depositTokens => deposit_tokens
-        depositCharacterNft => deposit_character_nft
-        depositToolNft => deposit_tool_nft
+        deposit => deposit
         setCharacterContractAddress => set_character_contract_address
         setResourceTransformContractAddress => set_resource_transform_contract_address
         setToolsContractAddress => set_tools_contract_address

@@ -17,19 +17,13 @@ pub trait GameArenaModule:
         self.require_game_arena_contract_address();
 
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find soldier NFT
-        let find_soldier_nft = &deposits.iter().find(|deposit| self.is_required_nft(
-            &deposit.token_id, 
-            deposit.token_nonce, 
-            self.characters_collection_id().get().as_managed_buffer(),
-            soldier_nft_nonce));
-
+        let soldier_nft_deposit = self.get_deposit_by_token_id(&user, &self.characters_collection_id().get(), soldier_nft_nonce);
         // Find fee token deposit
-        let find_fee_token_deposit = &deposits.iter().find(|deposit| self.is_required_token(&deposit.token_id, fee_token_id.as_managed_buffer()));
+        let fee_token_deposit = self.get_deposit_by_token_id(&user, &fee_token_id, 0);
 
-        match (find_soldier_nft, find_fee_token_deposit) {
+        match (soldier_nft_deposit, fee_token_deposit) {
             (None, None) => require!(false, "No character NFT or fee token deposited. Need character NFT with nonce {} and fee token {}.", soldier_nft_nonce, fee_token_id),
             (None, Some(_)) => require!(false, "No character NFT deposited with nonce {}.", soldier_nft_nonce),
             (Some(_), None) => require!(false, "No fee token deposited. Need at least {} {}.", fee_amount, fee_token_id),
@@ -72,19 +66,13 @@ pub trait GameArenaModule:
         self.require_game_arena_contract_address();
 
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find soldier NFT
-        let find_soldier_nft = &deposits.iter().find(|deposit| self.is_required_nft(
-            &deposit.token_id, 
-            deposit.token_nonce, 
-            self.characters_collection_id().get().as_managed_buffer(),
-            soldier_nft_nonce));
-
+        let soldier_nft_deposit = self.get_deposit_by_token_id(&user, &self.characters_collection_id().get(), soldier_nft_nonce);
         // Find fee token deposit
-        let find_fee_token_deposit = &deposits.iter().find(|deposit| self.is_required_token(&deposit.token_id, fee_token_id.as_managed_buffer()));
+        let fee_token_deposit = self.get_deposit_by_token_id(&user, &fee_token_id, 0);
 
-        match (find_soldier_nft, find_fee_token_deposit) {
+        match (soldier_nft_deposit, fee_token_deposit) {
             (None, None) => require!(false, "No character NFT or fee token deposited. Need at least {} and {}.", soldier_nft_nonce, fee_amount),
             (None, Some(_)) => require!(false, "No character NFT deposited with nonce {}.", soldier_nft_nonce),
             (Some(_), None) => require!(false, "No fee token deposited. Need at least {}.", fee_amount),
@@ -134,32 +122,8 @@ pub trait GameArenaModule:
 
         match result {
             ManagedAsyncCallResult::Ok(_) => {
-                // Get user deposits and update spent food and wood
-                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
-                let mut soldier_nft_deposit_index = 0;
-                let mut i = 0;
-                while i < deposits.len() {
-                    if deposits.get(i).token_id == *fee_token_id {
-                        deposits.get_mut(i).balance -= fee_amount;
-                        i += 1;
-                        continue;
-                    }
-                    if self.is_required_nft(
-                        &deposits.get(i).token_id, 
-                        deposits.get(i).token_nonce, 
-                        &self.characters_collection_id().get().as_managed_buffer(), 
-                        soldier_nft_nonce) 
-                    {
-                        soldier_nft_deposit_index = i;
-                    }
-                    i += 1;
-                }
-
-                // Remove the soldier NFT from the user's deposits
-                deposits.remove(soldier_nft_deposit_index);
-
-                // Update deposits to storage
-                self.get_deposits().insert(user.clone(), deposits);
+                self.decrease_deposit_balance(user, fee_token_id, 0, fee_amount);
+                self.remove_deposit(user, &self.characters_collection_id().get(), soldier_nft_nonce);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // If the transaction fails, deposits are not updated

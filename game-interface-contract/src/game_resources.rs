@@ -1,7 +1,6 @@
 use multiversx_sc::imports::*;
 
 use game_common_module::constants::*;
-use crate::data::*;
 
 #[multiversx_sc::module]
 pub trait ResourcesModule:
@@ -89,11 +88,10 @@ pub trait ResourcesModule:
         self.require_resource_transform_contract_address();
 
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find stone deposit
-        let find_stone_deposit = deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, STONE_TICKER));
-        match find_stone_deposit {
+        let stone_deposit = self.get_deposit_by_token_ticker(&user, STONE_TICKER);
+        match stone_deposit {
             None => require!(false, "No stone deposited. Need at least {}.", STONE_AMMOUNT_FOR_ORE),
             Some(stone_deposit) => {
                 // Calculate the amount of stone needed
@@ -109,7 +107,7 @@ pub trait ResourcesModule:
                     .with_esdt_transfer(stone_token_payment)
                     .raw_call(RESOURCE_TRANSFORM_CONTRACT_CREATE_ORE_ENDPOINT_NAME)
                     // Set the callback for updating deposit amounts if successful
-                    .with_callback(self.callbacks().create_ore_callback(&user, stone_deposit.token_id.clone(), stone_amount))
+                    .with_callback(self.callbacks().create_ore_callback(&user, &stone_deposit.token_id, &stone_amount))
                     .async_call_and_exit();
             }
         }
@@ -119,25 +117,14 @@ pub trait ResourcesModule:
     #[callback]
     fn create_ore_callback(&self, 
         user: &ManagedAddress, 
-        stone_token: TokenIdentifier, 
-        stone_amount: BigUint,  
+        stone_token: &TokenIdentifier, 
+        stone_amount: &BigUint,  
         #[call_result] result: ManagedAsyncCallResult<()>) {
         
         match result {
             ManagedAsyncCallResult::Ok(_) => {
                 // Get user deposits and update spent stone
-                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
-                let mut i = 0;
-                while i < deposits.len() {
-                    if deposits.get(i).token_id == stone_token {
-                        deposits.get_mut(i).balance -= stone_amount;
-                        break;
-                    }
-                    i += 1;
-                }
-
-                // Update deposits to storage
-                self.get_deposits().insert(user.clone(), deposits);
+                self.decrease_deposit_balance(&user, &stone_token, 0, stone_amount);
 
                 // Get back token transfered and update user deposits
                 let back_transfers = self.blockchain().get_back_transfers();
@@ -146,28 +133,7 @@ pub trait ResourcesModule:
                     let received_token = &payment.token_identifier;
                     let received_amount = &payment.amount;
 
-                    // Update user deposits
-                    let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
-                    let mut i = 0;
-                    let mut found = false;
-                    while i < deposits.len() {
-                        if deposits.get(i).token_id == *received_token {
-                            deposits.get_mut(i).balance += received_amount;
-                            found = true;
-                            break;
-                        }
-                        i += 1;
-                    }
-                    // If the token is not in the user's deposits, add it
-                    if !found {
-                        deposits.push(DepositInfo {
-                            token_id: received_token.clone(),
-                            token_nonce: 0,
-                            balance: received_amount.clone(),
-                        });
-                    }
-                    // Update user deposits in storage
-                    self.get_deposits().insert(user.clone(), deposits);
+                    self.add_or_increase_deposit_balance(&user, &received_token, 0, received_amount);
                 }
             },
             ManagedAsyncCallResult::Err(_) => {

@@ -31,8 +31,8 @@ pub trait CharacterContract:
         // Check the wood and food required
         for payment in payments.iter() {
             let token_id = &payment.token_identifier;
-            if self.is_required_token_str(&token_id, WOOD_TICKER) { wood_amount = payment.amount.clone(); }
-            if self.is_required_token_str(&token_id, FOOD_TICKER) { food_amount = payment.amount.clone(); }         
+            if self.is_required_token(&token_id, &ManagedBuffer::from(WOOD_TICKER)) { wood_amount = payment.amount.clone(); }
+            if self.is_required_token(&token_id, &ManagedBuffer::from(FOOD_TICKER)) { food_amount = payment.amount.clone(); }         
         }
 
         require!(wood_amount == MINT_CITIZEN_WOOD_QUANTITY, "Wood amount sent must be {}.", MINT_CITIZEN_WOOD_QUANTITY);
@@ -134,8 +134,8 @@ pub trait CharacterContract:
         for payment in payments.iter() {
             let token_id = &payment.token_identifier;
 
-            if self.is_required_token_str(&token_id, GOLD_TICKER) { gold_amount = payment.amount.clone(); }
-            if self.is_required_token_str(&token_id, ORE_TICKER) { ore_amount = payment.amount.clone(); }
+            if self.is_required_token(&token_id, &ManagedBuffer::from(GOLD_TICKER)) { gold_amount = payment.amount.clone(); }
+            if self.is_required_token(&token_id, &ManagedBuffer::from(ORE_TICKER)) { ore_amount = payment.amount.clone(); }
         }
 
         require!(gold_amount == CITIZEN_TO_SOLDIER_GOLD_QUANTITY, "Gold amount must be {}.", CITIZEN_TO_SOLDIER_GOLD_QUANTITY);

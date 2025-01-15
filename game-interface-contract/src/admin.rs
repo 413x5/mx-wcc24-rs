@@ -1,11 +1,12 @@
 #[allow(unused_imports)]
 use multiversx_sc::imports::*;
 
-use crate::data::*;
 
 #[multiversx_sc::module]
-pub trait AdminModule: crate::storage::StorageModule
-
+pub trait AdminModule:
+    crate::storage::StorageModule +
+    crate::common::CommonModule +
+    game_common_module::GameCommonModule
 {
     #[init]
     fn init(&self) {}
@@ -87,55 +88,22 @@ pub trait AdminModule: crate::storage::StorageModule
     /// Clear all deposits
     #[only_owner]
     #[endpoint(clearDeposits)]
-    fn clear_deposits(&self) {
-        self.get_deposits().clear();
+    fn clear_deposits(&self, address: ManagedAddress) {
+        self.get_deposits(address).clear();
     }
 
     /// Clear deposit
     #[only_owner]
     #[endpoint(clearDeposit)]
     fn clear_deposit(&self, user: ManagedAddress, token_id: TokenIdentifier, token_nonce: u64) {
-        let mut user_deposits = self.get_deposits().get(&user).unwrap_or_default();
-        let mut i = 0;
-        let mut deposit_index = 0;
-        while i < user_deposits.len() {
-            if user_deposits.get(i).token_id == token_id && user_deposits.get(i).token_nonce == token_nonce {
-                deposit_index = i;
-                break;
-            }
-            i += 1;
-        }
-
-        user_deposits.remove(deposit_index);
-        self.get_deposits().insert(user, user_deposits);
+        self.remove_deposit(&user, &token_id, token_nonce);
     }
-
 
     /// Set deposit balance
     #[only_owner]
     #[endpoint(setDepositBalance)]
     fn set_deposit_balance(&self, user: ManagedAddress, token_id: TokenIdentifier, token_nonce: u64, new_balance: BigUint) {
-        let mut user_deposits = self.get_deposits().get(&user).unwrap_or_default();
-        let mut found = false;
-
-        let mut i = 0;
-        while i < user_deposits.len() {
-            if user_deposits.get(i).token_id == token_id && user_deposits.get(i).token_nonce == token_nonce {
-                user_deposits.get_mut(i).balance = new_balance.clone();
-                found = true;
-                break;
-            }
-            i += 1;
-        }
-
-        if !found {
-            user_deposits.push(DepositInfo {
-                token_id: token_id.clone(),
-                token_nonce,
-                balance: new_balance.clone(),
-            });
-        }
-        self.get_deposits().insert(user, user_deposits);
+        self.update_deposit_balance(&user, &token_id, token_nonce, &new_balance);
     }
 
 

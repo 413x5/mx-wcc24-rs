@@ -18,14 +18,12 @@ pub trait ToolsModule:
         // Get the ore and gold required
         let ore_quantity = BigUint::from(MINT_SHIELD_ORE_QUANTITY);
 
-        // Get the user deposits
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();  
 
         // Find ore and gold deposits
-        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TICKER));
+        let ore_deposit = self.get_deposit_by_token_ticker(&user, ORE_TICKER);
 
-        match find_ore_deposit {
+        match ore_deposit {
             None => require!(false, "No ore deposited. Need at least {}.", ore_quantity),
             Some(ore_deposit) => 
             {   
@@ -59,19 +57,8 @@ pub trait ToolsModule:
     ) {
         match result {
             ManagedAsyncCallResult::Ok(_) => {
-                // Get user deposits and update spent ore
-                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
-                let mut i = 0;
-                while i < deposits.len() {
-                    if deposits.get(i).token_id == ore_token {
-                        deposits.get_mut(i).balance -= MINT_SHIELD_ORE_QUANTITY;
-                        break;
-                    }
-                    i += 1;
-                }
-
-                // Update deposits to storage
-                self.get_deposits().insert(user.clone(), deposits);
+                // Update spent ore
+                self.decrease_deposit_balance_u64(user, &ore_token, 0, MINT_SHIELD_ORE_QUANTITY);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // If the transaction fails, deposits are not updated
@@ -108,13 +95,12 @@ pub trait ToolsModule:
 
         // Get the user deposits
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();  
 
         // Find ore and gold deposits
-        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TICKER));
-        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TICKER));
+        let ore_deposit = self.get_deposit_by_token_ticker(&user, ORE_TICKER);
+        let gold_deposit = self.get_deposit_by_token_ticker(&user, GOLD_TICKER);
 
-        match (find_ore_deposit, find_gold_deposit) {
+        match (ore_deposit, gold_deposit) {
             (None, None) => require!(false, "No ore or gold deposited. Need at least {} and {}.", ore_quantity, gold_quantity),
             (None, Some(_)) => require!(false, "No ore deposited. Need at least {}.", ore_quantity),
             (Some(_), None) => require!(false, "No gold deposited. Need at least {}.", gold_quantity),
@@ -156,21 +142,9 @@ pub trait ToolsModule:
 
         match result {
             ManagedAsyncCallResult::Ok(_) => {
-                // Get user deposits and update spent food and wood
-                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
-
-                let mut i = 0;
-                while i < deposits.len() {
-                    if deposits.get(i).token_id == ore_token {
-                        deposits.get_mut(i).balance -= MINT_SWORD_ORE_QUANTITY;
-                    }
-                    if deposits.get(i).token_id == gold_token {
-                        deposits.get_mut(i).balance -= MINT_SWORD_GOLD_QUANTITY;
-                    }
-                    i += 1;
-                }
-                // Update deposits to storage
-                self.get_deposits().insert(user.clone(), deposits);
+                // Update spent food and wood
+                self.decrease_deposit_balance_u64(user, &ore_token, 0, MINT_SWORD_ORE_QUANTITY);
+                self.decrease_deposit_balance_u64(user, &gold_token, 0, MINT_SWORD_GOLD_QUANTITY);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // If the transaction fails, deposits are not updated

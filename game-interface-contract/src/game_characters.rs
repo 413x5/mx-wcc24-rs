@@ -22,13 +22,12 @@ pub trait CharactersModule:
 
         // Get the user deposits
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find wood and food deposits
-        let find_wood_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, WOOD_TICKER));
-        let find_food_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, FOOD_TICKER));
+        let wood_deposit = self.get_deposit_by_token_ticker(&user, WOOD_TICKER);
+        let food_deposit = self.get_deposit_by_token_ticker(&user, FOOD_TICKER);
 
-        match (find_wood_deposit, find_food_deposit) {
+        match (wood_deposit, food_deposit) {
             (None, None) => require!(false, "No wood or food deposited. Need at least {} and {}.", wood_quantity, food_quantity),
             (None, Some(_)) => require!(false, "No wood deposited. Need at least {}.", wood_quantity),
             (Some(_), None) => require!(false, "No food deposited. Need at least {}.", food_quantity),
@@ -71,20 +70,8 @@ pub trait CharactersModule:
         match result {
             ManagedAsyncCallResult::Ok(_) => {
                 // Get user deposits and update spent food and wood
-                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
-                let mut i = 0;
-                while i < deposits.len() {
-                    if deposits.get(i).token_id == wood_token {
-                        deposits.get_mut(i).balance -= MINT_CITIZEN_WOOD_QUANTITY;
-                    }
-                    if deposits.get(i).token_id == food_token {
-                        deposits.get_mut(i).balance -= MINT_CITIZEN_FOOD_QUANTITY;
-                    }
-                    i += 1;
-                }
-
-                // Update deposits to storage
-                self.get_deposits().insert(user.clone(), deposits);
+                self.decrease_deposit_balance_u64(user, &wood_token, 0, MINT_CITIZEN_WOOD_QUANTITY);
+                self.decrease_deposit_balance_u64(user, &food_token, 0, MINT_CITIZEN_FOOD_QUANTITY);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // If the transaction fails, deposits are not updated
@@ -120,12 +107,11 @@ pub trait CharactersModule:
         let ore_amount = BigUint::from(CITIZEN_TO_SOLDIER_ORE_QUANTITY);
 
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();
         // Find gold and ore deposits
-        let find_gold_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, GOLD_TICKER));
-        let find_ore_deposit = &deposits.iter().find(|deposit| self.is_required_token_str(&deposit.token_id, ORE_TICKER));
+        let gold_deposit = self.get_deposit_by_token_ticker(&user, GOLD_TICKER);
+        let ore_deposit = self.get_deposit_by_token_ticker(&user, ORE_TICKER);
 
-        match (find_gold_deposit, find_ore_deposit) {
+        match (gold_deposit, ore_deposit) {
             (None, None) => require!(false, "No gold or ore deposited. Need at least {} and {}.", gold_amount, ore_amount),
             (None, Some(_)) => require!(false, "No gold deposited. Need at least {}.", gold_amount),
             (Some(_), None) => require!(false, "No ore deposited. Need at least {}.", ore_amount),
@@ -172,19 +158,8 @@ pub trait CharactersModule:
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 // Get user deposits and update spent gold and ore
-                let mut deposits = self.get_deposits().get(&user).unwrap_or_default();
-                let mut i = 0;
-                while i < deposits.len() {
-                    if deposits.get(i).token_id == gold_token {
-                        deposits.get_mut(i).balance -= CITIZEN_TO_SOLDIER_GOLD_QUANTITY;
-                    }
-                    if deposits.get(i).token_id == ore_token {
-                        deposits.get_mut(i).balance -= CITIZEN_TO_SOLDIER_ORE_QUANTITY;
-                    }
-                    i += 1;
-                }
-                // Update deposits to storage
-                self.get_deposits().insert(user.clone(), deposits);
+                self.decrease_deposit_balance_u64(user, &gold_token, 0, CITIZEN_TO_SOLDIER_GOLD_QUANTITY);
+                self.decrease_deposit_balance_u64(user, &ore_token, 0, CITIZEN_TO_SOLDIER_ORE_QUANTITY);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // If the transaction fails, deposits are not updated
@@ -198,29 +173,20 @@ pub trait CharactersModule:
         self.require_character_contract_address();
 
         let user = self.blockchain().get_caller();
-        let deposits = self.get_deposits().get(&user).unwrap_or_default();
 
         // Find character NFT
-        let find_soldier_nft = &deposits.iter().find(|deposit| self.is_required_nft(
-            &deposit.token_id, 
-            deposit.token_nonce, 
-            self.characters_collection_id().get().as_managed_buffer(),
-            soldier_nft_nonce));
+        let soldier_nft_deposit = self.get_deposit_by_token_id(&user, &self.characters_collection_id().get(), soldier_nft_nonce);
         // Find tool NFT
-        let find_tool_nft = &deposits.iter().find(|deposit| self.is_required_nft(
-            &deposit.token_id, 
-            deposit.token_nonce, 
-            self.tools_collection_id().get().as_managed_buffer(),
-            tool_nft_nonce));
+        let tool_nft_deposit = self.get_deposit_by_token_id(&user, &self.tools_collection_id().get(), tool_nft_nonce);
 
-        match (find_soldier_nft, find_tool_nft) {
+        match (soldier_nft_deposit, tool_nft_deposit) {
             (None, None) => require!(false, "No soldier NFT nonce {} or tool NFT nonce {} deposited.", soldier_nft_nonce, tool_nft_nonce),
             (None, Some(_)) => require!(false, "No soldier NFT nonce {} deposited.", soldier_nft_nonce),
             (Some(_), None) => require!(false, "No tool NFT nonce {} deposited.", tool_nft_nonce),
-            (Some(soldier_nft), Some(tool_nft)) => 
+            (Some(soldier_nft_deposit), Some(tool_nft_deposit)) => 
             {
-                let soldier_nft_transfer = EsdtTokenPayment::new(soldier_nft.token_id.clone(), soldier_nft.token_nonce, BigUint::from(1u64));
-                let tool_nft_transfer = EsdtTokenPayment::new(tool_nft.token_id.clone(), tool_nft.token_nonce, BigUint::from(1u64));
+                let soldier_nft_transfer = EsdtTokenPayment::new(soldier_nft_deposit.token_id.clone(), soldier_nft_deposit.token_nonce, BigUint::from(1u64));
+                let tool_nft_transfer = EsdtTokenPayment::new(tool_nft_deposit.token_id.clone(), tool_nft_deposit.token_nonce, BigUint::from(1u64));
 
                 let mut transfers : ManagedVec<EsdtTokenPayment<Self::Api>> = ManagedVec::new();
                 transfers.push(soldier_nft_transfer);
@@ -233,7 +199,7 @@ pub trait CharactersModule:
                     .raw_call(CHARACTER_CONTRACT_UPGRADE_SOLDIER_ENDPOINT_NAME)
                     .argument(&user)
                     // Set the callback for removing used NFTs from deposits if successful
-                    .with_callback(self.callbacks().upgrade_soldier_callback(&user, soldier_nft.token_nonce, tool_nft.token_nonce))
+                    .with_callback(self.callbacks().upgrade_soldier_callback(&user, soldier_nft_deposit.token_nonce, tool_nft_deposit.token_nonce))
                     .async_call_and_exit();
             },
         }
@@ -248,33 +214,8 @@ pub trait CharactersModule:
         #[call_result] result: ManagedAsyncCallResult<()>) {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
-
-                let old_deposits = self.get_deposits().get(&user).unwrap_or_default();
-                // Create a new deposits list to add every other deposit except the NFTs that were used
-                let mut new_deposits = ManagedVec::new();
-
-                let characters_collection_id = self.characters_collection_id().get().as_managed_buffer().clone();
-                let tools_collection_id = self.tools_collection_id().get().as_managed_buffer().clone();
-
-                let mut i = 0;
-                while i < old_deposits.len() {
-                    let current_deposit = old_deposits.get(i).clone();
-                    let current_token_id = current_deposit.token_id.clone();
-                    let current_token_nonce = current_deposit.token_nonce;
-
-                    // Skip the NFTs that were used (soldier and tool)
-                    if self.is_required_nft(&current_token_id, current_token_nonce, &characters_collection_id, soldier_nft_nonce) {
-                        i += 1; continue;
-                    }
-                    if self.is_required_nft(&current_token_id, current_token_nonce, &tools_collection_id, tool_nft_nonce) {
-                        i += 1; continue;
-                    }
-                    // Add the other deposits
-                    new_deposits.push(current_deposit);
-                    i += 1;
-                }
-                // Update deposits to storage
-                self.get_deposits().insert(user.clone(), new_deposits);
+                self.remove_deposit(user, &self.characters_collection_id().get(), soldier_nft_nonce);
+                self.remove_deposit(user, &self.tools_collection_id().get(), tool_nft_nonce);
             },
             ManagedAsyncCallResult::Err(_) => {},
         }

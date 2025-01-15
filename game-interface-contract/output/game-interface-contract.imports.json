@@ -21,7 +21,6 @@
   "mBufferGetByteSlice",
   "mBufferGetLength",
   "mBufferNew",
-  "mBufferSetByteSlice",
   "mBufferSetBytes",
   "mBufferStorageLoad",
   "mBufferStorageStore",
