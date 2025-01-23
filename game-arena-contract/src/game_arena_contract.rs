@@ -10,6 +10,7 @@ use game_common_module::data::Character;
 
 pub const ERR_CHARACTER_COLLECTION_NOT_SET: &str = "Character NFT collection is not set.";
 
+/// Structure to represent a game
 #[type_abi]
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode)]
 pub struct Game<M: ManagedTypeApi> {
@@ -40,7 +41,7 @@ impl<M: ManagedTypeApi> Game<M> {
 #[multiversx_sc::contract]
 pub trait GameArenaContract:
     game_common_module::GameCommonModule +
-    game_common_module::nft_attributes::NftAttributesDecodeModule
+    game_common_module::nft_attributes::NftAttributesModule
 {
     #[init]
     fn init(&self) {}

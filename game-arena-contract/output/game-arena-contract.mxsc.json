@@ -136,6 +136,9 @@
         "types": {
             "Game": {
                 "type": "struct",
+                "docs": [
+                    "Structure to represent a game"
+                ],
                 "fields": [
                     {
                         "name": "initiator",

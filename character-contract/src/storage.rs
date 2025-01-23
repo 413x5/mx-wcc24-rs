@@ -12,7 +12,7 @@ pub trait StorageModule {
     /// Citizens to mint for each user
     #[view(getCitizensToMint)]
     #[storage_mapper("citizensToMint")]
-    fn citizens_to_mint(&self) -> MapMapper<ManagedAddress, ManagedVec<u64>>;
+    fn citizens_to_mint(&self, user: &ManagedAddress) -> VecMapper<u64>;
 
     /// Mint citizen seconds
     #[view(getMintCitizenSeconds)]

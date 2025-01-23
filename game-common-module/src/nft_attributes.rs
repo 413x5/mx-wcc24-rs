@@ -4,7 +4,72 @@ use crate::data::*;
 use crate::constants::*;
 
 #[multiversx_sc::module]
-pub trait NftAttributesDecodeModule {
+pub trait NftAttributesModule {
+
+    // Encode NFT attributes
+
+    /// Encode nft attributes in the format: metadata:IPFS_CID/{filename}.json;tags:{tag(s)}{PREFIX}{rank}:{attack}:{defence}
+    /// Ex: metadata:IPFS_CID/citizen.json;tags:character,citizen;c:0:0:0
+    /// Ex: metadata:IPFS_CID/soldier21.json;tags:character,soldier;c:1:2:1
+    fn get_nft_attributes(&self, character: &Character) -> ManagedBuffer {
+        let nft_attributes = ManagedBuffer::from(
+            sc_format!("metadata:{}/{}.{};tags:{}{}{}:{}:{}",
+            ManagedBuffer::from(IPFS_CHARACTERS_CID),
+            self.get_asset_filename(character),
+            ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION), 
+            self.get_nft_tags(character),
+            ManagedBuffer::from(NFT_CHARACTER_ATTRIBUTES_PREFIX), 
+            character.rank, 
+            character.attack, 
+            character.defence));
+        nft_attributes
+    }
+
+    /// Get the URIs for the NFT assets (image, metadata)
+    fn get_nft_asset_uris(&self, character: &Character) -> ManagedVec<ManagedBuffer> {
+        // Get the base filename
+        let asset_base_filename = 
+            //sc_format!("https://ipfs.io/ipfs/{}/{}", // This IPFS gateway timeouts
+            sc_format!("https://{}.ipfs.w3s.link/{}",  // New IPFS gateway
+            ManagedBuffer::from(IPFS_CHARACTERS_CID), // IPFS CID
+            self.get_asset_filename(character)
+        );
+        // Get the image and metadata URIs by adding the file extension
+        let asset_image = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_IMAGE_FILE_EXTENSION));
+        let asset_metadata = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION));
+        
+        // Return the URIs
+        let mut assets = 
+            ManagedVec::from_single_item(asset_image);
+            assets.push(asset_metadata);
+
+        assets
+    }
+
+    /// Get the NFT tags based on the character
+    fn get_nft_tags(&self, character: &Character) -> ManagedBuffer {
+        if character.is_citizen() { return ManagedBuffer::from(CITIZEN_NFT_TAGS) }
+        if character.is_soldier() { return ManagedBuffer::from(SOLDIER_NFT_TAGS) }
+        sc_panic!("Invalid character rank {}.", character.rank);
+    }
+
+    /// Get the asset filename based on the character
+    fn get_asset_filename(&self, character: &Character) -> ManagedBuffer {
+        // One image and metadata for citizen
+        if character.is_citizen() { return ManagedBuffer::from(CITIZEN_FILE_NAME) }
+        if character.is_soldier() {
+            // Different soldier images and metadata available for attack and defence from 0 to 2
+            if character.attack <= 2 && character.defence <= 2 {
+                return sc_format!("{}{}{}", ManagedBuffer::from(SOLDIER_FILE_NAME), character.attack, character.defence)
+
+            // If attack or defence is greater than 2, the assets remain the same, only the NFT attributes are different
+            } else {
+                return sc_format!("{}XX", ManagedBuffer::from(SOLDIER_FILE_NAME))
+            }
+        }
+        sc_panic!("Invalid character rank {}.", character.rank);
+    }
+
 
     /// Get the character object from the NFT attributes data
     fn get_character(&self, owner_address: &ManagedAddress, character_collection_id: &TokenIdentifier, character_nonce: u64) -> Character {
@@ -35,6 +100,10 @@ pub trait NftAttributesDecodeModule {
 
         tool
     }
+
+
+    // Decode NFT attributes
+
 
     /// Decode the NFT attributes and return a Character object
     /// Ex: metadata:IPFS_CID/citizen.json;tags:character,citizen;c:0:0:0

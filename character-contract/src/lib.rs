@@ -15,7 +15,7 @@ pub trait CharacterContract:
     admin::AdminModule +
     storage::StorageModule +
     game_common_module::GameCommonModule +
-    game_common_module::nft_attributes::NftAttributesDecodeModule
+    game_common_module::nft_attributes::NftAttributesModule
 {
 
     /// Mints a Citizen NFT
@@ -45,12 +45,11 @@ pub trait CharacterContract:
             };
 
         // Register the NFT mint to the receiver address
-        let mut user_citizens_to_mint = self.citizens_to_mint().get(&user).unwrap_or_default();
+        let mut user_citizens_to_mint = self.citizens_to_mint(&user);
         // Record the current mint start timestamp
         let mint_start_timestamp = self.blockchain().get_block_timestamp();
         // Add the mint start timestamp to the mint user's list
-        user_citizens_to_mint.push(mint_start_timestamp);
-        self.citizens_to_mint().insert(user.clone(), user_citizens_to_mint);
+        user_citizens_to_mint.push(&mint_start_timestamp);
         
         // Burn the wood and food sent
         for payment in payments.iter() {
@@ -70,14 +69,13 @@ pub trait CharacterContract:
         };
 
         // Check if the user has any NFTs to mint
-        let user_citizens = self.citizens_to_mint().get(&user).unwrap_or_default();
+        let user_citizens = self.citizens_to_mint(&user);
         let citizens_pending_count = user_citizens.len();
 
         // Exit with an error if the user has no NFTs to mint
         require!(citizens_pending_count > 0, "No citizens pending to be minted.");
 
         let mut citizens_minted = 0;
-
         let mut still_minting : ManagedVec<u64> = ManagedVec::new();
 
         let mint_citizen_seconds = if self.mint_citizen_seconds().is_empty() { MINT_CITIZEN_SECONDS_DEFAULT }
@@ -106,16 +104,19 @@ pub trait CharacterContract:
             );
         }
 
-        // Update the user's mint list
-        if  still_minting.is_empty() {
-            self.citizens_to_mint().remove(&user);
-        } else {
-            self.citizens_to_mint().insert(user, still_minting);
+        // If any citizens were minted
+        if citizens_minted > 0 {
+            // Update the user's mint list
+            self.citizens_to_mint(&user).clear();
+            if !still_minting.is_empty() {
+                for timestamp in still_minting.iter() {
+                    self.citizens_to_mint(&user).push(&timestamp);
+                }
+            }
         }
-
-        // Check if any NFTs were minted and exit with an error if still in the minting period
-        if citizens_minted == 0 { sc_panic!("{} citizen(s) still in the minting period.", citizens_pending_count); }
-
+        else {
+            sc_panic!("No citizen to mint. {} citizen(s) still in the minting period.", citizens_pending_count);
+        }
     }
 
 
@@ -366,68 +367,5 @@ pub trait CharacterContract:
     fn require_tools_collection(&self) {
         require!(!self.tools_nft_collection().is_empty(), "Tools collection not set");
     }
-
-    /// Encode nft attributes in the format: metadata:IPFS_CID/{filename}.json;tags:{tag(s)}{PREFIX}{rank}:{attack}:{defence}
-    /// Ex: metadata:IPFS_CID/citizen.json;tags:character,citizen;c:0:0:0
-    /// Ex: metadata:IPFS_CID/soldier21.json;tags:character,soldier;c:1:2:1
-    fn get_nft_attributes(&self, character: &Character) -> ManagedBuffer {
-        let nft_attributes = ManagedBuffer::from(
-            sc_format!("metadata:{}/{}.{};tags:{}{}{}:{}:{}",
-            ManagedBuffer::from(IPFS_CHARACTERS_CID),
-            self.get_asset_filename(character),
-            ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION), 
-            self.get_nft_tags(character),
-            ManagedBuffer::from(NFT_CHARACTER_ATTRIBUTES_PREFIX), 
-            character.rank, 
-            character.attack, 
-            character.defence));
-        nft_attributes
-    }
-
-    /// Get the URIs for the NFT assets (image, metadata)
-    fn get_nft_asset_uris(&self, character: &Character) -> ManagedVec<ManagedBuffer> {
-        // Get the base filename
-        let asset_base_filename = 
-            //sc_format!("https://ipfs.io/ipfs/{}/{}", // This IPFS gateway timeouts
-            sc_format!("https://{}.ipfs.w3s.link/{}",  // New IPFS gateway
-            ManagedBuffer::from(IPFS_CHARACTERS_CID), // IPFS CID
-            self.get_asset_filename(character)
-        );
-        // Get the image and metadata URIs by adding the file extension
-        let asset_image = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_IMAGE_FILE_EXTENSION));
-        let asset_metadata = sc_format!("{}.{}", asset_base_filename, ManagedBuffer::from(NFT_METADATA_FILE_EXTENSION));
-        
-        // Return the URIs
-        let mut assets = 
-            ManagedVec::from_single_item(asset_image);
-            assets.push(asset_metadata);
-
-        assets
-    }
-
-    /// Get the NFT tags based on the character
-    fn get_nft_tags(&self, character: &Character) -> ManagedBuffer {
-        if character.is_citizen() { return ManagedBuffer::from(CITIZEN_NFT_TAGS) }
-        if character.is_soldier() { return ManagedBuffer::from(SOLDIER_NFT_TAGS) }
-        sc_panic!("Invalid character rank {}.", character.rank);
-    }
-
-    /// Get the asset filename based on the character
-    fn get_asset_filename(&self, character: &Character) -> ManagedBuffer {
-        // One image and metadata for citizen
-        if character.is_citizen() { return ManagedBuffer::from(CITIZEN_FILE_NAME) }
-        if character.is_soldier() {
-            // Different soldier images and metadata available for attack and defence from 0 to 2
-            if character.attack <= 2 && character.defence <= 2 {
-                return sc_format!("{}{}{}", ManagedBuffer::from(SOLDIER_FILE_NAME), character.attack, character.defence)
-
-            // If attack or defence is greater than 2, the assets remain the same, only the NFT attributes are different
-            } else {
-                return sc_format!("{}XX", ManagedBuffer::from(SOLDIER_FILE_NAME))
-            }
-        }
-        sc_panic!("Invalid character rank {}.", character.rank);
-    }
-
 
 }

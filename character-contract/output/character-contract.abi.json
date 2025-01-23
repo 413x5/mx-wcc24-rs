@@ -156,10 +156,15 @@
             ],
             "name": "getCitizensToMint",
             "mutability": "readonly",
-            "inputs": [],
+            "inputs": [
+                {
+                    "name": "user",
+                    "type": "Address"
+                }
+            ],
             "outputs": [
                 {
-                    "type": "variadic<multi<Address,List<u64>>>",
+                    "type": "variadic<u64>",
                     "multi_result": true
                 }
             ]
