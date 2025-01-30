@@ -8,7 +8,7 @@ pub trait StorageModule {
     /// Users deposits in the contract
     #[view(getDeposits)]
     #[storage_mapper("deposits")]
-    fn get_deposits(&self, user: ManagedAddress) -> VecMapper<DepositInfo<Self::Api>>;
+    fn get_deposits(&self, user: &ManagedAddress) -> VecMapper<DepositInfo<Self::Api>>;
 
     /// Address of the character contract
     #[view(characterContractAddress)]

@@ -138,8 +138,8 @@ pub trait ResourceMintContract:
             );
             // Update user state
             self.user_has_unclaimed_resources(&user).set(false);
-            let user_claimed = self.user_claimed_resources().get(&user).unwrap_or_default();
-            self.user_claimed_resources().insert(user, user_claimed + user_available);
+            let user_claimed = self.user_claimed_resources(&user).get();
+            self.user_claimed_resources(&user).set(user_claimed + user_available);
         }
     }
 
@@ -188,9 +188,9 @@ pub trait ResourceMintContract:
                         // Add to total new resources to mint
                         new_resources_to_mint += user_resources_to_mint.clone();
                         // Add to user state with new minted resources
-                        let user_minted = self.user_minted_resources().get(&user).unwrap_or_default();
+                        let user_minted = self.user_minted_resources(&user).get();
                         let total_user_minted = user_minted + user_resources_to_mint;
-                        self.user_minted_resources().insert(user, total_user_minted);
+                        self.user_minted_resources(&user).set(total_user_minted);
                     }
                 }
             }

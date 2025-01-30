@@ -13,7 +13,7 @@
         },
         "framework": {
             "name": "multiversx-sc",
-            "version": "0.55.0"
+            "version": "0.56.0"
         }
     },
     "name": "ResourceMintContract",
@@ -170,11 +170,15 @@
             ],
             "name": "getUserMintedResources",
             "mutability": "readonly",
-            "inputs": [],
+            "inputs": [
+                {
+                    "name": "user",
+                    "type": "Address"
+                }
+            ],
             "outputs": [
                 {
-                    "type": "variadic<multi<Address,BigUint>>",
-                    "multi_result": true
+                    "type": "BigUint"
                 }
             ]
         },
@@ -184,11 +188,15 @@
             ],
             "name": "getUserClaimedResources",
             "mutability": "readonly",
-            "inputs": [],
+            "inputs": [
+                {
+                    "name": "user",
+                    "type": "Address"
+                }
+            ],
             "outputs": [
                 {
-                    "type": "variadic<multi<Address,BigUint>>",
-                    "multi_result": true
+                    "type": "BigUint"
                 }
             ]
         },

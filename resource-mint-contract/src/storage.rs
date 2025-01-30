@@ -34,12 +34,12 @@ pub trait StorageModule {
     /// User minted resources
     #[view(getUserMintedResources)]
     #[storage_mapper("userMintedResources")]
-    fn user_minted_resources(&self) -> MapMapper<ManagedAddress, BigUint>;
+    fn user_minted_resources(&self, user: &ManagedAddress) -> SingleValueMapper<BigUint>;
 
     /// User claimed resources
     #[view(getUserClaimedResources)]
     #[storage_mapper("userClaimedResources")]
-    fn user_claimed_resources(&self) -> MapMapper<ManagedAddress, BigUint>;
+    fn user_claimed_resources(&self, user: &ManagedAddress) -> SingleValueMapper<BigUint>;
 
     /// User has unclaimed resources
     #[view(getUserHasUnclaimedResources)]

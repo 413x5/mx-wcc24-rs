@@ -89,7 +89,7 @@ pub trait AdminModule:
     #[only_owner]
     #[endpoint(clearDeposits)]
     fn clear_deposits(&self, address: ManagedAddress) {
-        self.get_deposits(address).clear();
+        self.get_deposits(&address).clear();
     }
 
     /// Clear deposit

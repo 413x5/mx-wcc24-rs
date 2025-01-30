@@ -42,7 +42,7 @@ pub trait CommonModule:
 
     /// Get the deposit by token id
     fn get_deposit_by_token_id(&self, user: &ManagedAddress, token_id: &TokenIdentifier, token_nonce: u64) -> Option<DepositInfo<Self::Api>> {
-        let deposits = self.get_deposits(user.clone());
+        let deposits = self.get_deposits(user);
         for deposit in deposits.iter() {
             if deposit.token_id == *token_id && deposit.token_nonce == token_nonce {
                 return Some(deposit);
@@ -53,7 +53,7 @@ pub trait CommonModule:
 
     /// Get the deposit by token ticker
     fn get_deposit_by_token_ticker(&self, user: &ManagedAddress, token_ticker: &str) -> Option<DepositInfo<Self::Api>> {
-        let deposits = self.get_deposits(user.clone());
+        let deposits = self.get_deposits(user);
         let token_ticker_buffer = ManagedBuffer::from(token_ticker);
         for deposit in deposits.iter() {
             if self.is_required_token(&deposit.token_id, &token_ticker_buffer) {
@@ -65,7 +65,7 @@ pub trait CommonModule:
 
     /// Increase the deposit balance
     fn increase_deposit_balance(&self, user: &ManagedAddress, token_id: &TokenIdentifier, token_nonce: u64, amount: BigUint) -> bool {
-        let mut deposits = self.get_deposits(user.clone());
+        let mut deposits = self.get_deposits(user);
         for (index, deposit) in deposits.iter().enumerate() {
             if deposit.token_id == *token_id && deposit.token_nonce == token_nonce {
                 let new_deposit = DepositInfo {
@@ -88,7 +88,7 @@ pub trait CommonModule:
 
     /// Decrease the deposit balance
     fn decrease_deposit_balance(&self, user: &ManagedAddress, token_id: &TokenIdentifier, token_nonce: u64, amount: &BigUint) -> bool {
-        let mut deposits = self.get_deposits(user.clone());
+        let mut deposits = self.get_deposits(&user);
         for (index, deposit) in deposits.iter().enumerate() {
             if deposit.token_id == *token_id && deposit.token_nonce == token_nonce {
                 let new_deposit = DepositInfo {
@@ -111,7 +111,7 @@ pub trait CommonModule:
 
     /// Add a deposit
     fn add_deposit(&self, user: &ManagedAddress, token_id: &TokenIdentifier, token_nonce: u64, amount: &BigUint) {
-        let mut deposits = self.get_deposits(user.clone());
+        let mut deposits = self.get_deposits(&user);
         let new_deposit = DepositInfo {
             token_id: token_id.clone(),
             token_nonce,
@@ -129,7 +129,7 @@ pub trait CommonModule:
 
     /// Add a NFT deposit
     fn add_nft_deposit(&self, user: &ManagedAddress, token_id: &TokenIdentifier, nft_nonce: u64) {
-        let mut deposits = self.get_deposits(user.clone());
+        let mut deposits = self.get_deposits(user);
         let new_deposit = DepositInfo {
             token_id: token_id.clone(),
             token_nonce: nft_nonce,
@@ -140,7 +140,7 @@ pub trait CommonModule:
 
     /// Remove a NFT deposit
     fn remove_deposit(&self, user: &ManagedAddress, token_id: &TokenIdentifier, token_nonce: u64) -> bool {
-        let mut deposits = self.get_deposits(user.clone());
+        let mut deposits = self.get_deposits(user);
         for (index, deposit) in deposits.iter().enumerate() {
             if deposit.token_id == *token_id && deposit.token_nonce == token_nonce {
                 deposits.swap_remove(index + 1); // VecMapper index start at 1 not 0
@@ -152,7 +152,7 @@ pub trait CommonModule:
 
     /// Update the deposit balance
     fn update_deposit_balance(&self, user: &ManagedAddress, token_id: &TokenIdentifier, token_nonce: u64, balance: &BigUint) {
-        let mut deposits = self.get_deposits(user.clone());
+        let mut deposits = self.get_deposits(user);
         let mut existing_deposit = false;
         for (index, deposit) in deposits.iter().enumerate() {
             if deposit.token_id == *token_id && deposit.token_nonce == token_nonce {
